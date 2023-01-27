@@ -93,27 +93,6 @@ const LoginScreen = () => {
   };
   return (
     <View style={styles.container}>
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={loading}
-        onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
-          setModal(false);
-        }}
-      >
-        <View
-          style={{
-            position: "absolute",
-            justifyContent: "center",
-            alignItems: "center",
-            height: "100%",
-            width: "100%",
-          }}
-        >
-          <ActivityIndicator size="large" color={COLORS.primary} />
-        </View>
-      </Modal>
       <View style={styles.imgContainer}>
         <Text
           style={{
@@ -127,28 +106,45 @@ const LoginScreen = () => {
       </View>
 
       <View style={styles.formContainer}>
+        <Text style={styles.h1}>
+          Silakan login dengan username dan password yang anda miliki
+        </Text>
         <View style={styles.inputContainer}>
-          <Text style={styles.h2}>Username :</Text>
-
-          <TextInput
-            style={styles.input}
-            placeholderTextColor={grey}
-            onChangeText={setUsername}
-            value={username}
-            placeholder="Masukan Username"
-          ></TextInput>
+          <View style={{ width: "15%", alignItems: "center" }}>
+            <Image
+              style={{ width: 24, height: 24 }}
+              source={require("./../assets/icon/person_fill.png")}
+            />
+          </View>
+          <View style={{ width: "85%" }}>
+            <TextInput
+              style={styles.input}
+              placeholderTextColor={grey}
+              onChangeText={setUsername}
+              value={username}
+              placeholder="Masukan Username"
+            />
+          </View>
         </View>
-        <View style={styles.inputContainer}>
-          <Text style={styles.h2}>Password :</Text>
 
-          <TextInput
-            style={styles.input}
-            placeholderTextColor={black}
-            onChangeText={setPassword}
-            value={password}
-            secureTextEntry={true}
-            placeholder="Masukan Password"
-          ></TextInput>
+        <View style={styles.inputContainer}>
+          {/* <Text style={styles.h2}>Username :</Text> */}
+          <View style={{ width: "15%", alignItems: "center" }}>
+            <Image
+              style={{ width: 24, height: 24 }}
+              source={require("./../assets/icon/lock.png")}
+            />
+          </View>
+          <View style={{ width: "85%" }}>
+            <TextInput
+              style={styles.input}
+              placeholderTextColor={black}
+              onChangeText={setPassword}
+              value={password}
+              secureTextEntry={true}
+              placeholder="Masukan Password"
+            />
+          </View>
         </View>
 
         <View style={styles.btn_Container}>
@@ -161,15 +157,13 @@ const LoginScreen = () => {
             <Text style={styles.btnText}>Login</Text>
           </TouchableOpacity>
         </View>
+      </View>
 
-        <View style={styles.inputContainer_2}>
-          <Text style={styles.kamu_nanya}>Belum punya akun ? </Text>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("RegisterScreen")}
-          >
-            <Text style={styles.kamu_nanya_2}>Daftar Akun</Text>
-          </TouchableOpacity>
-        </View>
+      <View style={styles.inputContainer_2}>
+        <Text style={styles.kamu_nanya}>Belum punya akun ? </Text>
+        <TouchableOpacity onPress={() => navigation.navigate("RegisterScreen")}>
+          <Text style={styles.kamu_nanya_2}>Daftar Akun</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -186,29 +180,38 @@ const styles = StyleSheet.create({
   imgContainer: {
     justifyContent: "center",
     alignItems: "center",
-    paddingVertical: "20%",
+    paddingTop: "50%",
   },
   formContainer: {
-    paddingHorizontal: width * 0.055,
+    paddingHorizontal: width * 0.095,
     paddingVertical: 10,
   },
   inputContainer: {
-    marginVertical: 5,
+    marginVertical: 10,
+    flexDirection: "row",
+    // justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#D4D4D4",
+    borderRadius: 10,
   },
   inputContainer_2: {
-    marginVertical: 5,
+    // marginVertical: 5,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+    bottom: 40,
+    position: "absolute",
+    // marginHorizontal: 20,
+    width: width,
   },
   btn_Container: {
     marginVertical: 35,
   },
   h1: {
     fontSize: 16,
-    // fontWeight: 'bold',
+    fontFamily: "Poppins-Regular",
     color: grey,
-    textAlign: "center",
+    // textAlign: "center",
   },
   h2: {
     fontSize: 16,
@@ -234,13 +237,13 @@ const styles = StyleSheet.create({
   input: {
     // borderWidth: 2,
     // borderColor: COLORS.primary,
-    paddingVertical: width * 0.013,
-    paddingHorizontal: width * 0.04,
+    // paddingVertical: width * 0.013,
+    // paddingHorizontal: width * 0.04,
     height: 50,
     borderRadius: 10,
     color: "black",
-
-    backgroundColor: "#D4D4D4",
+    paddingTop: 6,
+    // backgroundColor: "#D4D4D4",
     fontSize: 16,
     fontFamily: "Poppins-Medium",
   },

@@ -19,7 +19,7 @@ const SplashScreen = () => {
 
   useEffect(() => {
     fadeIn();
-    // navig();
+    navig();
   }, []);
 
   const fadeIn = () => {
@@ -30,25 +30,27 @@ const SplashScreen = () => {
     }).start();
   };
 
-  // const navig = async () => {
-  //   const loggedIn = await AsyncStorage.getItem("loggedIn");
-  //   const intro = await AsyncStorage.getItem("intro");
+  const navig = async () => {
+    //   const loggedIn = await AsyncStorage.getItem("loggedIn");
+    //   const intro = await AsyncStorage.getItem("intro");
 
-  //   if (intro == 1 && loggedIn == 1) {
-  //     navigation.navigate("Tab1");
-  //   } else if (intro != 1 && loggedIn != 1) {
-  //     navigation.navigate("IntroScreen");
-  //   } else if (intro == 1 && loggedIn != 1) {
-  //     navigation.navigate("LoginScreen");
-  //   } else {
-  //     navigation.navigate("IntroScreen");
-  //   }
-  // };
-
-  setTimeout(() => {
+    //   if (intro == 1 && loggedIn == 1) {
+    //     navigation.navigate("Tab1");
+    //   } else if (intro != 1 && loggedIn != 1) {
+    //     navigation.navigate("IntroScreen");
+    //   } else if (intro == 1 && loggedIn != 1) {
+    //     navigation.navigate("LoginScreen");
+    //   } else {
     navigation.navigate("IntroScreen");
-  }, 3000);
+    //   }
+  };
 
+  // const cekAsync = async () => {
+  //   const intro = await AsyncStorage.getItem("intro");
+  //   const user = await AsyncStorage.getItem("loggedIn");
+
+  //   console.warn(intro);
+  // };
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={COLORS.primary}></StatusBar>

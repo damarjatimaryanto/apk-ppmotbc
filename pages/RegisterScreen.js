@@ -115,9 +115,17 @@ const RegisterScreen = () => {
   };
 
   const renderItem = ({ item }) => (
-    <View style={{ width: width - 20 }}>
+    <View>
       <TouchableOpacity
-        style={{ width: "100%", height: 40 }}
+        style={{
+          // width: "100%",
+          height: 40,
+          backgroundColor: "white",
+          justifyContent: "center",
+          // alignItems: "center",
+          borderRadius: 10,
+          marginVertical: 4,
+        }}
         onPress={() => {
           setKat(item.id_kategori_detail);
           setKatLabel(item.kategori);
@@ -130,8 +138,11 @@ const RegisterScreen = () => {
             fontFamily: "Poppins-Regular",
             fontSize: 16,
             color: "black",
-            paddingLeft: 20,
+            paddingLeft: 70,
             paddingVertical: 8,
+            borderColor: "grey",
+            borderWidth: 1,
+            borderRadius: 10,
           }}
         >
           {item.kategori}
@@ -139,10 +150,19 @@ const RegisterScreen = () => {
       </TouchableOpacity>
     </View>
   );
+
   const renderFase = ({ item }) => (
-    <View style={{ width: width - 20 }}>
+    <View>
       <TouchableOpacity
-        style={{ width: "100%", height: 40 }}
+        style={{
+          // width: "100%",
+          height: 40,
+          backgroundColor: "white",
+          justifyContent: "center",
+          // alignItems: "center",
+          borderRadius: 10,
+          marginVertical: 4,
+        }}
         onPress={() => {
           setFase(item.id_fase_detail);
           setFaseLabel(item.fase);
@@ -154,8 +174,11 @@ const RegisterScreen = () => {
             fontFamily: "Poppins-Regular",
             fontSize: 16,
             color: "black",
-            paddingLeft: 20,
+            paddingLeft: 70,
             paddingVertical: 8,
+            borderColor: "grey",
+            borderWidth: 1,
+            borderRadius: 10,
           }}
         >
           {item.fase}
@@ -177,35 +200,16 @@ const RegisterScreen = () => {
           <View
             style={{
               flexDirection: "row",
-              backgroundColor: "white",
+              // backgroundColor: "white",
               width: width * 0.6,
               borderRadius: 10,
             }}
           >
-            <View style={{ width: "95%", justifyContent: "center" }}>
-              <FlatList
-                data={dataKat}
-                renderItem={renderItem}
-                keyExtractor={(item) => item.id_kategori_detail}
-              />
-            </View>
-            <View
-              style={{
-                width: "5%",
-                // backgroundColor: 'blue',
-                alignItems: "center",
-              }}
-            >
-              {/* <TouchableOpacity
-                style={{ paddingTop: 5, paddingRight: 5 }}
-                onPress={toggleModal}
-              >
-                <Image
-                  style={{ width: 15, height: 15 }}
-                  source={require("../assets/icon/delete2.png")}
-                />
-              </TouchableOpacity> */}
-            </View>
+            <FlatList
+              data={dataKat}
+              renderItem={renderItem}
+              keyExtractor={(item) => item.id_kategori_detail}
+            />
           </View>
         </View>
       </Modal>
@@ -221,35 +225,16 @@ const RegisterScreen = () => {
           <View
             style={{
               flexDirection: "row",
-              backgroundColor: "white",
+              // backgroundColor: "white",
               width: width * 0.6,
               borderRadius: 10,
             }}
           >
-            <View style={{ width: "95%", justifyContent: "center" }}>
-              <FlatList
-                data={dataFase}
-                renderItem={renderFase}
-                keyExtractor={(item) => item.id_fase_detail}
-              />
-            </View>
-            <View
-              style={{
-                width: "5%",
-                // backgroundColor: 'blue',
-                alignItems: "center",
-              }}
-            >
-              {/* <TouchableOpacity
-                style={{ paddingTop: 5, paddingRight: 5 }}
-                onPress={toggleModal}
-              >
-                <Image
-                  style={{ width: 15, height: 15 }}
-                  source={require("../assets/icon/delete2.png")}
-                />
-              </TouchableOpacity> */}
-            </View>
+            <FlatList
+              data={dataFase}
+              renderItem={renderFase}
+              keyExtractor={(item) => item.id_fase_detail}
+            />
           </View>
         </View>
       </Modal>
@@ -268,101 +253,137 @@ const RegisterScreen = () => {
 
       <View style={styles.formContainer}>
         <View style={styles.inputContainer}>
-          <Text style={styles.h2}>Nama Lengkap :</Text>
-
-          <TextInput
-            style={styles.input}
-            placeholderTextColor={black}
-            onChangeText={setNama}
-            value={nama}
-            placeholder="Masukkan Nama Lengkap Anda"
-          ></TextInput>
-        </View>
-        <View style={styles.inputContainer}>
-          <Text style={styles.h2}>Username :</Text>
-
-          <TextInput
-            style={styles.input}
-            placeholderTextColor={black}
-            onChangeText={setUsername}
-            value={username}
-            placeholder="Masukkan Username"
-          ></TextInput>
+          {/* <Text style={styles.h2}>Username :</Text> */}
+          <View style={{ width: "15%", alignItems: "center" }}>
+            <Image
+              style={{ width: 24, height: 24 }}
+              source={require("./../assets/icon/person_fill.png")}
+            />
+          </View>
+          <View style={{ width: "85%" }}>
+            <TextInput
+              style={styles.input}
+              placeholderTextColor={black}
+              onChangeText={setNama}
+              value={nama}
+              placeholder="Nama Lengkap"
+            />
+          </View>
         </View>
 
         <View style={styles.inputContainer}>
-          <Text style={styles.h2}>Password :</Text>
-
-          <TextInput
-            style={styles.input}
-            secureTextEntry={true}
-            placeholderTextColor={black}
-            onChangeText={setPassword}
-            value={password}
-            placeholder="Masukkan Password"
-          ></TextInput>
+          {/* <Text style={styles.h2}>Username :</Text> */}
+          <View style={{ width: "15%", alignItems: "center" }}>
+            <Image
+              style={{ width: 24, height: 24 }}
+              source={require("./../assets/icon/person_fill.png")}
+            />
+          </View>
+          <View style={{ width: "85%" }}>
+            <TextInput
+              style={styles.input}
+              placeholderTextColor={black}
+              onChangeText={setUsername}
+              value={username}
+              placeholder="Username"
+            />
+          </View>
         </View>
+
         <View style={styles.inputContainer}>
-          <Text style={styles.h2}>Kategori Pasien :</Text>
-          <TouchableOpacity
-            onPress={toggleModal}
-            style={[styles.input, { alignItems: "flex-start" }]}
-          >
-            {kat == null && (
-              <Text
-                style={{
-                  fontSize: 16,
-                  color: "black",
-                  fontFamily: "Poppins-Regular",
-                }}
-              >
-                Pilih Kategori Pasien
-              </Text>
-            )}
-            {kat != null && (
-              <Text
-                style={{
-                  fontSize: 16,
-                  color: "black",
-                  fontFamily: "Poppins-Regular",
-                }}
-              >
-                {katLabel}
-              </Text>
-            )}
-          </TouchableOpacity>
+          {/* <Text style={styles.h2}>Username :</Text> */}
+          <View style={{ width: "15%", alignItems: "center" }}>
+            <Image
+              style={{ width: 24, height: 24 }}
+              source={require("./../assets/icon/lock.png")}
+            />
+          </View>
+          <View style={{ width: "85%" }}>
+            <TextInput
+              style={styles.input}
+              placeholderTextColor={black}
+              onChangeText={setPassword}
+              value={password}
+              placeholder="Password"
+            />
+          </View>
+        </View>
+
+        <View style={styles.inputContainer}>
+          {/* <Text style={styles.h2}>Username :</Text> */}
+          <View style={{ width: "15%", alignItems: "center" }}>
+            <Image
+              style={{ width: 24, height: 24 }}
+              source={require("./../assets/icon/kategori_fill.png")}
+            />
+          </View>
+          <View style={{ width: "85%" }}>
+            <TouchableOpacity onPress={toggleModal} style={[styles.input]}>
+              {kat == null && (
+                <Text
+                  style={{
+                    fontSize: 16,
+                    color: "black",
+                    fontFamily: "Poppins-Regular",
+                    alignItems: "center",
+                  }}
+                >
+                  Pilih Kategori Pasien
+                </Text>
+              )}
+              {kat != null && (
+                <Text
+                  style={{
+                    fontSize: 16,
+                    color: "black",
+                    fontFamily: "Poppins-Regular",
+                  }}
+                >
+                  {katLabel}
+                </Text>
+              )}
+            </TouchableOpacity>
+          </View>
         </View>
 
         {kat == 2 && (
           <View style={styles.inputContainer}>
-            <Text style={styles.h2}>Fase Pengobatan :</Text>
-            <TouchableOpacity
-              onPress={toggleModal_2}
-              style={[styles.input, { alignItems: "flex-start" }]}
-            >
-              {fase == null && (
-                <Text
-                  style={{
-                    fontSize: 16,
-                    color: "black",
-                    fontFamily: "Poppins-Regular",
-                  }}
-                >
-                  Pilih Fase Pengobatan
-                </Text>
-              )}
-              {fase != null && (
-                <Text
-                  style={{
-                    fontSize: 16,
-                    color: "black",
-                    fontFamily: "Poppins-Regular",
-                  }}
-                >
-                  {faseLabel}
-                </Text>
-              )}
-            </TouchableOpacity>
+            {/* <Text style={styles.h2}>Fase Pengobatan :</Text> */}
+            <View style={{ width: "15%", alignItems: "center" }}>
+              <Image
+                style={{ width: 24, height: 24 }}
+                source={require("./../assets/icon/fase_fill.png")}
+              />
+            </View>
+            <View style={{ width: "85%" }}>
+              <TouchableOpacity
+                onPress={toggleModal_2}
+                style={[styles.input, { alignItems: "flex-start" }]}
+              >
+                {fase == null && (
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      color: "black",
+                      fontFamily: "Poppins-Regular",
+                    }}
+                  >
+                    Pilih Fase Pengobatan
+                  </Text>
+                )}
+                {fase != null && (
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      color: "black",
+                      fontFamily: "Poppins-Regular",
+                    }}
+                  >
+                    {faseLabel}
+                  </Text>
+                )}
+              </TouchableOpacity>
+            </View>
           </View>
         )}
 
@@ -376,13 +397,12 @@ const RegisterScreen = () => {
             <Text style={styles.btnText}>Daftar</Text>
           </TouchableOpacity>
         </View>
-
-        <View style={styles.inputContainer_2}>
-          <Text style={styles.kamu_nanya}>Sudah punya akun ? </Text>
-          <TouchableOpacity onPress={() => navigation.navigate("LoginScreen")}>
-            <Text style={styles.kamu_nanya_2}>Masuk</Text>
-          </TouchableOpacity>
-        </View>
+      </View>
+      <View style={styles.inputContainer_2}>
+        <Text style={styles.kamu_nanya}>Sudah punya akun ? </Text>
+        <TouchableOpacity onPress={() => navigation.navigate("LoginScreen")}>
+          <Text style={styles.kamu_nanya_2}>Masuk</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -399,14 +419,19 @@ const styles = StyleSheet.create({
   imgContainer: {
     justifyContent: "center",
     alignItems: "center",
-    paddingVertical: "10%",
+    paddingTop: "40%",
   },
   formContainer: {
-    paddingHorizontal: width * 0.055,
+    paddingHorizontal: width * 0.095,
     paddingVertical: 10,
   },
   inputContainer: {
-    marginVertical: 5,
+    marginVertical: 10,
+    flexDirection: "row",
+    // justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#D4D4D4",
+    borderRadius: 10,
   },
   btn_Container: {
     marginVertical: 35,
@@ -425,15 +450,15 @@ const styles = StyleSheet.create({
   input: {
     // borderWidth: 2,
     // borderColor: COLORS.primary,
-    paddingVertical: width * 0.013,
-    paddingHorizontal: width * 0.04,
+    // paddingVertical: width * 0.013,
+    // paddingHorizontal: width * 0.04,
     height: 50,
     borderRadius: 10,
     color: "black",
-    backgroundColor: "#D4D4D4",
+    paddingTop: 6,
+    // backgroundColor: "#D4D4D4",
     fontSize: 16,
     fontFamily: "Poppins-Regular",
-    alignItems: "center",
     justifyContent: "center",
 
     // shadowColor: "#000000",
@@ -539,10 +564,13 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   inputContainer_2: {
-    marginVertical: 5,
+    // marginVertical: 5,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+    bottom: 30,
+    position: "absolute",
+    width: width,
   },
   kamu_nanya: {
     fontSize: 16,
