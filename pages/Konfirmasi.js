@@ -17,7 +17,7 @@ import {useNavigation} from '@react-navigation/native';
 const actions = [
   {
     text: 'Buat Alarm',
-    icon: require('./../assets/img/icon/alarm.png'),
+    icon: require('../assets/icon/alarm.png'),
     name: 'Buat Alarm',
     position: 2,
   },

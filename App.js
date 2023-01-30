@@ -25,7 +25,7 @@ import AlarmScreen from "./pages/AlarmSreen";
 import RegisterScreen from "./pages/RegisterScreen";
 // import Akun from './pages/Akun';
 import AkunScreen from "./pages/AkunScreen";
-// import Konfirmasi from './pages/Konfirmasi';
+import Konfirmasi from './pages/Konfirmasi';
 
 const COLORS = { primary: "#225AEB", white: "#FFFFFF" };
 const Tab = createBottomTabNavigator();
@@ -96,8 +96,8 @@ const App = () => {
           component={RegisterScreen}
           options={{ headerShown: false }}
         />
-        {/* <Stack.Screen name="Konfirmasi" component={Konfirmasi} />
-        <Stack.Screen
+        <Stack.Screen name="Konfirmasi" component={Konfirmasi} />
+        {/* <Stack.Screen
           name="BuatalarmScreen"
           component={BuatalarmScreen}
           options={{

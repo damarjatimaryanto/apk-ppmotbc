@@ -16,6 +16,7 @@ import {
   AppRegistry,
   Dimensions,
   BackHandler,
+  Linking
 } from "react-native";
 import { useFonts } from "expo-font";
 import React, { useRef, useEffect, useState, useCallback } from "react";
@@ -27,6 +28,8 @@ import moment from "moment";
 import Modal from "react-native-modal";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
+import * as BackgroundFetch from 'expo-background-fetch';
+import * as TaskManager from 'expo-task-manager';
 
 const countries = ["Fase Intensif (Ke 1)", "Fase Lanjutan ( Ke 2)"];
 const kategori = ["Pasien Baru", "Pasien Lama"];
@@ -167,11 +170,6 @@ const AlarmScreen = () => {
   };
 
   // notif
-  const [expoPushToken, setExpoPushToken] = useState("");
-  const [notification, setNotification] = useState(false);
-  const notificationListener = useRef();
-  const responseListener = useRef();
-
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
       shouldShowAlert: true,
@@ -180,83 +178,50 @@ const AlarmScreen = () => {
     }),
   });
 
-  async function sendPushNotification(expoPushToken) {
-    const message = {
-      to: expoPushToken,
-      sound: "default",
-      title: "Original Title",
-      body: "And here is the body!",
-      data: { someData: "goes here" },
-    };
-    await fetch("https://exp.host/--/api/v2/push/send", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Accept-encoding": "gzip, deflate",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(message),
+  async function schedulePushNotification() {
+    await Notifications.setNotificationChannelAsync('Minum Obat', {
+      name: 'Notifikasi Pengingat Minum Obat',
+      importance: Notifications.AndroidImportance.HIGH,
+      sound: 'sound.wav', // Provide ONLY the base filename
     });
-  }
-  async function registerForPushNotificationsAsync() {
-    let token;
-    if (Device.isDevice) {
-      const { status: existingStatus } =
-        await Notifications.getPermissionsAsync();
-      let finalStatus = existingStatus;
-      if (existingStatus !== "granted") {
-        const { status } = await Notifications.requestPermissionsAsync();
-        finalStatus = status;
-      }
-      if (finalStatus !== "granted") {
-        alert("Failed to get push token for push notification!");
-        return;
-      }
-      token = (await Notifications.getExpoPushTokenAsync()).data;
-      console.log(token);
-    } else {
-      alert("Must use physical device for Push Notifications");
-    }
 
-    if (Platform.OS === "android") {
-      Notifications.setNotificationChannelAsync("default", {
-        name: "default",
-        importance: Notifications.AndroidImportance.MAX,
-        vibrationPattern: [0, 250, 250, 250],
-        lightColor: "#FF231F7C",
-      });
-    }
 
-    return token;
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "Minum obat woi ngentot",
+        body: 'Daftar obat : zolam merlo zipras eximer',
+        data: { path: 'Konfirmasi' },
+        sound: 'sound.wav'
+      },
+      trigger: {
+        seconds: 5,
+        repeats: true,
+        channelId: 'ppmo-tbc-'
+      },
+    });
+
   }
 
-  const notif = async () => {
-    registerForPushNotificationsAsync().then((token) =>
-      setExpoPushToken(token)
-    );
-
-    notificationListener.current =
-      Notifications.addNotificationReceivedListener((notification) => {
-        setNotification(notification);
-      });
-
-    responseListener.current =
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log(response);
-      });
-
-    return () => {
-      Notifications.removeNotificationSubscription(
-        notificationListener.current
-      );
-      Notifications.removeNotificationSubscription(responseListener.current);
-    };
-  };
-
+  const notificationListener = useRef();
+  const responseListener = useRef();
+  const lastNotificationResponse = Notifications.useLastNotificationResponse();
   useEffect(() => {
     getAlarm();
-    notif();
-  }, []);
+
+    if (lastNotificationResponse) {
+      //console.log(lastNotificationResponse);
+
+      //get the route
+      const route = JSON.stringify(
+        lastNotificationResponse.notification.request.content.data.path
+      );
+
+      navigation.navigate('Konfirmasi');
+      // console.log(route);
+      // //use some function to return the correct screen by route
+      // getFullPath(JSON.parse(route));
+    }
+  }, [lastNotificationResponse]);
 
   return (
     <View style={[styles.container, { padding: 15 }]}>
@@ -493,6 +458,15 @@ const AlarmScreen = () => {
           </View>
         </View>
       )}
+
+      <TouchableOpacity
+        style={{ justifyContent: 'center', alignItems: 'center', width: 300, marginTop: 50, height: 50, backgroundColor: COLORS.primary }}
+        onPress={async () => {
+          await schedulePushNotification();
+        }}>
+        <Text style={{ color: 'white' }}>Notifikasi</Text>
+      </TouchableOpacity>
+
     </View>
   );
 };
