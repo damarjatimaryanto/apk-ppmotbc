@@ -25,26 +25,11 @@ import AlarmScreen from "./pages/AlarmSreen";
 import RegisterScreen from "./pages/RegisterScreen";
 // import Akun from './pages/Akun';
 import AkunScreen from "./pages/AkunScreen";
-import Konfirmasi from './pages/Konfirmasi';
+import Konfirmasi from "./pages/Konfirmasi";
 
 const COLORS = { primary: "#225AEB", white: "#FFFFFF" };
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
-
-// function TrackScreen() {
-//   return (
-//     <View
-//       style={{
-//         flex: 1,
-//         justifyContent: "center",
-//         alignItems: "center",
-//         backgroundColor: "purple",
-//       }}
-//     >
-//       <Text>Track Page</Text>
-//     </View>
-//   );
-// }
 
 const App = () => {
   const [fontsLoaded] = useFonts({

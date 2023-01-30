@@ -216,7 +216,7 @@ const AkunScreen = () => {
             </TouchableOpacity>
           </View>
 
-          {/* <View style={styles.box}>
+          <View style={styles.box}>
             <TouchableOpacity
               onPress={() => navigation.navigate("Konfirmasi")}
               style={{ flexDirection: "row", width: "100%" }}
@@ -234,7 +234,7 @@ const AkunScreen = () => {
                 <Text style={styles.ket_isi}></Text>
               </View>
             </TouchableOpacity>
-          </View> */}
+          </View>
         </View>
       )}
     </View>

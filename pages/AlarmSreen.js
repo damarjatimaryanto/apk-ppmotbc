@@ -16,7 +16,7 @@ import {
   AppRegistry,
   Dimensions,
   BackHandler,
-  Linking
+  Linking,
 } from "react-native";
 import { useFonts } from "expo-font";
 import React, { useRef, useEffect, useState, useCallback } from "react";
@@ -28,8 +28,8 @@ import moment from "moment";
 import Modal from "react-native-modal";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
-import * as BackgroundFetch from 'expo-background-fetch';
-import * as TaskManager from 'expo-task-manager';
+import * as BackgroundFetch from "expo-background-fetch";
+import * as TaskManager from "expo-task-manager";
 
 const countries = ["Fase Intensif (Ke 1)", "Fase Lanjutan ( Ke 2)"];
 const kategori = ["Pasien Baru", "Pasien Lama"];
@@ -179,27 +179,27 @@ const AlarmScreen = () => {
   });
 
   async function schedulePushNotification() {
-    await Notifications.setNotificationChannelAsync('Minum Obat', {
-      name: 'Notifikasi Pengingat Minum Obat',
+    await Notifications.setNotificationChannelAsync("Minum Obat", {
+      name: "Notifikasi Pengingat Minum Obat",
       importance: Notifications.AndroidImportance.HIGH,
-      sound: 'sound.wav', // Provide ONLY the base filename
+      sound: "sound.wav", // Provide ONLY the base filename
     });
-
 
     await Notifications.scheduleNotificationAsync({
       content: {
         title: "Minum obat woi ngentot",
-        body: 'Daftar obat : zolam merlo zipras eximer',
-        data: { path: 'Konfirmasi' },
-        sound: 'sound.wav'
+        body: "Daftar obat : zolam merlo zipras eximer",
+        data: { path: "Konfirmasi" },
+        shouldPlaySound: true,
+        sound: "default",
       },
       trigger: {
-        seconds: 5,
+        hour: 21,
+        minute: 48,
         repeats: true,
-        channelId: 'ppmo-tbc-'
+        channelId: "ppmo-tbc-",
       },
     });
-
   }
 
   const notificationListener = useRef();
@@ -216,7 +216,7 @@ const AlarmScreen = () => {
         lastNotificationResponse.notification.request.content.data.path
       );
 
-      navigation.navigate('Konfirmasi');
+      navigation.navigate("Konfirmasi");
       // console.log(route);
       // //use some function to return the correct screen by route
       // getFullPath(JSON.parse(route));
@@ -416,57 +416,65 @@ const AlarmScreen = () => {
 
       {/* jika loading selesai dan  ada data alarm */}
       {loading != true && data != null && (
-        <View>
-          <View style={styles.box}>
-            <View style={styles.jam}>
-              <Text
-                style={{
-                  fontFamily: "Poppins-SemiBold",
-                  fontSize: 30,
-                  color: "white",
-                }}
-              >
-                {data[0].jam}
-              </Text>
-            </View>
-            <View style={styles.keterangan}>
-              <Text
-                style={{
-                  fontFamily: "Poppins-Bold",
-                  fontSize: 20,
-                  color: "white",
-                }}
-              >
-                {userData[0].kategori}
-              </Text>
-              <Text
-                style={{
-                  fontFamily: "Poppins-Regular",
-                  fontSize: 16,
-                  color: "white",
-                }}
-              >
-                {userData[0].fase}
-              </Text>
-            </View>
-            <View style={styles.gmbar_container}>
-              <Image
-                style={{ width: 50, height: 50 }}
-                source={require("../assets/icon/bell_check.png")}
-              />
-            </View>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("Konfirmasi")}
+          style={styles.box}
+        >
+          <View style={styles.jam}>
+            <Text
+              style={{
+                fontFamily: "Poppins-SemiBold",
+                fontSize: 30,
+                color: "white",
+              }}
+            >
+              {data[0].jam}
+            </Text>
           </View>
-        </View>
+          <View style={styles.keterangan}>
+            <Text
+              style={{
+                fontFamily: "Poppins-Bold",
+                fontSize: 20,
+                color: "white",
+              }}
+            >
+              {userData[0].kategori}
+            </Text>
+            <Text
+              style={{
+                fontFamily: "Poppins-Regular",
+                fontSize: 16,
+                color: "white",
+              }}
+            >
+              {userData[0].fase}
+            </Text>
+          </View>
+          <View style={styles.gmbar_container}>
+            <Image
+              style={{ width: 50, height: 50 }}
+              source={require("../assets/icon/bell_check.png")}
+            />
+          </View>
+        </TouchableOpacity>
       )}
 
       <TouchableOpacity
-        style={{ justifyContent: 'center', alignItems: 'center', width: 300, marginTop: 50, height: 50, backgroundColor: COLORS.primary }}
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          width: 300,
+          marginTop: 50,
+          height: 50,
+          backgroundColor: COLORS.primary,
+        }}
         onPress={async () => {
           await schedulePushNotification();
-        }}>
-        <Text style={{ color: 'white' }}>Notifikasi</Text>
+        }}
+      >
+        <Text style={{ color: "white" }}>Notifikasi</Text>
       </TouchableOpacity>
-
     </View>
   );
 };
