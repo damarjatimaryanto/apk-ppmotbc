@@ -31,18 +31,18 @@ const SplashScreen = () => {
   };
 
   const navig = async () => {
-      const loggedIn = await AsyncStorage.getItem("loggedIn");
-      const intro = await AsyncStorage.getItem("intro");
+    const loggedIn = await AsyncStorage.getItem("loggedIn");
+    const intro = await AsyncStorage.getItem("intro");
 
-      if (intro == 1 && loggedIn == 1) {
-        navigation.navigate("Tab1");
-      } else if (intro != 1 && loggedIn != 1) {
-        navigation.navigate("IntroScreen");
-      } else if (intro == 1 && loggedIn != 1) {
-        navigation.navigate("LoginScreen");
-      } else {
+    // if (intro == 1 && loggedIn == 1) {
+    //   navigation.navigate("Tab1");
+    // } else if (intro != 1 && loggedIn != 1) {
     navigation.navigate("IntroScreen");
-      }
+    // } else if (intro == 1 && loggedIn != 1) {
+    //   navigation.navigate("LoginScreen");
+    // } else {
+    //   navigation.navigate("IntroScreen");
+    // }
   };
 
   // const cekAsync = async () => {

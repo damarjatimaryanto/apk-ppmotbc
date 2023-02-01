@@ -36,7 +36,7 @@ const kategori = ["Pasien Baru", "Pasien Lama"];
 
 const width = Dimensions.get("screen").width;
 const height = Dimensions.get("screen").height;
-const COLORS = { primary: "#1E319D", white: "#FFFFFF" };
+const COLORS = { primary: "#1E319D", white: "#FFFFFF", abu1: "#F6F6F6" };
 const blue = "#0D4AA7";
 const black = "#3d3d3d";
 const red = "#C74B4C";
@@ -260,25 +260,94 @@ const AlarmScreen = () => {
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
+            <View
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                // backgroundColor: COLORS.primary,
+                // borderRadius: 70,
+                // width: 100,
+                // height: 300,
+              }}
+            >
+              <View
+                style={{
+                  width: 140,
+                  height: 140,
+                  tintColor: COLORS.primary,
+                  backgroundColor: "white",
+                  borderRadius: 90,
+                  borderWidth: 2,
+                  borderColor: COLORS.white,
+                  position: "absolute",
+                  zIndex: 1,
+                  bottom: 1,
+                  padding: 4,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Image
+                  style={{
+                    width: "95%",
+                    height: "95%",
+                    tintColor: COLORS.primary,
+                    // backgroundColor: "white",
+                    // borderRadius: 60,
+                    // borderWidth: 2,
+                    // borderColor: COLORS.white,
+                    // position: "absolute",
+                    // zIndex: 1,
+                    // bottom: 9,
+                    // padding: 4,
+                  }}
+                  source={require("./../assets/icon/jam.png")}
+                />
+              </View>
+
+              {/* <Image
+                style={{
+                  width: 100,
+                  height: 100,
+                  tintColor: COLORS.primary,
+                  backgroundColor: "white",
+                  borderRadius: 60,
+                  borderWidth: 2,
+                  borderColor: COLORS.white,
+                  position: "absolute",
+                  zIndex: 1,
+                  bottom: 9,
+                  padding: 4,
+                }}
+                source={require("./../assets/icon/jam.png")}
+              /> */}
+            </View>
+
+            <Text style={{ fontFamily: "Poppins-Medium", fontSize: 16 }}>
+              {" "}
+              Atur waktu alarm anda sendiri.
+            </Text>
+
             <View style={styles.inputhorizontal}>
               <Text
                 style={{
-                  color: "grey",
-                  fontFamily: "Poppins-Regular",
+                  color: "black",
+                  fontFamily: "Poppins-Medium",
                   fontSize: 16,
                 }}
               >
-                Jam
+                Jam :
               </Text>
               <TouchableOpacity
                 onPress={showDatePicker}
-                style={[styles.input_horizontal, { alignItems: "flex-start" }]}
+                style={[styles.input_horizontal, { alignItems: "center" }]}
               >
                 <Text
                   style={{
-                    color: "grey",
-                    fontFamily: "Poppins-Regular",
+                    color: "black",
+                    fontFamily: "Poppins-Medium",
                     fontSize: 16,
+                    textAlign: "center",
                   }}
                 >
                   {jam}
@@ -288,17 +357,22 @@ const AlarmScreen = () => {
             <View style={styles.inputhorizontal}>
               <Text
                 style={{
-                  color: "grey",
-                  fontFamily: "Poppins-Regular",
+                  color: "black",
+                  fontFamily: "Poppins-Medium",
                   fontSize: 16,
+                  textAlign: "center",
                 }}
               >
-                Hari Ke-
+                Hari Ke- :
               </Text>
               <TextInput
+                textAlign="center"
                 style={[
                   styles.input_horizontal,
-                  { opacity: userData[0].id_kat == 1 ? 0.6 : 1 },
+                  {
+                    opacity: userData[0].id_kat == 1 ? 0.6 : 1,
+                    fontFamily: "Poppins-Medium",
+                  },
                 ]}
                 placeholderTextColor={grey}
                 keyboardType="number-pad"
@@ -368,26 +442,36 @@ const AlarmScreen = () => {
             style={{ width: 200, height: 157 }}
             source={require("../assets/icon/illus_alarm.png")}
           />
-          <Text
+          <View
             style={{
-              color: COLORS.primary,
-              fontSize: 20,
-              fontFamily: "Poppins-Regular",
+              justifyContent: "center",
+              alignItems: "center",
+              height: 200,
+              width: "90%",
+              paddingHorizontal: 10,
             }}
           >
-            Ayo Mulai!
-          </Text>
-          <Text
-            style={{
-              color: "grey",
-              fontSize: 16,
-              textAlign: "center",
-              fontFamily: "Poppins-LightItalic",
-            }}
-          >
-            Mulai untuk membuat notifikasi alarm untuk memengingatkan anda
-            meminum obat
-          </Text>
+            <Text
+              style={{
+                color: COLORS.primary,
+                fontSize: 18,
+                fontFamily: "Poppins-Medium",
+              }}
+            >
+              Melihat progress anda dengan mudah
+            </Text>
+            <Text
+              style={{
+                color: "grey",
+                fontSize: 14,
+                textAlign: "center",
+                fontFamily: "Poppins-LightItalic",
+              }}
+            >
+              Track record harian anda dalam kepatuhan meminum obat akan muncul
+              disini.
+            </Text>
+          </View>
           <TouchableOpacity
             style={[styles.floatingbutton, { marginTop: 20 }]}
             onPress={toggleModal}
@@ -402,7 +486,7 @@ const AlarmScreen = () => {
               <Text
                 style={{
                   fontSize: 16,
-                  color: "white",
+                  color: COLORS.white,
                   margin: 10,
                   fontFamily: "Poppins-Regular",
                 }}
@@ -484,7 +568,7 @@ export default AlarmScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#EAEAEA",
+    backgroundColor: COLORS.abu1,
     alignItems: "center",
   },
   btn: {
@@ -506,9 +590,19 @@ const styles = StyleSheet.create({
     // position: 'absolute',
     // bottom: 90,
     // right: 20,
-    width: 200,
+    width: 300,
     backgroundColor: COLORS.primary,
     borderRadius: 10,
+    borderWidth: 1,
+    borderColor: COLORS.primary,
+    shadowColor: COLORS.primary,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
   box: {
     backgroundColor: COLORS.primary,
@@ -554,10 +648,12 @@ const styles = StyleSheet.create({
   },
   modalView: {
     margin: 20,
+    paddingTop: 85,
     backgroundColor: "white",
     borderRadius: 10,
     width: "90%",
     marginVertical: 40,
+    alignItems: "center",
     justifyContent: "center",
     padding: 10,
     shadowColor: "#000",
@@ -578,8 +674,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    width: "100%",
+    width: "80%",
     marginVertical: 10,
+    // backgroundColor: "yellow",
   },
 
   btn_Container: {
@@ -591,7 +688,7 @@ const styles = StyleSheet.create({
     borderColor: COLORS.primary,
     paddingVertical: width * 0.013,
     paddingHorizontal: width * 0.04,
-    width: "82%",
+    width: "47%",
     height: 45,
     borderRadius: 5,
     color: "grey",

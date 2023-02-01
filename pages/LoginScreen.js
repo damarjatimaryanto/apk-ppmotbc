@@ -15,14 +15,17 @@ import React, { useRef, useEffect, useState, useCallback } from "react";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFonts } from "expo-font";
+import { StatusBar } from "react-native";
 
 const countries = ["Fase Pertama (Ke 1)", "Fase Kedua ( Ke 2)"];
 const kategori = ["Anak-anak", "Remaja", "Dewasa"];
 
-const blue = "#0D4AA7";
+const blue_icon = "#9695C0";
 const black = "#3d3d3d";
-const red = "#C74B4C";
+const blue_input = "#F2F3FC";
 const grey = "#5C5F68";
+const grey_input = "#D4D4D4";
+const grey_label = "#DAD9DC";
 
 const width = Dimensions.get("screen").width;
 const height = Dimensions.get("screen").height;
@@ -93,6 +96,32 @@ const LoginScreen = () => {
   };
   return (
     <View style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor={COLORS.white} />
+
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={loading}
+        onRequestClose={() => {
+          Alert.alert("Modal has been closed.");
+          setModal(false);
+        }}
+      >
+        <View
+          style={{
+            position: "absolute",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100%",
+            width: "100%",
+
+            // backgroundColor: grey,
+          }}
+        >
+          <ActivityIndicator size="large" color={COLORS.primary} />
+        </View>
+      </Modal>
+
       <View style={styles.imgContainer}>
         <Text
           style={{
@@ -109,17 +138,18 @@ const LoginScreen = () => {
         <Text style={styles.h1}>
           Silakan login dengan username dan password yang anda miliki
         </Text>
+        <Text style={styles.h2}>Username</Text>
         <View style={styles.inputContainer}>
           <View style={{ width: "15%", alignItems: "center" }}>
             <Image
-              style={{ width: 24, height: 24 }}
+              style={{ width: 24, height: 24, tintColor: blue_icon }}
               source={require("./../assets/icon/person_fill.png")}
             />
           </View>
           <View style={{ width: "85%" }}>
             <TextInput
               style={styles.input}
-              placeholderTextColor={grey}
+              placeholderTextColor={blue_icon}
               onChangeText={setUsername}
               value={username}
               placeholder="Masukan Username"
@@ -127,18 +157,19 @@ const LoginScreen = () => {
           </View>
         </View>
 
+        <Text style={styles.h2}>Password</Text>
+
         <View style={styles.inputContainer}>
-          {/* <Text style={styles.h2}>Username :</Text> */}
           <View style={{ width: "15%", alignItems: "center" }}>
             <Image
-              style={{ width: 24, height: 24 }}
+              style={{ width: 24, height: 24, tintColor: blue_icon }}
               source={require("./../assets/icon/lock.png")}
             />
           </View>
           <View style={{ width: "85%" }}>
             <TextInput
               style={styles.input}
-              placeholderTextColor={black}
+              placeholderTextColor={blue_icon}
               onChangeText={setPassword}
               value={password}
               secureTextEntry={true}
@@ -157,13 +188,14 @@ const LoginScreen = () => {
             <Text style={styles.btnText}>Login</Text>
           </TouchableOpacity>
         </View>
-      </View>
-
-      <View style={styles.inputContainer_2}>
-        <Text style={styles.kamu_nanya}>Belum punya akun ? </Text>
-        <TouchableOpacity onPress={() => navigation.navigate("RegisterScreen")}>
-          <Text style={styles.kamu_nanya_2}>Daftar Akun</Text>
-        </TouchableOpacity>
+        <View style={styles.inputContainer_2}>
+          <Text style={styles.kamu_nanya}>Belum punya akun ? </Text>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("RegisterScreen")}
+          >
+            <Text style={styles.kamu_nanya_2}>Register</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -178,45 +210,48 @@ const styles = StyleSheet.create({
   },
 
   imgContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-    paddingTop: "50%",
+    paddingHorizontal: width * 0.095,
+    // justifyContent: "center",
+    // alignItems: "center",
+    paddingTop: "30%",
+    // height: "30%",
   },
   formContainer: {
     paddingHorizontal: width * 0.095,
     paddingVertical: 10,
   },
   inputContainer: {
-    marginVertical: 10,
+    marginBottom: 15,
     flexDirection: "row",
     // justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#D4D4D4",
-    borderRadius: 10,
+    backgroundColor: "#F2F3FC",
+    borderRadius: 5,
   },
   inputContainer_2: {
-    // marginVertical: 5,
+    marginVertical: 50,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     bottom: 40,
-    position: "absolute",
+    // position: "absolute",
     // marginHorizontal: 20,
-    width: width,
+    // width: width,
   },
   btn_Container: {
     marginVertical: 35,
   },
   h1: {
-    fontSize: 16,
+    fontSize: 15,
     fontFamily: "Poppins-Regular",
     color: grey,
     // textAlign: "center",
+    marginBottom: 15,
   },
   h2: {
-    fontSize: 16,
-    color: "black",
-    fontFamily: "Poppins-SemiBold",
+    fontSize: 14,
+    color: grey,
+    fontFamily: "Poppins-Medium",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -245,7 +280,7 @@ const styles = StyleSheet.create({
     paddingTop: 6,
     // backgroundColor: "#D4D4D4",
     fontSize: 16,
-    fontFamily: "Poppins-Medium",
+    fontFamily: "Poppins-Regular",
   },
   inputselect: {
     borderWidth: 2,

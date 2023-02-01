@@ -67,6 +67,7 @@ const Konfirmasi = () => {
 
   return (
     <View style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor={COLORS.white} />
       <View style={styles.box}>
         <View style={{ flexDirection: "row", width: "100%" }}>
           <View style={styles.judul_style}>
@@ -202,7 +203,7 @@ const styles = StyleSheet.create({
     // justifyContent: "center",
   },
   judul_isi: {
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: "Poppins-Regular",
     color: "grey",
   },
@@ -213,7 +214,7 @@ const styles = StyleSheet.create({
     paddingRight: 5,
   },
   ket_isi: {
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: "Poppins-Regular",
     textAlign: "left",
     color: COLORS.primary,
