@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import React, { useRef, useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const actions = [
   {
@@ -29,7 +30,17 @@ const height = Dimensions.get("screen").height;
 const Konfirmasi = () => {
   const navigation = useNavigation();
   const [shouldShow, setShouldShow] = useState(true);
-
+  const [loading, setLoading] = useState(true);
+  const [obat, setObat] = useState([
+    {
+      id_obat_detail: null,
+      id_jenis_obat_detail: null,
+      obat: null,
+      fase: null,
+      jenis_obat: null,
+      waktu_minum: null,
+    }
+  ]);
   const [userSession, setUserSession] = useState([
     {
       uid: null,
@@ -44,6 +55,7 @@ const Konfirmasi = () => {
   const getSession = async () => {
     const uid = await AsyncStorage.getItem("uid");
     const fase = await AsyncStorage.getItem("fase");
+    const id_fase = await AsyncStorage.getItem("id_fase");
     const id_kat = await AsyncStorage.getItem("id_kat");
     const kategori = await AsyncStorage.getItem("kategori");
     const nama = await AsyncStorage.getItem("nama");
@@ -53,6 +65,7 @@ const Konfirmasi = () => {
     session.push({
       uid: uid,
       fase: fase,
+      id_fase: id_fase,
       id_kat: id_kat,
       kategori: kategori,
       nama: nama,
@@ -65,16 +78,41 @@ const Konfirmasi = () => {
     }, 3000);
   };
 
+  const getObat = () => {
+    const id_fase = userSession[0].id_fase;
+    fetch('https://afanalfiandi.com/ppmo/api/api.php?op=getObat', {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: id_fase,
+      }),
+    }).then((res) => res.json())
+      .then((resp) => {
+        setObat(resp);
+
+        console.log(resp);
+      }).catch((e) => {
+        console.log(e);
+      })
+  }
+
+  useEffect(() => {
+    getSession();
+    getObat();
+  }, []);
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.white} />
       <View style={styles.box}>
         <View style={{ flexDirection: "row", width: "100%" }}>
           <View style={styles.judul_style}>
-            <Text style={styles.judul_isi}>Kategori : </Text>
+            <Text style={styles.judul_isi}>Kategori</Text>
           </View>
           <View style={styles.ket_style}>
-            <Text style={styles.ket_isi}>Pasien Baru</Text>
+            <Text style={styles.ket_isi}>: {userSession[0].kategori}</Text>
           </View>
         </View>
       </View>
@@ -82,10 +120,10 @@ const Konfirmasi = () => {
       <View style={styles.box}>
         <View style={{ flexDirection: "row", width: "100%" }}>
           <View style={styles.judul_style}>
-            <Text style={styles.judul_isi}>Fase : </Text>
+            <Text style={styles.judul_isi}>Fase </Text>
           </View>
           <View style={styles.ket_style}>
-            <Text style={styles.ket_isi}>Fase Intensif</Text>
+            <Text style={styles.ket_isi}>: {userSession[0].fase}</Text>
           </View>
         </View>
       </View>
@@ -93,14 +131,35 @@ const Konfirmasi = () => {
       <View style={styles.box_2}>
         <View style={{ flexDirection: "row", width: "100%" }}>
           <View style={styles.judul_style}>
-            <Text style={styles.judul_isi}>Jenis Obat : </Text>
+            <Text style={styles.judul_isi}>Obat</Text>
           </View>
           <View style={styles.ket_style}>
-            <Text style={styles.ket_isi}>Heroin</Text>
-            <Text style={styles.ket_isi}>Paracetamol</Text>
-            <Text style={styles.ket_isi}>Morfin</Text>
-            <Text style={styles.ket_isi}>Dekstro</Text>
-            <Text style={styles.ket_isi}>Bodrex</Text>
+            {obat.map((item) => (
+              <View key={item.id_obat_detail}>
+                <Text style={styles.ket_isi}>: {item.obat}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+      </View>
+
+      <View style={styles.box}>
+        <View style={{ flexDirection: "row", width: "100%" }}>
+          <View style={styles.judul_style}>
+            <Text style={styles.judul_isi}>Jenis Obat</Text>
+          </View>
+          <View style={styles.ket_style}>
+            <Text style={styles.ket_isi}>: {obat[0].jenis_obat}</Text>
+          </View>
+        </View>
+      </View>
+      <View style={styles.box}>
+        <View style={{ flexDirection: "row", width: "100%" }}>
+          <View style={styles.judul_style}>
+            <Text style={styles.judul_isi}>Waktu Minum Obat</Text>
+          </View>
+          <View style={styles.ket_style}>
+            <Text style={[styles.ket_isi, {textTransform:'capitalize'}]}>: {obat[0].waktu_minum}</Text>
           </View>
         </View>
       </View>
@@ -174,19 +233,15 @@ const styles = StyleSheet.create({
     width: width * 0.95,
     paddingHorizontal: "2%",
     marginTop: 2,
-    height: 130,
-    paddingTop: 10,
-    // justifyContent: "center",
+    padding: 10,
     alignItems: "center",
     shadowColor: "black",
-    // borderRadius: 5,
     shadowOffset: {
       width: 0,
       height: 4,
     },
     shadowOpacity: 0.3,
     shadowRadius: 0.4,
-
     elevation: 5,
   },
   box_image: {
@@ -209,7 +264,6 @@ const styles = StyleSheet.create({
   },
   ket_style: {
     // backgroundColor: 'blue',
-    width: "50%",
     justifyContent: "center",
     paddingRight: 5,
   },

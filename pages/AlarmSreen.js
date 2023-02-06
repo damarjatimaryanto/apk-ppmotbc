@@ -24,12 +24,9 @@ import { useNavigation } from "@react-navigation/native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Constants from "expo-constants";
-import moment from "moment";
+import moment, { min } from "moment";
 import Modal from "react-native-modal";
-import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
-import * as BackgroundFetch from "expo-background-fetch";
-import * as TaskManager from "expo-task-manager";
 
 const countries = ["Fase Intensif (Ke 1)", "Fase Lanjutan ( Ke 2)"];
 const kategori = ["Pasien Baru", "Pasien Lama"];
@@ -52,6 +49,7 @@ const AlarmScreen = () => {
 
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState(null);
+
   const [userData, setUserData] = useState([
     {
       fase: "",
@@ -60,8 +58,10 @@ const AlarmScreen = () => {
       id_fase: "",
     },
   ]);
-  const [hari, setHari] = useState();
+  const [hari, setHari] = useState('1');
   const [jam, setJam] = useState("00:00");
+  const [hours, setHours] = useState();
+  const [minutes, setMinutes] = useState();
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
@@ -77,7 +77,11 @@ const AlarmScreen = () => {
 
   const handleConfirm = (date) => {
     const time = moment(date).format("HH:mm");
+    const hrs = moment(date).format("HH");
+    const min = moment(date).format("mm");
     setJam(time);
+    setHours(hrs);
+    setMinutes(min);
 
     hideDatePicker();
   };
@@ -138,6 +142,8 @@ const AlarmScreen = () => {
   };
   const onSubmit = async () => {
     const id_user = await AsyncStorage.getItem("uid");
+    const hrs = parseFloat(hours);
+    const min = parseFloat(minutes);
 
     fetch("https://afanalfiandi.com/ppmo/api/api.php?op=insAlarm", {
       method: "POST",
@@ -154,11 +160,12 @@ const AlarmScreen = () => {
       .then((res) => res.json())
       .then((resp) => {
         setLoading(true);
-        setTimeout(() => {
+        setTimeout(async () => {
           if (resp == 1) {
             Alert.alert("", "Alarm berhasil ditambahkan");
             setLoading(false);
             getAlarm();
+            schedulePushNotification(hrs, min);
             setModalVisible(false);
           } else {
             Alert.alert("", "Alarm gagal ditambahkan");
@@ -169,6 +176,7 @@ const AlarmScreen = () => {
       });
   };
 
+  
   // notif
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
@@ -178,7 +186,7 @@ const AlarmScreen = () => {
     }),
   });
 
-  async function schedulePushNotification() {
+  async function schedulePushNotification(h, m) {
     await Notifications.setNotificationChannelAsync("Minum Obat", {
       name: "Notifikasi Pengingat Minum Obat",
       importance: Notifications.AndroidImportance.HIGH,
@@ -194,8 +202,8 @@ const AlarmScreen = () => {
         sound: "default",
       },
       trigger: {
-        hour: 21,
-        minute: 48,
+        hour: h,
+        minute: m,
         repeats: true,
         channelId: "ppmo-tbc-",
       },
@@ -207,19 +215,13 @@ const AlarmScreen = () => {
   const lastNotificationResponse = Notifications.useLastNotificationResponse();
   useEffect(() => {
     getAlarm();
-
     if (lastNotificationResponse) {
-      //console.log(lastNotificationResponse);
 
-      //get the route
       const route = JSON.stringify(
         lastNotificationResponse.notification.request.content.data.path
       );
 
       navigation.navigate("Konfirmasi");
-      // console.log(route);
-      // //use some function to return the correct screen by route
-      // getFullPath(JSON.parse(route));
     }
   }, [lastNotificationResponse]);
 
@@ -264,10 +266,6 @@ const AlarmScreen = () => {
               style={{
                 alignItems: "center",
                 justifyContent: "center",
-                // backgroundColor: COLORS.primary,
-                // borderRadius: 70,
-                // width: 100,
-                // height: 300,
               }}
             >
               <View
@@ -292,14 +290,6 @@ const AlarmScreen = () => {
                     width: "95%",
                     height: "95%",
                     tintColor: COLORS.primary,
-                    // backgroundColor: "white",
-                    // borderRadius: 60,
-                    // borderWidth: 2,
-                    // borderColor: COLORS.white,
-                    // position: "absolute",
-                    // zIndex: 1,
-                    // bottom: 9,
-                    // padding: 4,
                   }}
                   source={require("./../assets/icon/jam.png")}
                 />
@@ -543,22 +533,6 @@ const AlarmScreen = () => {
           </View>
         </TouchableOpacity>
       )}
-
-      <TouchableOpacity
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          width: 300,
-          marginTop: 50,
-          height: 50,
-          backgroundColor: COLORS.primary,
-        }}
-        onPress={async () => {
-          await schedulePushNotification();
-        }}
-      >
-        <Text style={{ color: "white" }}>Notifikasi</Text>
-      </TouchableOpacity>
     </View>
   );
 };
