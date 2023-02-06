@@ -19,8 +19,12 @@ import {
   Linking,
 } from "react-native";
 import { useFonts } from "expo-font";
-import React, { useRef, useEffect, useState, useCallback } from "react";
-import { useNavigation } from "@react-navigation/native";
+import React, { useRef, useEffect, useState } from "react";
+import {
+  useNavigation,
+  useIsFocused,
+  useFocusEffect,
+} from "@react-navigation/native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Constants from "expo-constants";
@@ -38,9 +42,11 @@ const blue = "#0D4AA7";
 const black = "#3d3d3d";
 const red = "#C74B4C";
 const grey = "#5C5F68";
+const blue_icon = "#9695C0";
 const AlarmScreen = () => {
   const navigation = useNavigation();
 
+  const [refresh, setRefresh] = useState(Math.random());
   const [modal, setModal] = useState(false);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
@@ -49,6 +55,7 @@ const AlarmScreen = () => {
 
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState(null);
+  const [today, setToday] = useState(null);
 
   const [userData, setUserData] = useState([
     {
@@ -58,7 +65,7 @@ const AlarmScreen = () => {
       id_fase: "",
     },
   ]);
-  const [hari, setHari] = useState('1');
+  const [hari, setHari] = useState("1");
   const [jam, setJam] = useState("00:00");
   const [hours, setHours] = useState();
   const [minutes, setMinutes] = useState();
@@ -176,7 +183,6 @@ const AlarmScreen = () => {
       });
   };
 
-  
   // notif
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
@@ -195,8 +201,8 @@ const AlarmScreen = () => {
 
     await Notifications.scheduleNotificationAsync({
       content: {
-        title: "Minum obat woi ngentot",
-        body: "Daftar obat : zolam merlo zipras eximer",
+        title: "Waktunya Minum Obat",
+        body: "Lakukan Konfirmasi dengan menekan notifikasi ini",
         data: { path: "Konfirmasi" },
         shouldPlaySound: true,
         sound: "default",
@@ -210,26 +216,52 @@ const AlarmScreen = () => {
     });
   }
 
+  const getToday = async () => {
+    const uid = await AsyncStorage.getItem("uid");
+
+    fetch("https://afanalfiandi.com/ppmo/api/api.php?op=getToday", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: uid,
+      }),
+    })
+      .then((res) => res.json())
+      .then((resp) => {
+        if (resp != "null") {
+          setToday(resp);
+        } else {
+          setToday(null);
+        }
+      });
+  };
   const notificationListener = useRef();
   const responseListener = useRef();
   const lastNotificationResponse = Notifications.useLastNotificationResponse();
   useEffect(() => {
     getAlarm();
+    getToday();
     if (lastNotificationResponse) {
-
       const route = JSON.stringify(
         lastNotificationResponse.notification.request.content.data.path
       );
 
       navigation.navigate("Konfirmasi");
     }
+
+    setRefresh(Math.random());
   }, [lastNotificationResponse]);
 
+  // useFocusEffect(() => {
+  // });
   return (
     <View style={[styles.container, { padding: 15 }]}>
       <StatusBar
-        barStyle={"light-content"}
-        backgroundColor={COLORS.primary}
+        barStyle={"dark-content"}
+        backgroundColor={COLORS.white}
       ></StatusBar>
       <Modal
         animationType="fade"
@@ -493,13 +525,14 @@ const AlarmScreen = () => {
         <TouchableOpacity
           onPress={() => navigation.navigate("Konfirmasi")}
           style={styles.box}
+          disabled={today != null ? true : false}
         >
           <View style={styles.jam}>
             <Text
               style={{
                 fontFamily: "Poppins-SemiBold",
                 fontSize: 30,
-                color: "white",
+                color: COLORS.primary,
               }}
             >
               {data[0].jam}
@@ -510,7 +543,7 @@ const AlarmScreen = () => {
               style={{
                 fontFamily: "Poppins-Bold",
                 fontSize: 20,
-                color: "white",
+                color: COLORS.primary,
               }}
             >
               {userData[0].kategori}
@@ -519,17 +552,26 @@ const AlarmScreen = () => {
               style={{
                 fontFamily: "Poppins-Regular",
                 fontSize: 16,
-                color: "white",
+                color: COLORS.primary,
               }}
             >
               {userData[0].fase}
             </Text>
           </View>
           <View style={styles.gmbar_container}>
-            <Image
-              style={{ width: 50, height: 50 }}
-              source={require("../assets/icon/bell_check.png")}
-            />
+            {today == null && (
+              <Image
+                style={{ width: 50, height: 50 }}
+                source={require("../assets/icon/bell_normal.png")}
+              />
+            )}
+
+            {today != null && (
+              <Image
+                style={{ width: 50, height: 50 }}
+                source={require("../assets/icon/bell_check.png")}
+              />
+            )}
           </View>
         </TouchableOpacity>
       )}
@@ -579,10 +621,10 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   box: {
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.white,
     height: 100,
-    width: "95%",
-    borderRadius: 10,
+    width: "98%",
+    borderRadius: 5,
     flexDirection: "row",
     justifyContent: "space-between",
     padding: "5%",

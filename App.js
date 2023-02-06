@@ -27,7 +27,7 @@ import RegisterScreen from "./pages/RegisterScreen";
 import AkunScreen from "./pages/AkunScreen";
 import Konfirmasi from "./pages/Konfirmasi";
 
-const COLORS = { primary: "#225AEB", white: "#FFFFFF" };
+const COLORS = { primary: "#1E319D", white: "#FFFFFF" };
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
@@ -103,10 +103,11 @@ export function Tab1() {
         headerTitleStyle: {
           fontSize: 20,
           fontFamily: "Poppins-Medium",
-          color: COLORS.white,
+          color: COLORS.primary,
         },
         headerStyle: {
-          backgroundColor: "#1E319D",
+          backgroundColor: COLORS.white,
+          elevation: 3,
         },
         headerTitleAlign: "center",
         tabBarHideOnKeyboard: true,
@@ -114,12 +115,11 @@ export function Tab1() {
         tabBarStyle: {
           backgroundColor: "#1E319D",
           position: "absolute",
-          // bottom: 15,
-          // left: 20,
-          // right: 20,
-          // elevation: 0,
-          // borderRadius: 15,
-          height: 65,
+          bottom: 15,
+          marginHorizontal: 40,
+          elevation: 0,
+          borderRadius: 15,
+          height: 55,
           // ...styles.shadow,
         },
       }}

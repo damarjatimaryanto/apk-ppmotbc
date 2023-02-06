@@ -1,6 +1,8 @@
 import {
   StyleSheet,
   PermissionsAndroid,
+  Modal,
+  ActivityIndicator,
   Text,
   Image,
   View,
@@ -13,9 +15,9 @@ import {
   Dimensions,
 } from "react-native";
 import React, { useRef, useEffect, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import moment from "moment";
 const actions = [
   {
     text: "Buat Alarm",
@@ -31,6 +33,8 @@ const Konfirmasi = () => {
   const navigation = useNavigation();
   const [shouldShow, setShouldShow] = useState(true);
   const [loading, setLoading] = useState(true);
+  const [hari, setHari] = useState("");
+
   const [obat, setObat] = useState([
     {
       id_obat_detail: null,
@@ -39,7 +43,7 @@ const Konfirmasi = () => {
       fase: null,
       jenis_obat: null,
       waktu_minum: null,
-    }
+    },
   ]);
   const [userSession, setUserSession] = useState([
     {
@@ -80,7 +84,8 @@ const Konfirmasi = () => {
 
   const getObat = () => {
     const id_fase = userSession[0].id_fase;
-    fetch('https://afanalfiandi.com/ppmo/api/api.php?op=getObat', {
+
+    fetch("https://afanalfiandi.com/ppmo/api/api.php?op=getObat", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -89,23 +94,137 @@ const Konfirmasi = () => {
       body: JSON.stringify({
         id: id_fase,
       }),
-    }).then((res) => res.json())
+    })
+      .then((res) => res.json())
       .then((resp) => {
         setObat(resp);
-
-        console.log(resp);
-      }).catch((e) => {
-        console.log(e);
       })
-  }
+      .catch((e) => {
+        console.log(e);
+      });
+  };
 
+  const getHari = async () => {
+    const id = await AsyncStorage.getItem("uid");
+    fetch("https://afanalfiandi.com/ppmo/api/api.php?op=getHari", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: id,
+      }),
+    })
+      .then((res) => res.json())
+      .then((resp) => {
+        // console.warn(resp.msg);
+        if (resp.msg == "riwayat") {
+          var a = parseFloat(resp.hari) + 1;
+          setHari(a);
+        } else {
+          var b = parseFloat(resp.hari);
+          setHari(b);
+        }
+      })
+      .catch((e) => {
+        console.warn("error");
+      });
+  };
+  const onSubmit = async () => {
+    const date = new Date();
+    const id = userSession[0].uid;
+    const status = 1;
+    const day = hari;
+    const tgl = moment(date).format("YYYY-MM-DD");
+
+    fetch("https://afanalfiandi.com/ppmo/api/api.php?op=submitAlarm", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: id,
+        status: status,
+        hari: day,
+        tgl: tgl,
+      }),
+    })
+      .then((res) => res.json())
+      .then((resp) => {
+        setLoading(true);
+        setTimeout(() => {
+          if (resp == "1") {
+            Alert.alert("", "Konfirmasi Berhasil", [
+              {
+                text: "OK",
+                onPress: () => {
+                  navigation.reset({
+                    index: 0,
+                    routes: [
+                      {
+                        name: "Tab1",
+                      },
+                    ],
+                  });
+                },
+              },
+            ]);
+          } else {
+            Alert.alert("", "Konfirmasi Gagal", [
+              {
+                text: "OK",
+              },
+            ]);
+          }
+        }, 2000);
+      });
+  };
   useEffect(() => {
-    getSession();
-    getObat();
+    setTimeout(() => {
+      getHari();
+      getSession();
+      getObat();
+      setLoading(false);
+    }, 2000);
   }, []);
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.white} />
+      {loading == true && (
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={loading}
+          onRequestClose={() => {
+            Alert.alert("Modal has been closed.");
+            setModal(false);
+          }}
+        >
+          <View
+            style={{
+              position: "absolute",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100%",
+              width: "100%",
+            }}
+          >
+            <ActivityIndicator size="large" color={COLORS.primary} />
+          </View>
+        </Modal>
+      )}
+      <View style={styles.box}>
+        <View style={{ flexDirection: "row", width: "100%" }}>
+          <View style={styles.judul_style}>
+            <Text style={styles.judul_isi}>Hari Ke</Text>
+          </View>
+          <View style={styles.ket_style}>
+            <Text style={styles.ket_isi}>: {hari}</Text>
+          </View>
+        </View>
+      </View>
       <View style={styles.box}>
         <View style={{ flexDirection: "row", width: "100%" }}>
           <View style={styles.judul_style}>
@@ -159,15 +278,14 @@ const Konfirmasi = () => {
             <Text style={styles.judul_isi}>Waktu Minum Obat</Text>
           </View>
           <View style={styles.ket_style}>
-            <Text style={[styles.ket_isi, {textTransform:'capitalize'}]}>: {obat[0].waktu_minum}</Text>
+            <Text style={[styles.ket_isi, { textTransform: "capitalize" }]}>
+              : {obat[0].waktu_minum}
+            </Text>
           </View>
         </View>
       </View>
 
-      <TouchableOpacity
-        onPress={() => navigation.navigate("AlarmScreen")}
-        style={styles.floatingbutton}
-      >
+      <TouchableOpacity onPress={onSubmit} style={styles.floatingbutton}>
         <Text
           style={{
             color: COLORS.white,

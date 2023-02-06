@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useEffect, useState } from "react";
 import {
   Text,
   View,
@@ -10,25 +10,90 @@ import {
   Dimensions,
 } from "react-native";
 // import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Calendar } from "react-native-calendars";
+import { Calendar, Agenda } from "react-native-calendars";
 import { useFonts } from "expo-font";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { FlatList } from "react-native-gesture-handler";
 
 const COLORS = { primary: "#1E319D", white: "#FFFFFF", abu1: "#F6F6F6" };
 const width = Dimensions.get("screen").width;
 const height = Dimensions.get("screen").height;
 const TrackScreen = () => {
-  // const [fontsLoaded] = useFonts({
-  //   "Poppins-Bold": require("./../assets/fonts/Poppins-Bold.ttf"),
-  //   "Poppins-Regular": require("./../assets/fonts/Poppins-Regular.ttf"),
-  //   "Poppins-SemiBold": require("./../assets/fonts/Poppins-SemiBold.ttf"),
+  const [data, setData] = useState([
+    {
+      hari: null,
+      id_riwayat: null,
+      id_status_detail: null,
+      id_user: null,
+      tgl: null,
+    },
+  ]);
 
-  //   "Poppins-LightItalic": require("./../assets/fonts/Poppins-LightItalic.ttf"),
-  // });
-  // if (!fontsLoaded) {
-  //   return null;
-  // }
+  const [markedDate, setMarkedDate] = useState();
+  const [selectedDate, setSelectedDate] = useState("");
+
+  const onSelectDate = async (day) => {
+    const uid = await AsyncStorage.getItem("uid");
+    fetch("https://afanalfiandi.com/ppmo/api/api.php?op=selectDate", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: uid,
+        tgl: day.dateString,
+      }),
+    })
+      .then((res) => res.json())
+      .then((resp) => {
+        if (resp != "null") {
+          setSelectedDate(resp);
+        } else {
+          setSelectedDate(null);
+        }
+      });
+  };
+  const getRiwayat = async () => {
+    const uid = await AsyncStorage.getItem("uid");
+    fetch("https://afanalfiandi.com/ppmo/api/api.php?op=getRiwayat", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: uid,
+      }),
+    })
+      .then((res) => res.json())
+      .then((resp) => {
+        const result = [];
+
+        resp.map((item, index) => {
+          result.push({
+            [item.tgl]: {
+              disabled: true,
+              startingDay: true,
+              color: COLORS.primary,
+              endingDay: true,
+              textColor: "white",
+            },
+          });
+
+          const output = Object.assign({}, ...result);
+
+          setMarkedDate(output);
+        });
+      });
+  };
+  useEffect(() => {
+    getRiwayat();
+  }, []);
   return (
     <View style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor={COLORS.white} />
+      {/* jika belum ada progress */}
       {/* <View
         style={{
           justifyContent: "center",
@@ -77,9 +142,10 @@ const TrackScreen = () => {
 
       <View
         style={{
-          width: width - 15,
-          paddingTop: 10,
+          width: width - 30,
+          // paddingTop: 10,
           shadowColor: "black",
+          marginVertical: 15,
           // borderRadius: 5,
           // shadowOffset: {
           //   width: 0,
@@ -96,7 +162,7 @@ const TrackScreen = () => {
             backgroundColor: "white",
             padding: 10,
             shadowColor: "black",
-            borderRadius: 5,
+            // borderRadius: 5,
             shadowOffset: {
               width: 0,
               height: 4,
@@ -137,74 +203,50 @@ const TrackScreen = () => {
             textDayHeaderFontSize: 14,
           }}
           markingType={"period"}
-          markedDates={{
-            "2023-01-04": {
-              disabled: true,
-              startingDay: true,
-              color: "red",
-              endingDay: true,
-              textColor: "white",
-            },
-            "2023-01-05": {
-              disabled: true,
-              startingDay: true,
-              color: COLORS.primary,
-              endingDay: true,
-              textColor: "white",
-            },
+          markedDates={markedDate}
+          onDayPress={(day) => {
+            onSelectDate(day);
           }}
         />
       </View>
 
-      <View
-        style={{
-          // backgroundColor: "yellow",
-          justifyContent: "center",
-          alignItems: "center",
-          height: 100,
-          width: "100%",
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            // justifyContent: "space-between",
-            justifyContent: "center",
-            alignItems: "center",
-            // backgroundColor: "yellow",
-          }}
-        >
-          <View
-            style={{
-              backgroundColor: "grey",
-              height: 30,
-              width: 30,
-              margin: 5,
-              borderRadius: 5,
-            }}
-          ></View>
-          <Text
-            style={{
-              margin: 5,
-              fontFamily: "Poppins-Regular",
-            }}
-          >
-            Tidak Minum Obat
-          </Text>
-          <View
-            style={{
-              backgroundColor: COLORS.primary,
-              height: 30,
-              width: 30,
-              margin: 5,
-              borderRadius: 5,
-            }}
-          ></View>
-          <Text style={{ margin: 5, fontFamily: "Poppins-Regular" }}>
-            Minum Obat
-          </Text>
+      {selectedDate == "" && <View></View>}
+      {selectedDate != null && selectedDate != "" && (
+        <View style={styles.box}>
+          <View style={styles.baris}>
+            <View style={styles.judul_style}>
+              <Text style={styles.judul_isi}>Hari Ke</Text>
+            </View>
+            <View style={styles.ket_style}>
+              <Text style={styles.ket_isi}>: {selectedDate.hari}</Text>
+            </View>
+          </View>
+
+          <View style={styles.baris}>
+            <View style={styles.judul_style}>
+              <Text style={styles.judul_isi}>Kategori</Text>
+            </View>
+            <View style={styles.ket_style}>
+              <Text style={styles.ket_isi}>: {selectedDate.kategori}</Text>
+            </View>
+          </View>
+
+          <View style={styles.baris}>
+            <View style={styles.judul_style}>
+              <Text style={styles.judul_isi}>Fase</Text>
+            </View>
+            <View style={styles.ket_style}>
+              <Text style={styles.ket_isi}>: {selectedDate.fase}</Text>
+            </View>
+          </View>
         </View>
-      </View>
+      )}
+
+      {selectedDate == null && (
+        <View style={styles.box_2}>
+          <Text style={{ fontFamily: "Poppins-Medium" }}>Data Tidak Ada</Text>
+        </View>
+      )}
     </View>
   );
 };
@@ -228,5 +270,70 @@ const styles = StyleSheet.create({
     fontSize: 16,
     // fontWeight: 'bold',
     fontFamily: "Poppins-Regular",
+  },
+  box_2: {
+    backgroundColor: "#FFFFFF",
+    width: width - 30,
+    paddingHorizontal: "2%",
+    marginTop: 2,
+    height: 150,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "black",
+    borderRadius: 3,
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 0.4,
+
+    elevation: 5,
+  },
+  box: {
+    backgroundColor: "#FFFFFF",
+    width: width - 30,
+    paddingHorizontal: "2%",
+    marginTop: 2,
+    paddingVertical: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "black",
+    borderRadius: 3,
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 0.4,
+
+    elevation: 5,
+  },
+  judul_style: {
+    // backgroundColor: 'green',
+    width: "40%",
+    // justifyContent: "center",
+  },
+  judul_isi: {
+    fontSize: 14,
+    fontFamily: "Poppins-Regular",
+    color: "grey",
+  },
+  ket_style: {
+    // backgroundColor: 'blue',
+    justifyContent: "center",
+    paddingRight: 5,
+  },
+  ket_isi: {
+    fontSize: 14,
+    fontFamily: "Poppins-Regular",
+    textAlign: "left",
+    color: COLORS.primary,
+  },
+  baris: {
+    flexDirection: "row",
+    width: "100%",
+    // backgroundColor: "yellow",
+    marginVertical: 5,
   },
 });

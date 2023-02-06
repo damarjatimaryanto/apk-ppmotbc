@@ -17,6 +17,7 @@ import { useNavigation } from "@react-navigation/native";
 import PieChart from "react-native-expo-pie-chart";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFonts } from "expo-font";
+import { StatusBar } from "expo-status-bar";
 
 const width = Dimensions.get("screen").width;
 const height = Dimensions.get("screen").height;
@@ -69,6 +70,18 @@ const AkunScreen = () => {
     },
   ]);
 
+  const [total, setTotal] = useState([
+    {
+      key: "First Data",
+      count: 15,
+      color: "grey",
+    },
+    {
+      key: "Second Data",
+      count: 10,
+      color: COLORS.primary,
+    },
+  ]);
   const getSession = async () => {
     const uid = await AsyncStorage.getItem("uid");
     const fase = await AsyncStorage.getItem("fase");
@@ -107,12 +120,49 @@ const AkunScreen = () => {
     { value: 20, color: "#ED6665", text: "26%" },
   ];
 
+  const getPresentase = async () => {
+    const uid = await AsyncStorage.getItem("uid");
+    const id_fase = await AsyncStorage.getItem("id_fase");
+
+    fetch("https://afanalfiandi.com/ppmo/api/api.php?op=getPresentase", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: uid,
+        fase: id_fase,
+      }),
+    })
+      .then((res) => res.json())
+      .then((resp) => {
+        const result = [];
+
+        result.push(
+          {
+            key: "tidak selesai",
+            count: 10,
+            color: "grey",
+          },
+          {
+            key: "selesai",
+            count: parseFloat(resp.total),
+            color: COLORS.primary,
+          }
+        );
+        setTotal(result);
+        console.log(total);
+      });
+  };
   useEffect(() => {
     getSession();
+    getPresentase();
   }, []);
 
   return (
     <View style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor={COLORS.white} />
       <Modal
         animationType="fade"
         transparent={true}
@@ -217,16 +267,8 @@ const AkunScreen = () => {
               </Text>
             </View>
 
-            {/* <PieChart
-              donut
-              innerRadius={80}
-              data={pieData}
-              centerLabelComponent={() => {
-                return <Text style={{ fontSize: 30, color: "grey" }}>70%</Text>;
-              }}
-            /> */}
             <PieChart
-              data={data}
+              data={total}
               length={200}
               rotation={-90}
               // zeroTotalCircleColor={COLORS.primary}
@@ -240,7 +282,7 @@ const AkunScreen = () => {
                 // backgroundColor: "yellow",
                 justifyContent: "center",
                 alignItems: "center",
-                height: 100,
+                height: 50,
                 width: "100%",
               }}
             >
@@ -361,7 +403,7 @@ const styles = StyleSheet.create({
     width: width - 15,
     paddingHorizontal: "2%",
     marginVertical: 15,
-    height: 420,
+    height: 330,
     justifyContent: "center",
     alignItems: "center",
     shadowColor: "black",
