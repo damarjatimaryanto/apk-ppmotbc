@@ -50,8 +50,8 @@ const IntroScreen = () => {
       <StatusBar barStyle="light-content" backgroundColor={COLORS.primary} />
       <View style={styles.logo_container}>
         <Image
-          style={{ width: 90, height: 73 }}
-          source={require("../assets/icon/logoobat.png")}
+          style={{ width: 150, height: 150 }}
+          source={require("../assets/icon/lung_iconkanan.png")}
         ></Image>
       </View>
       <View style={{ width: "100%", height: "20%", alignItems: "center" }}>

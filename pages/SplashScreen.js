@@ -33,16 +33,17 @@ const SplashScreen = () => {
   const navig = async () => {
     const loggedIn = await AsyncStorage.getItem("loggedIn");
     const intro = await AsyncStorage.getItem("intro");
-
-    if (intro == 1 && loggedIn == 1) {
-      navigation.navigate("Tab1");
-    } else if (intro != 1 && loggedIn != 1) {
-    navigation.navigate("IntroScreen");
-    } else if (intro == 1 && loggedIn != 1) {
-      navigation.navigate("LoginScreen");
-    } else {
+    setTimeout(async () => {
+      // if (intro == 1 && loggedIn == 1) {
+      //   navigation.navigate("AlarmScreen");
+      // } else if (intro != 1 && loggedIn != 1) {
       navigation.navigate("IntroScreen");
-    }
+      // } else if (intro == 1 && loggedIn != 1) {
+      //   navigation.navigate("LoginScreen");
+      // } else {
+      //   navigation.navigate("IntroScreen");
+      // }
+    }, 3000);
   };
 
   // const cekAsync = async () => {
@@ -55,10 +56,10 @@ const SplashScreen = () => {
     <View style={styles.container}>
       <StatusBar backgroundColor={COLORS.primary}></StatusBar>
       <Image
-        style={{ width: 90, height: 73 }}
-        source={require("../assets/icon/logoobat.png")}
+        style={{ width: 200, height: 200 }}
+        source={require("../assets/icon/lung_iconkanan.png")}
       ></Image>
-      <Text style={styles.splash_title}>PPMO TBC</Text>
+      {/* <Text style={styles.splash_title}>PPMO TBC</Text> */}
     </View>
   );
 };

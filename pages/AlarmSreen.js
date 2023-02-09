@@ -1,6 +1,7 @@
 import {
   StyleSheet,
   // Modal,
+  RefreshControl,
   ActivityIndicator,
   Pressable,
   PermissionsAndroid,
@@ -17,9 +18,11 @@ import {
   Dimensions,
   BackHandler,
   Linking,
+  ScrollView,
+  FlatList,
 } from "react-native";
 import { useFonts } from "expo-font";
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useCallback, useEffect, useState } from "react";
 import {
   useNavigation,
   useIsFocused,
@@ -47,15 +50,22 @@ const AlarmScreen = () => {
   const navigation = useNavigation();
 
   const [refresh, setRefresh] = useState(Math.random());
+  const [refreshing, setRefreshing] = useState(false);
+
   const [modal, setModal] = useState(false);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
+  const [isModalMetu, setModalMetu] = useState(false);
+  const [isFaseKaton, setFaseKaton] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [datePickerVisible, setDatePickerVisible] = useState(false);
-
+  const [dataFase, setDataFase] = useState([]);
+  const [fase, setFase] = useState();
+  const [faseLabel, setFaseLabel] = useState("Fase Insentif");
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState(null);
   const [today, setToday] = useState(null);
+  const [lamaPengobatan, setLamaPengobatan] = useState(null);
 
   const [userData, setUserData] = useState([
     {
@@ -72,6 +82,16 @@ const AlarmScreen = () => {
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
+  };
+  useEffect(() => {
+    getFase();
+  }, []);
+  const modalFase = () => {
+    setFaseKaton(!isFaseKaton);
+  };
+
+  const modalInfo = () => {
+    setModalMetu(!isModalMetu);
   };
 
   const showDatePicker = () => {
@@ -93,6 +113,17 @@ const AlarmScreen = () => {
     hideDatePicker();
   };
 
+  const wait = (timeout) => {
+    return new Promise((resolve) => setTimeout(resolve, timeout));
+  };
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    getAlarm();
+    getToday();
+    wait(2000).then(() => setRefreshing(false));
+  }, []);
+
   const getAlarm = async () => {
     const uid = await AsyncStorage.getItem("uid");
 
@@ -109,6 +140,7 @@ const AlarmScreen = () => {
       .then((res) => res.json())
       .then((resp) => {
         setLoading(true);
+
         setTimeout(async () => {
           const fase = await AsyncStorage.getItem("fase");
           const kategori = await AsyncStorage.getItem("kategori");
@@ -125,20 +157,34 @@ const AlarmScreen = () => {
 
           setUserData(userSession);
           if (resp != 0) {
-            const id_alarm = resp.id_alarm;
-            const id_user = resp.id_user;
-            const jam = resp.jam;
-            const hari = resp.hari;
+            // const dateNow = "2023-04-10";
+            const startDate = resp.start;
+            const endDate = resp.end;
+            const dateNow = moment(new Date()).format("YYYY-MM-DD");
+            const selisih = moment(dateNow).isAfter(endDate, "day");
 
-            const result = [];
-            result.push({
-              id_alarm: id_alarm,
-              id_user: id_user,
-              jam: jam,
-              hari: hari,
-            });
+            if (selisih == true) {
+              setData(null);
+              modalInfo();
+            } else {
+              const id_alarm = resp.id_alarm;
+              const id_user = resp.id_user;
+              const jam = resp.jam;
+              const hari = resp.hari;
 
-            setData(result);
+              const result = [];
+              result.push({
+                id_alarm: id_alarm,
+                id_user: id_user,
+                jam: jam,
+                hari: hari,
+                startDate: startDate,
+                endDate: endDate,
+              });
+
+              setData(result);
+            }
+
             setLoading(false);
           } else {
             setData(null);
@@ -151,7 +197,27 @@ const AlarmScreen = () => {
     const id_user = await AsyncStorage.getItem("uid");
     const hrs = parseFloat(hours);
     const min = parseFloat(minutes);
+    const id_fase = await AsyncStorage.getItem("id_fase");
+    const startDate = new Date();
+    const newDate = moment(startDate).format("YYYY-MM-DD");
+    const endDate = moment(startDate).add(lamaPengobatan, "days").toDate();
+    const newEndDate = moment(endDate).format("YYYY-MM-DD");
+    fetch("https://afanalfiandi.com/ppmo/api/api.php?op=getFaseDetail", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: id_fase,
+      }),
+    })
+      .then((a) => a.json())
+      .then((b) => {
+        setLamaPengobatan(b[0].lama_pengobatan);
+      });
 
+    // insert
     fetch("https://afanalfiandi.com/ppmo/api/api.php?op=insAlarm", {
       method: "POST",
       headers: {
@@ -162,6 +228,9 @@ const AlarmScreen = () => {
         id: id_user,
         hari: hari,
         jam: jam,
+        fase: fase,
+        start: newDate,
+        end: newEndDate,
       }),
     })
       .then((res) => res.json())
@@ -216,6 +285,51 @@ const AlarmScreen = () => {
     });
   }
 
+  const getFase = () => {
+    fetch("https://afanalfiandi.com/ppmo/api/api.php?op=getFase", {})
+      .then((res) => res.json())
+      .then((response) => {
+        setDataFase(response);
+      });
+  };
+
+  const renderFase = ({ item }) => (
+    <View>
+      <TouchableOpacity
+        style={{
+          // width: "100%",
+          height: 40,
+          backgroundColor: "white",
+          justifyContent: "center",
+          // alignItems: "center",
+          borderRadius: 10,
+          marginVertical: 4,
+        }}
+        onPress={() => {
+          setFase(item.id_fase_detail);
+          setFaseLabel(item.fase);
+          setFaseKaton(false);
+        }}
+      >
+        <Text
+          style={{
+            fontFamily: "Poppins-Regular",
+            fontSize: 16,
+            color: "black",
+            paddingLeft: 70,
+            paddingVertical: 8,
+            borderColor: "grey",
+            borderWidth: 1,
+            borderRadius: 10,
+            backgroundColor: "white",
+          }}
+        >
+          {item.fase}
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
+
   const getToday = async () => {
     const uid = await AsyncStorage.getItem("uid");
 
@@ -258,11 +372,43 @@ const AlarmScreen = () => {
   // useFocusEffect(() => {
   // });
   return (
-    <View style={[styles.container, { padding: 15 }]}>
+    <ScrollView
+      style={[styles.container, { padding: 15 }]}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
       <StatusBar
         barStyle={"dark-content"}
         backgroundColor={COLORS.white}
       ></StatusBar>
+
+      {/* Modal FASE PENGOBATAN */}
+      <Modal
+        isVisible={isFaseKaton}
+        onBackdropPress={() => setFaseKaton(false)}
+        animationOutTiming={1000}
+        animationInTiming={1000}
+      >
+        <View style={{ alignItems: "center", flex: 0.175 }}>
+          <View
+            style={{
+              flexDirection: "row",
+              // backgroundColor: "white",
+              width: width * 0.6,
+              borderRadius: 10,
+              flex: 1,
+            }}
+          >
+            <FlatList
+              data={dataFase}
+              renderItem={renderFase}
+              keyExtractor={(item) => item.id_fase_detail}
+            />
+          </View>
+        </View>
+      </Modal>
+
       <Modal
         animationType="fade"
         transparent={true}
@@ -285,12 +431,237 @@ const AlarmScreen = () => {
         </View>
       </Modal>
 
-      {/* Modal Kategori Pasien */}
       <Modal
         isVisible={isModalVisible}
         onBackdropPress={() => setModalVisible(false)}
-        animationOutTiming={1000}
-        animationInTiming={1000}
+        animationOutTiming={1500}
+        animationInTiming={1500}
+        // animationIn={"fadeIn"}
+        // animationOut={"fadeOut"}
+      >
+        <View
+          style={{
+            backgroundColor: COLORS.white,
+            // flex: 1,
+            // margin: -20,
+            // justifyContent: "center",
+            // alignItems: "center",
+            borderRadius: 10,
+            paddingBottom: 10,
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              // backgroundColor: "yellow",
+              justifyContent: "flex-end",
+            }}
+          >
+            <TouchableOpacity onPress={toggleModal}>
+              <Image
+                style={{
+                  width: 20,
+                  height: 20,
+                  marginTop: 10,
+                  marginRight: 10,
+                }}
+                source={require("./../assets/icon/delete2.png")}
+              />
+            </TouchableOpacity>
+          </View>
+
+          <View
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              paddingTop: 80,
+            }}
+          >
+            <View
+              style={{
+                width: 140,
+                height: 140,
+                tintColor: COLORS.primary,
+                backgroundColor: "white",
+                borderRadius: 90,
+                borderWidth: 2,
+                borderColor: COLORS.white,
+                position: "absolute",
+                zIndex: 1,
+                bottom: 380,
+                padding: 4,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Image
+                style={{
+                  width: "95%",
+                  height: "95%",
+                  // tintColor: COLORS.primary,
+                }}
+                source={require("./../assets/icon/bellblue.png")}
+              />
+            </View>
+            <View style={styles.formContainer}>
+              <View>
+                <Text style={styles.h2}>Jam</Text>
+                <View style={styles.inputContainer}>
+                  {/* <Text style={styles.h2}>Fase Pengobatan :</Text> */}
+                  <View style={{ width: "15%", alignItems: "center" }}>
+                    <Image
+                      style={styles.icon_style}
+                      source={require("./../assets/icon/fase_fill.png")}
+                    />
+                  </View>
+                  <View style={{ width: "85%" }}>
+                    <TouchableOpacity
+                      onPress={showDatePicker}
+                      style={[
+                        styles.input,
+                        { alignItems: "flex-start", justifyContent: "center" },
+                      ]}
+                    >
+                      <Text
+                        style={{
+                          fontSize: 16,
+                          color: blue_icon,
+                          fontFamily: "Poppins-Regular",
+                        }}
+                      >
+                        {jam}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+
+              <Text style={styles.h2}>Hari ke</Text>
+              <View style={styles.inputContainer}>
+                <View style={{ width: "15%", alignItems: "center" }}>
+                  <Image
+                    style={{ width: 24, height: 24, tintColor: blue_icon }}
+                    source={require("./../assets/icon/person_fill.png")}
+                  />
+                </View>
+                <View style={{ width: "85%" }}>
+                  <TextInput
+                    style={[
+                      styles.input,
+                      {
+                        opacity: userData[0].id_kat == 1 ? 0.6 : 1,
+                        fontFamily: "Poppins-Medium",
+                      },
+                    ]}
+                    placeholderTextColor={blue_icon}
+                    placeholder="inputkan hari"
+                    keyboardType="number-pad"
+                    onChangeText={setHari}
+                    value={userData[0].id_kat == 1 ? "1" : hari}
+                    editable={userData[0].id_kat == 1 ? false : true}
+                  />
+                </View>
+              </View>
+
+              <View>
+                <Text style={styles.h2}>Fase Pengobatan</Text>
+                <View style={styles.inputContainer}>
+                  {/* <Text style={styles.h2}>Fase Pengobatan :</Text> */}
+                  <View style={{ width: "15%", alignItems: "center" }}>
+                    <Image
+                      style={styles.icon_style}
+                      source={require("./../assets/icon/fase_fill.png")}
+                    />
+                  </View>
+                  <View style={{ width: "85%" }}>
+                    <TouchableOpacity
+                      onPress={modalFase}
+                      style={[
+                        styles.input,
+                        { alignItems: "flex-start", justifyContent: "center" },
+                      ]}
+                    >
+                      {fase == null && (
+                        <Text
+                          style={{
+                            fontSize: 16,
+                            color: blue_icon,
+                            fontFamily: "Poppins-Regular",
+                          }}
+                        >
+                          Pilih Fase Pengobatan
+                        </Text>
+                      )}
+                      {fase != null && (
+                        <Text
+                          style={{
+                            fontSize: 16,
+                            color: blue_icon,
+                            fontFamily: "Poppins-Regular",
+                          }}
+                        >
+                          {faseLabel}
+                        </Text>
+                      )}
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+
+              <View style={styles.btn_Container}>
+                <TouchableOpacity
+                  style={styles.submitBtn}
+                  onPress={() => {
+                    onSubmit();
+                  }}
+                >
+                  <Text style={styles.btnText}>Simpan Alarm</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+            {/* <View
+              style={[
+                styles.inputhorizontal,
+                { justifyContent: "space-between" },
+              ]}
+            >
+              <TouchableOpacity
+                style={[styles.btn, styles.btn2]}
+                onPress={toggleModal}
+              >
+                <Text
+                  style={{ color: COLORS.white, fontFamily: "Poppins-Regular" }}
+                >
+                  Batal
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.btn, styles.btn1]}
+                onPress={() => {
+                  onSubmit();
+                }}
+              >
+                <Text
+                  style={[
+                    { color: COLORS.white, fontFamily: "Poppins-Regular" },
+                  ]}
+                >
+                  Simpan
+                </Text>
+              </TouchableOpacity>
+            </View> */}
+          </View>
+        </View>
+      </Modal>
+
+      {/* Modal Alarm */}
+      {/* <Modal
+        isVisible={isModalVisible}
+        onBackdropPress={() => setModalVisible(false)}
+        animationOutTiming={2000}
+        animationInTiming={2000}
+        // animationIn={"fadeIn"}
+        // animationOut={"fadeOut"}
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
@@ -321,28 +692,11 @@ const AlarmScreen = () => {
                   style={{
                     width: "95%",
                     height: "95%",
-                    tintColor: COLORS.primary,
+                    // tintColor: COLORS.primary,
                   }}
-                  source={require("./../assets/icon/jam.png")}
+                  source={require("./../assets/icon/bellblue.png")}
                 />
               </View>
-
-              {/* <Image
-                style={{
-                  width: 100,
-                  height: 100,
-                  tintColor: COLORS.primary,
-                  backgroundColor: "white",
-                  borderRadius: 60,
-                  borderWidth: 2,
-                  borderColor: COLORS.white,
-                  position: "absolute",
-                  zIndex: 1,
-                  bottom: 9,
-                  padding: 4,
-                }}
-                source={require("./../assets/icon/jam.png")}
-              /> */}
             </View>
 
             <Text style={{ fontFamily: "Poppins-Medium", fontSize: 16 }}>
@@ -404,6 +758,48 @@ const AlarmScreen = () => {
                 editable={userData[0].id_kat == 1 ? false : true}
               />
             </View>
+
+            <View style={styles.inputhorizontal}>
+              <Text
+                style={{
+                  color: "black",
+                  fontFamily: "Poppins-Medium",
+                  fontSize: 16,
+                }}
+              >
+                Fase :
+              </Text>
+              <TouchableOpacity
+                onPress={modalFase}
+                style={[styles.input_horizontal, { alignItems: "center" }]}
+              >
+                {fase == null && (
+                  <Text
+                    style={{
+                      color: "black",
+                      fontFamily: "Poppins-Medium",
+                      fontSize: 16,
+                      textAlign: "center",
+                    }}
+                  >
+                    Pilih Fase
+                  </Text>
+                )}
+                {fase != null && (
+                  <Text
+                    style={{
+                      color: "black",
+                      fontFamily: "Poppins-Medium",
+                      fontSize: 12,
+                      textAlign: "center",
+                    }}
+                  >
+                    {faseLabel}
+                  </Text>
+                )}
+              </TouchableOpacity>
+            </View>
+
             <View
               style={[
                 styles.inputhorizontal,
@@ -435,6 +831,107 @@ const AlarmScreen = () => {
                 </Text>
               </TouchableOpacity>
             </View>
+          </View>
+        </View>
+      </Modal> */}
+
+      {/* Modal Info */}
+      <Modal
+        isVisible={isModalMetu}
+        onBackdropPress={() => setModalVisible(false)}
+        animationOutTiming={2000}
+        animationInTiming={2000}
+        animationIn={"fadeIn"}
+        animationOut={"fadeOut"}
+        // deviceHeight={height}
+        // deviceWidth={width}
+      >
+        <View
+          style={{
+            backgroundColor: COLORS.abu1,
+            flex: 1,
+            margin: -20,
+            justifyContent: "center",
+          }}
+        >
+          <View
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <View
+              style={{
+                width: 140,
+                height: 140,
+                tintColor: COLORS.primary,
+                backgroundColor: "white",
+                borderRadius: 90,
+                borderWidth: 2,
+                borderColor: COLORS.white,
+                // position: "absolute",
+                // zIndex: 1,
+                // bottom: 1,
+                // padding: 4,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Image
+                style={{
+                  width: "95%",
+                  height: "95%",
+                  // tintColor: COLORS.primary,
+                }}
+                source={require("./../assets/icon/about.png")}
+              />
+            </View>
+          </View>
+
+          <View
+            style={{
+              height: 150,
+              width: "100%",
+              // backgroundColor: "yellow",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Text
+              style={{
+                fontFamily: "Poppins-Medium",
+                fontSize: 18,
+              }}
+            >
+              Fase intensif telah selesai
+            </Text>
+            <Text
+              style={{
+                fontFamily: "Poppins-LightItalic",
+                fontSize: 16,
+                color: "grey",
+                textAlign: "center",
+                paddingHorizontal: 20,
+              }}
+            >
+              Silakan setting ulang kembali alarm anda untuk fase lanjutan.
+            </Text>
+          </View>
+
+          <View
+            style={{
+              width: "100%",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <TouchableOpacity style={styles.btn3} onPress={modalInfo}>
+              <Text
+                style={{ color: COLORS.white, fontFamily: "Poppins-Regular" }}
+              >
+                Tutup
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
@@ -575,7 +1072,7 @@ const AlarmScreen = () => {
           </View>
         </TouchableOpacity>
       )}
-    </View>
+    </ScrollView>
   );
 };
 
@@ -585,7 +1082,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.abu1,
-    alignItems: "center",
   },
   btn: {
     backgroundColor: "#25376A",
@@ -623,21 +1119,22 @@ const styles = StyleSheet.create({
   box: {
     backgroundColor: COLORS.white,
     height: 100,
-    width: "98%",
+
     borderRadius: 5,
     flexDirection: "row",
     justifyContent: "space-between",
     padding: "5%",
     marginTop: 15,
     shadowColor: "black",
+    // borderRadius: 5,
     shadowOffset: {
-      width: 0,
+      width: 6,
       height: 4,
     },
-    shadowOpacity: 0.3,
-    shadowRadius: 4.4,
+    shadowOpacity: 4,
+    shadowRadius: 10,
 
-    elevation: 10,
+    elevation: 5,
   },
   jam: {
     justifyContent: "center",
@@ -682,8 +1179,41 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
 
+  centeredView_2: {
+    // flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    width: width - 20,
+    height: height - 30,
+    backgroundColor: "yellow",
+    width: width,
+    height: height,
+  },
+  modalView_2: {
+    // margin: 20,
+    width: width - 20,
+    height: height - 30,
+    paddingTop: 85,
+    backgroundColor: "white",
+    borderRadius: 10,
+
+    // marginVertical: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+
   inputContainer: {
     marginVertical: 20,
+    paddingTop: 50,
   },
   inputhorizontal: {
     marginVertical: 5,
@@ -746,5 +1276,79 @@ const styles = StyleSheet.create({
   btn2: {
     backgroundColor: "grey",
     borderRadius: 5,
+  },
+  btn3: {
+    backgroundColor: "#07D3B0",
+    borderRadius: 5,
+    paddingVertical: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "90%",
+    fontFamily: "Poppins-Medium",
+  },
+  imgContainer: {
+    paddingHorizontal: width * 0.095,
+    // justifyContent: "center",
+    // alignItems: "center",
+    paddingTop: "30%",
+    // height: "30%",
+  },
+  formContainer: {
+    paddingHorizontal: width * 0.095,
+    paddingVertical: 10,
+  },
+  inputContainer: {
+    marginBottom: 15,
+    flexDirection: "row",
+    // justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#F2F3FC",
+    borderRadius: 5,
+  },
+  input: {
+    // borderWidth: 2,
+    // borderColor: COLORS.primary,
+    // paddingVertical: width * 0.013,
+    // paddingHorizontal: width * 0.04,
+    height: 50,
+    borderRadius: 10,
+    color: "black",
+    paddingTop: 6,
+    // backgroundColor: "#D4D4D4",
+    fontSize: 16,
+    fontFamily: "Poppins-Regular",
+  },
+  h1: {
+    fontSize: 15,
+    fontFamily: "Poppins-Regular",
+    color: grey,
+    // textAlign: "center",
+    marginBottom: 15,
+  },
+  h2: {
+    fontSize: 14,
+    color: grey,
+    fontFamily: "Poppins-Medium",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  icon_style: {
+    width: 18,
+    height: 18,
+    tintColor: blue_icon,
+    // backgroundColor: blue_icon,
+  },
+  submitBtn: {
+    backgroundColor: COLORS.primary,
+    paddingVertical: 10,
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    height: 50,
+  },
+  btnText: {
+    fontSize: width * 0.035,
+    color: "white",
+    fontFamily: "Poppins-SemiBold",
   },
 });

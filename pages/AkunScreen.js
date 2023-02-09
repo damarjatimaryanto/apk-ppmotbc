@@ -25,17 +25,7 @@ const COLORS = { primary: "#1E319D", white: "#FFFFFF", abu1: "#F6F6F6" };
 
 const AkunScreen = () => {
   const navigation = useNavigation();
-  // let [fontsLoaded] = useFonts({
-  //   "Poppins-Bold": require("./../assets/fonts/Poppins-Bold.ttf"),
-  //   "Poppins-Regular": require("./../assets/fonts/Poppins-Regular.ttf"),
-  //   "Poppins-SemiBold": require("./../assets/fonts/Poppins-SemiBold.ttf"),
-  //   "Poppins-Medium": require("./../assets/fonts/Poppins-Medium.ttf"),
-  //   "Poppins-LightItalic": require("./../assets/fonts/Poppins-LightItalic.ttf"),
-  // });
 
-  // if (!fontsLoaded) {
-  //   return null;
-  // }
   const [loading, setLoading] = useState(true);
   const data = [
     {
@@ -62,7 +52,6 @@ const AkunScreen = () => {
   const [userSession, setUserSession] = useState([
     {
       uid: null,
-      fase: null,
       id_kat: null,
       kategori: null,
       nama: null,
@@ -84,7 +73,6 @@ const AkunScreen = () => {
   ]);
   const getSession = async () => {
     const uid = await AsyncStorage.getItem("uid");
-    const fase = await AsyncStorage.getItem("fase");
     const id_kat = await AsyncStorage.getItem("id_kat");
     const kategori = await AsyncStorage.getItem("kategori");
     const nama = await AsyncStorage.getItem("nama");
@@ -93,7 +81,6 @@ const AkunScreen = () => {
     const session = [];
     session.push({
       uid: uid,
-      fase: fase,
       id_kat: id_kat,
       kategori: kategori,
       nama: nama,
@@ -237,23 +224,6 @@ const AkunScreen = () => {
             </View>
           </View>
 
-          <View style={styles.box}>
-            <View style={{ flexDirection: "row", width: "100%" }}>
-              <View style={styles.box_image}>
-                <Image
-                  style={styles.img_style}
-                  source={require("../assets/icon/fase_fill.png")}
-                />
-              </View>
-              <View style={styles.judul_style}>
-                <Text style={styles.judul_isi}>Fase Pengobatan</Text>
-              </View>
-              <View style={styles.ket_style}>
-                <Text style={styles.ket_isi}>{userSession[0].fase}</Text>
-              </View>
-            </View>
-          </View>
-
           <View style={styles.box_2}>
             <View style={{ height: 50, justifyContent: "center" }}>
               <Text
@@ -343,26 +313,6 @@ const AkunScreen = () => {
               </View>
             </TouchableOpacity>
           </View>
-
-          {/* <View style={styles.box}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate("Konfirmasi")}
-              style={{ flexDirection: "row", width: "100%" }}
-            >
-              <View style={styles.box_image}>
-                <Image
-                  style={styles.img_style}
-                  source={require("../assets/icon/logout.png")}
-                />
-              </View>
-              <View style={styles.judul_style}>
-                <Text style={styles.judul_isi}>Ke Halaman Konfirmasi</Text>
-              </View>
-              <View style={styles.ket_style}>
-                <Text style={styles.ket_isi}></Text>
-              </View>
-            </TouchableOpacity>
-          </View> */}
         </View>
       )}
     </View>

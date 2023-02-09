@@ -49,6 +49,7 @@ const LoginScreen = () => {
   }
 
   const onSubmit = async () => {
+    // console.warn(password);
     fetch("https://afanalfiandi.com/ppmo/api/api.php?op=login", {
       method: "POST",
       headers: {
@@ -66,8 +67,6 @@ const LoginScreen = () => {
         setTimeout(async () => {
           if (response != 0) {
             const uid = response.id_user;
-            const fase = response.fase;
-            const id_fase = response.id_fase_detail;
             const id_kat = response.id_kategori_detail;
             const kategori = response.kategori;
             const nama = response.nama;
@@ -75,15 +74,13 @@ const LoginScreen = () => {
 
             AsyncStorage.setItem("loggedIn", "1");
             AsyncStorage.setItem("uid", uid);
-            AsyncStorage.setItem("fase", fase);
-            AsyncStorage.setItem("id_fase", id_fase);
             AsyncStorage.setItem("id_kat", id_kat);
             AsyncStorage.setItem("kategori", kategori);
             AsyncStorage.setItem("nama", nama);
             AsyncStorage.setItem("username", username);
 
             setLoading(false);
-            navigation.navigate("Tab1");
+            navigation.navigate("AlarmScreen");
           } else {
             Alert.alert("", "Login Gagal!");
             setLoading(false);

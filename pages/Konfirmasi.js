@@ -137,6 +137,8 @@ const Konfirmasi = () => {
     const status = 1;
     const day = hari;
     const tgl = moment(date).format("YYYY-MM-DD");
+    const fase = await AsyncStorage.getItem("id_fase");
+    const kategori = await AsyncStorage.getItem("id_kat");
 
     fetch("https://afanalfiandi.com/ppmo/api/api.php?op=submitAlarm", {
       method: "POST",
@@ -149,6 +151,8 @@ const Konfirmasi = () => {
         status: status,
         hari: day,
         tgl: tgl,
+        fase: fase,
+        kategori: kategori,
       }),
     })
       .then((res) => res.json())
@@ -161,10 +165,9 @@ const Konfirmasi = () => {
                 text: "OK",
                 onPress: () => {
                   navigation.reset({
-                    index: 0,
                     routes: [
                       {
-                        name: "Tab1",
+                        name: "AlarmScreen",
                       },
                     ],
                   });
@@ -177,6 +180,8 @@ const Konfirmasi = () => {
                 text: "OK",
               },
             ]);
+
+            setLoading(false);
           }
         }, 2000);
       });

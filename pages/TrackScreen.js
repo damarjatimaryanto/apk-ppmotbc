@@ -15,7 +15,12 @@ import { useFonts } from "expo-font";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FlatList } from "react-native-gesture-handler";
 
-const COLORS = { primary: "#1E319D", white: "#FFFFFF", abu1: "#F6F6F6" };
+const COLORS = {
+  primary: "#1E319D",
+  white: "#FFFFFF",
+  abu1: "#F6F6F6",
+  blue_soft: "#F2F8FD",
+};
 const width = Dimensions.get("screen").width;
 const height = Dimensions.get("screen").height;
 const TrackScreen = () => {
@@ -68,23 +73,26 @@ const TrackScreen = () => {
     })
       .then((res) => res.json())
       .then((resp) => {
-        const result = [];
+        if (resp != null) {
+          const result = [];
+          resp.map((item, index) => {
+            result.push({
+              [item.tgl]: {
+                disabled: true,
+                startingDay: true,
+                color: COLORS.primary,
+                endingDay: true,
+                textColor: "white",
+              },
+            });
 
-        resp.map((item, index) => {
-          result.push({
-            [item.tgl]: {
-              disabled: true,
-              startingDay: true,
-              color: COLORS.primary,
-              endingDay: true,
-              textColor: "white",
-            },
+            const output = Object.assign({}, ...result);
+
+            setMarkedDate(output);
           });
-
-          const output = Object.assign({}, ...result);
-
-          setMarkedDate(output);
-        });
+        } else {
+          setMarkedDate(null);
+        }
       });
   };
   useEffect(() => {

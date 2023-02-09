@@ -44,7 +44,192 @@ const App = () => {
   }
   return (
     <NavigationContainer>
-      <Stack.Navigator
+      <Tab.Navigator
+        initialRouteName="SplashScreen"
+        screenOptions={{
+          headerTitleStyle: {
+            fontSize: 20,
+            fontFamily: "Poppins-Medium",
+            color: COLORS.primary,
+          },
+          headerStyle: {
+            backgroundColor: COLORS.white,
+            elevation: 3,
+          },
+          headerTitleAlign: "center",
+          tabBarHideOnKeyboard: true,
+          tabBarShowLabel: false,
+          tabBarStyle: {
+            backgroundColor: "#1E319D",
+            position: "absolute",
+            bottom: 15,
+            marginHorizontal: 40,
+            elevation: 0,
+            borderRadius: 15,
+            height: 55,
+            // ...styles.shadow,
+          },
+        }}
+      >
+        <Tab.Screen
+          name="SplashSCreen"
+          component={SplashScreen}
+          options={{
+            headerShown: false,
+            tabBarStyle: { display: "none" },
+            tabBarButton: () => null,
+          }}
+        />
+        <Tab.Screen
+          name="IntroScreen"
+          component={IntroScreen}
+          options={{
+            headerShown: false,
+            tabBarStyle: { display: "none" },
+            tabBarButton: () => null,
+          }}
+        />
+        <Tab.Screen
+          name="LoginScreen"
+          component={LoginScreen}
+          options={{
+            headerShown: false,
+            tabBarStyle: { display: "none" },
+            tabBarButton: () => null,
+          }}
+        />
+        <Tab.Screen
+          name="RegisterScreen"
+          component={RegisterScreen}
+          options={{
+            headerShown: false,
+            tabBarStyle: { display: "none" },
+            tabBarButton: () => null,
+          }}
+        />
+        <Tab.Screen
+          name="Konfirmasi"
+          component={Konfirmasi}
+          options={{
+            tabBarStyle: { display: "none" },
+            tabBarButton: () => null,
+          }}
+        />
+        <Tab.Screen
+          name="AlarmScreen"
+          component={AlarmScreen}
+          options={{
+            title: "Alarm",
+            // tabBarStyle: {display: 'none'},
+            tabBarIcon: ({ focused }) => {
+              return (
+                <View style={styles.buttonicon}>
+                  <Image
+                    source={
+                      focused
+                        ? require("./assets/icon/bell_fill.png")
+                        : require("./assets/icon/bell.png")
+                    }
+                    resizeMode="contain"
+                    style={{
+                      alignItems: "center",
+                      width: 25,
+                      height: 25,
+                      tintColor: focused ? "#FFFFFF" : "#B2B6C1",
+                    }}
+                  />
+                  <Text
+                    style={{
+                      color: focused ? "#FFFFFF" : "#B2B6C1",
+                      fontSize: 13,
+                      alignItems: "center",
+                      fontFamily: "Poppins-Regular",
+                    }}
+                  >
+                    Alarm
+                  </Text>
+                </View>
+              );
+            },
+          }}
+        />
+        <Tab.Screen
+          name="TrackScreen"
+          component={TrackScreen}
+          options={{
+            title: "Progress",
+            tabBarIcon: ({ focused }) => {
+              return (
+                <View style={styles.buttonicon}>
+                  <Image
+                    source={
+                      focused
+                        ? require("./assets/icon/chart_fill.png")
+                        : require("./assets/icon/chart.png")
+                    }
+                    resizeMode="contain"
+                    style={{
+                      alignItems: "center",
+                      width: 25,
+                      height: 25,
+                      tintColor: focused ? "#FFFFFF" : "#B2B6C1",
+                    }}
+                  />
+                  <Text
+                    style={{
+                      color: focused ? "#FFFFFF" : "#B2B6C1",
+                      fontSize: 13,
+                      alignItems: "center",
+                      fontFamily: "Poppins-Regular",
+                    }}
+                  >
+                    Progress
+                  </Text>
+                </View>
+              );
+            },
+          }}
+        />
+
+        <Tab.Screen
+          name="AkunScreen"
+          component={AkunScreen}
+          options={{
+            title: "Akun",
+            tabBarIcon: ({ focused }) => {
+              return (
+                <View style={styles.buttonicon}>
+                  <Image
+                    source={
+                      focused
+                        ? require("./assets/icon/person_fill.png")
+                        : require("./assets/icon/person.png")
+                    }
+                    resizeMode="contain"
+                    style={{
+                      width: 25,
+                      height: 25,
+                      tintColor: focused ? "#FFFFFF" : "#B2B6C1",
+                    }}
+                  />
+                  <Text
+                    style={{
+                      color: focused ? "#FFFFFF" : "#B2B6C1",
+                      fontSize: 13,
+                      alignItems: "center",
+                      fontFamily: "Poppins-Regular",
+                    }}
+                  >
+                    Akun
+                  </Text>
+                </View>
+              );
+            },
+          }}
+        />
+      </Tab.Navigator>
+
+      {/* <Stack.Navigator
         initialRouteName="SplashScreen"
         screenOptions={{
           headerTitleStyle: {
@@ -81,16 +266,17 @@ const App = () => {
           component={RegisterScreen}
           options={{ headerShown: false }}
         />
+
         <Stack.Screen name="Konfirmasi" component={Konfirmasi} />
-        {/* <Stack.Screen
+        <Stack.Screen
           name="BuatalarmScreen"
           component={BuatalarmScreen}
           options={{
             title: 'Tambah Alarm',
             headerShadowVisible: false,
           }}
-        /> */}
-      </Stack.Navigator>
+        />
+      </Stack.Navigator> */}
     </NavigationContainer>
   );
 };
@@ -235,6 +421,11 @@ export function Tab1() {
             );
           },
         }}
+      />
+      <Tab.Screen
+        name="AlarmSreen"
+        component={AlarmScreen}
+        options={{ tabBarStyle: { display: "none" }, tabBarButton: () => null }}
       />
     </Tab.Navigator>
   );
