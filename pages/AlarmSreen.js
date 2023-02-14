@@ -36,7 +36,6 @@ import moment, { min } from "moment";
 import Modal from "react-native-modal";
 import * as Notifications from "expo-notifications";
 
-const countries = ["Fase Intensif (Ke 1)", "Fase Lanjutan ( Ke 2)"];
 const kategori = ["Pasien Baru", "Pasien Lama"];
 const dataHari = [
   {
@@ -83,7 +82,6 @@ const AlarmScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
 
   const [modal, setModal] = useState(false);
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
   const [isModalMetu, setModalMetu] = useState(false);
   const [isFaseKaton, setFaseKaton] = useState(false);
@@ -273,7 +271,6 @@ const AlarmScreen = () => {
       hariAlarm.push(hariNumb);
       setHariAlarm(hariAlarm);
     } else {
-      // console.warn("maksimal hari sudah terpenuhi " + hariAlarm.length);
       ToastAndroid.show(
         "Jumlah hari yang dipilih sudah mencapai maximal!",
         ToastAndroid.SHORT
@@ -411,6 +408,66 @@ const AlarmScreen = () => {
         }, 2000);
       });
   };
+
+  const onSubmitExtend = async () => {
+    const id_user = await AsyncStorage.getItem("uid");
+    const hrs = parseFloat(hours);
+    const min = parseFloat(minutes);
+    const startDate = new Date();
+    const newDate = moment(startDate).format("YYYY-MM-DD");
+    const endDate = moment(startDate).add(lamaPengobatan, "days").toDate();
+    const newEndDate = moment(endDate).format("YYYY-MM-DD");
+
+    const satu = hariAlarm[0];
+    const dua = hariAlarm[1];
+    const tiga = hariAlarm[2];
+
+    // insert
+    fetch("https://afanalfiandi.com/ppmo/api/api.php?op=insAlarmExtend", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: id_user,
+        jam: jam,
+        hari_satu: satu,
+        hari_dua: dua,
+        hari_tiga: tiga,
+        fase: fase,
+        start: newDate,
+        end: newEndDate,
+        lama_pengobatan: lamaPengobatan
+      }),
+    })
+      .then((res) => res.json())
+      .then((resp) => {
+        setLoading(true);
+        setTimeout(async () => {
+          if (hariAlarm.length < 3) {
+            ToastAndroid.show("Hari harus 3!", ToastAndroid.SHORT);
+            setLoading(false);
+          } else {
+            if (resp == 1) {
+              Alert.alert("", "Alarm berhasil ditambahkan");
+              setLoading(false);
+              getAlarm();
+              hariAlarm.map((d) => {
+                lanjutanNotification(hrs, min, d);
+              });
+              AsyncStorage.setItem("id_fase", fase);
+              setModalVisible(false);
+            } else {
+              Alert.alert("", "Alarm gagal ditambahkan");
+              setLoading(false);
+              setModalVisible(false);
+            }
+          }
+        }, 2000);
+      });
+
+  }
   // notif
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
@@ -445,7 +502,6 @@ const AlarmScreen = () => {
   }
 
   async function lanjutanNotification(h, m, day) {
-    // console.log(day);
     await Notifications.setNotificationChannelAsync("Minum Obat", {
       name: "Notifikasi Pengingat Minum Obat",
       importance: Notifications.AndroidImportance.HIGH,
@@ -482,11 +538,9 @@ const AlarmScreen = () => {
     <View>
       <TouchableOpacity
         style={{
-          // width: "100%",
           height: 40,
           backgroundColor: "white",
           justifyContent: "center",
-          // alignItems: "center",
           borderRadius: 10,
           marginVertical: 4,
         }}
@@ -554,8 +608,7 @@ const AlarmScreen = () => {
     setRefresh(Math.random());
   }, [lastNotificationResponse]);
 
-  // useFocusEffect(() => {
-  // });
+
   return (
     <ScrollView
       style={[styles.container, { padding: 15 }]}
@@ -617,23 +670,17 @@ const AlarmScreen = () => {
       </Modal>
 
       {/* // TODO Modal ALARM OPTIONAL*/}
-
       <Modal
         isVisible={isModalVisible}
         onBackdropPress={() => setModalVisible(false)}
         animationOutTiming={1500}
         animationInTiming={1500}
-        // animationIn={"fadeIn"}
-        // animationOut={"fadeOut"}
+      // animationIn={"fadeIn"}
+      // animationOut={"fadeOut"}
       >
         <View
           style={{
             backgroundColor: COLORS.white,
-            // flex: 1,
-            // margin: -20,
-            // justifyContent: "center",
-            // alignItems: "center",
-            // height: 600,
             borderRadius: 10,
             paddingBottom: 30,
           }}
@@ -641,7 +688,6 @@ const AlarmScreen = () => {
           <View
             style={{
               flexDirection: "row",
-              // backgroundColor: "yellow",
               justifyContent: "flex-end",
             }}
           >
@@ -695,7 +741,6 @@ const AlarmScreen = () => {
             <TouchableOpacity
               onPress={showDatePicker}
               style={{
-                // backgroundColor: "#F2F3FC",
                 height: 120,
                 width: "80%",
                 justifyContent: "center",
@@ -731,7 +776,6 @@ const AlarmScreen = () => {
             style={{
               flexDirection: "row",
               height: 50,
-              // backgroundColor: "yellow",
               justifyContent: "center",
               alignItems: "center",
               marginVertical: 10,
@@ -739,8 +783,7 @@ const AlarmScreen = () => {
           >
             {dataHari.map((hr, index) => (
               <TouchableOpacity
-                // style={fase == "1" ? styles.boxhari_blue : styles.boxhari_grey}
-                style={styles.boxhari_grey}
+                style={hariAlarm[index] == hr.key ? styles.boxhari_blue : styles.boxhari_grey}
                 disabled={fase == "1" ? true : false}
                 onPress={() => {
                   pilihHari(hr.key);
@@ -748,10 +791,7 @@ const AlarmScreen = () => {
                 key={hr.key}
               >
                 <Text
-                  style={{
-                    color: fase == "1" ? COLORS.white : COLORS.primary,
-                    fontFamily: "Poppins-Regular",
-                  }}
+                  style={[hariAlarm[index] == hr.key ? { color: COLORS.white } : { color: COLORS.primary }, { fontFamily: "Poppins-Regular" }]}
                 >
                   {hr.hari[0]}
                 </Text>
@@ -760,7 +800,6 @@ const AlarmScreen = () => {
           </View>
           <View
             style={{
-              // backgroundColor: "grey",
               height: 100,
               flexDirection: "row",
               justifyContent: "space-evenly",
@@ -769,12 +808,8 @@ const AlarmScreen = () => {
           >
             <View
               style={{
-                // width: "80%",
-                // justifyContent: "center",
-                // alignItems: "center",
                 height: 50,
                 width: "50%",
-                // backgroundColor: "pink",
               }}
             >
               <Text
@@ -782,7 +817,6 @@ const AlarmScreen = () => {
                   color: "black",
                   fontFamily: "Poppins-Medium",
                   fontSize: 14,
-                  // textAlign: "center",
                 }}
               >
                 Fase
@@ -829,11 +863,8 @@ const AlarmScreen = () => {
               style={{
                 width: "30%",
                 justifyContent: "center",
-                // alignItems: "center",
                 height: 50,
-                // width: "100%",
                 marginTop: 20,
-                // backgroundColor: "yellow",
               }}
             >
               <Text
@@ -841,7 +872,6 @@ const AlarmScreen = () => {
                   color: "black",
                   fontFamily: "Poppins-Medium",
                   fontSize: 14,
-                  // textAlign: "center",
                 }}
               >
                 Hari Ke
@@ -875,6 +905,59 @@ const AlarmScreen = () => {
             </View>
           </View>
 
+          {fase == '3' && (
+            <View
+              style={{
+                height: 100,
+                marginHorizontal: 25,
+                marginTop: 10
+              }}
+            >
+              <View
+                style={{
+                  height: 50,
+                  width: "100%",
+                }}
+              >
+                <Text
+                  style={{
+                    color: "black",
+                    fontFamily: "Poppins-Medium",
+                    fontSize: 14,
+                  }}
+                >
+                  Lama Pengobatan (Hari)
+                </Text>
+                <View
+                  style={{
+                    backgroundColor: "#F2F3FC",
+                    width: "100%",
+                    height: "100%",
+                    borderRadius: 10,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <TextInput
+                    textAlign="center"
+                    style={{
+                      opacity: userData[0].id_kat == 1 ? 0.6 : 1,
+                      fontFamily: "Poppins-Medium",
+                      fontSize: 16,
+                      color: "black",
+                      width: 30,
+                    }}
+                    placeholderTextColor={black}
+                    keyboardType="number-pad"
+                    placeholder="0"
+                    onChangeText={setLamaPengobatan}
+                    value={lamaPengobatan}
+                  />
+                </View>
+              </View>
+            </View>
+          )}
+
           <View
             style={{
               justifyContent: "center",
@@ -882,7 +965,6 @@ const AlarmScreen = () => {
               height: 50,
               width: "100%",
               marginTop: 30,
-              // backgroundColor: "yellow",
             }}
           >
             <TouchableOpacity
@@ -892,6 +974,8 @@ const AlarmScreen = () => {
                   onSubmit();
                 } else if (fase == "2") {
                   onSubmitLanjutan();
+                } else {
+                  onSubmitExtend();
                 }
               }}
             >
@@ -909,8 +993,8 @@ const AlarmScreen = () => {
         animationInTiming={2000}
         animationIn={"fadeIn"}
         animationOut={"fadeOut"}
-        // deviceHeight={height}
-        // deviceWidth={width}
+      // deviceHeight={height}
+      // deviceWidth={width}
       >
         <View
           style={{
@@ -935,10 +1019,6 @@ const AlarmScreen = () => {
                 borderRadius: 90,
                 borderWidth: 2,
                 borderColor: COLORS.white,
-                // position: "absolute",
-                // zIndex: 1,
-                // bottom: 1,
-                // padding: 4,
                 alignItems: "center",
                 justifyContent: "center",
               }}
@@ -958,7 +1038,6 @@ const AlarmScreen = () => {
             style={{
               height: 150,
               width: "100%",
-              // backgroundColor: "yellow",
               justifyContent: "center",
               alignItems: "center",
             }}
@@ -1016,155 +1095,159 @@ const AlarmScreen = () => {
 
       {/* jika loading selesai dan tidak ada data alarm */}
 
-      {loading != true && data == null && (
-        <View
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            paddingTop: "35%",
-            // width: "90%",
-            // paddingHorizontal: 10,
-          }}
-        >
-          <Image
-            style={{ width: 230, height: 187 }}
-            source={require("../assets/icon/illus_alarm.png")}
-          />
+      {
+        loading != true && data == null && (
           <View
             style={{
               justifyContent: "center",
               alignItems: "center",
-              height: 100,
-              width: "90%",
-              paddingHorizontal: 10,
+              paddingTop: "35%",
+              // width: "90%",
+              // paddingHorizontal: 10,
             }}
           >
-            <Text
-              style={{
-                color: COLORS.primary,
-                fontSize: 18,
-                fontFamily: "Poppins-Medium",
-              }}
-            >
-              Ayo Mulai !
-            </Text>
-            <Text
-              style={{
-                color: "grey",
-                fontSize: 14,
-                textAlign: "center",
-                fontFamily: "Poppins-LightItalic",
-              }}
-            >
-              Track record harian anda dalam kepatuhan meminum obat akan muncul
-              disini.
-            </Text>
-          </View>
-          <TouchableOpacity
-            style={[styles.floatingbutton, { marginTop: 20 }]}
-            onPress={toggleModal}
-          >
+            <Image
+              style={{ width: 230, height: 187 }}
+              source={require("../assets/icon/illus_alarm.png")}
+            />
             <View
               style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
+                justifyContent: "center",
                 alignItems: "center",
+                height: 100,
+                width: "90%",
+                paddingHorizontal: 10,
               }}
             >
               <Text
                 style={{
-                  fontSize: 16,
-                  color: COLORS.white,
-                  margin: 10,
-                  fontFamily: "Poppins-Regular",
+                  color: COLORS.primary,
+                  fontSize: 18,
+                  fontFamily: "Poppins-Medium",
                 }}
               >
-                Tambah Alarm
+                Ayo Mulai !
+              </Text>
+              <Text
+                style={{
+                  color: "grey",
+                  fontSize: 14,
+                  textAlign: "center",
+                  fontFamily: "Poppins-LightItalic",
+                }}
+              >
+                Track record harian anda dalam kepatuhan meminum obat akan muncul
+                disini.
               </Text>
             </View>
-          </TouchableOpacity>
-        </View>
-      )}
+            <TouchableOpacity
+              style={[styles.floatingbutton, { marginTop: 20 }]}
+              onPress={toggleModal}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 16,
+                    color: COLORS.white,
+                    margin: 10,
+                    fontFamily: "Poppins-Regular",
+                  }}
+                >
+                  Tambah Alarm
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        )
+      }
 
       {/* jika loading selesai dan  ada data alarm */}
-      {loading != true && data != null && (
-        <TouchableOpacity
-          onPress={() => navigation.navigate("Konfirmasi")}
-          style={styles.box}
-          disabled={today != null ? true : false}
-        >
-          <View style={styles.jam}>
-            <Text
-              style={{
-                fontFamily: "Poppins-SemiBold",
-                fontSize: 30,
-                color: COLORS.primary,
-              }}
-            >
-              {data[0].jam}
-            </Text>
-
-            {data[0].id_fase == "1" && (
+      {
+        loading != true && data != null && (
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Konfirmasi")}
+            style={styles.box}
+            disabled={today != null ? true : false}
+          >
+            <View style={styles.jam}>
               <Text
                 style={{
                   fontFamily: "Poppins-SemiBold",
-                  fontSize: 14,
+                  fontSize: 30,
                   color: COLORS.primary,
                 }}
               >
-                Setiap Hari
+                {data[0].jam}
               </Text>
-            )}
-            {data[0].id_fase == "2" && (
+
+              {data[0].id_fase == "1" && (
+                <Text
+                  style={{
+                    fontFamily: "Poppins-SemiBold",
+                    fontSize: 14,
+                    color: COLORS.primary,
+                  }}
+                >
+                  Setiap Hari
+                </Text>
+              )}
+              {data[0].id_fase == "2" && (
+                <Text
+                  style={{
+                    fontFamily: "Poppins-SemiBold",
+                    fontSize: 14,
+                    color: COLORS.primary,
+                  }}
+                >
+                  {labelHariSatu} , {labelHariDua} , {labelHariTiga}
+                </Text>
+              )}
+            </View>
+            <View style={styles.keterangan}>
               <Text
                 style={{
-                  fontFamily: "Poppins-SemiBold",
-                  fontSize: 14,
+                  fontFamily: "Poppins-Bold",
+                  fontSize: 20,
                   color: COLORS.primary,
                 }}
               >
-                {labelHariSatu} , {labelHariDua} , {labelHariTiga}
+                {userData[0].kategori}
               </Text>
-            )}
-          </View>
-          <View style={styles.keterangan}>
-            <Text
-              style={{
-                fontFamily: "Poppins-Bold",
-                fontSize: 20,
-                color: COLORS.primary,
-              }}
-            >
-              {userData[0].kategori}
-            </Text>
-            <Text
-              style={{
-                fontFamily: "Poppins-Regular",
-                fontSize: 16,
-                color: COLORS.primary,
-              }}
-            >
-              {userData[0].fase}
-            </Text>
-          </View>
-          <View style={styles.gmbar_container}>
-            {today == null && (
-              <Image
-                style={{ width: 50, height: 50 }}
-                source={require("../assets/icon/bell_normal.png")}
-              />
-            )}
+              <Text
+                style={{
+                  fontFamily: "Poppins-Regular",
+                  fontSize: 16,
+                  color: COLORS.primary,
+                }}
+              >
+                {userData[0].fase}
+              </Text>
+            </View>
+            <View style={styles.gmbar_container}>
+              {today == null && (
+                <Image
+                  style={{ width: 50, height: 50 }}
+                  source={require("../assets/icon/bell_normal.png")}
+                />
+              )}
 
-            {today != null && (
-              <Image
-                style={{ width: 50, height: 50 }}
-                source={require("../assets/icon/bell_check.png")}
-              />
-            )}
-          </View>
-        </TouchableOpacity>
-      )}
-    </ScrollView>
+              {today != null && (
+                <Image
+                  style={{ width: 50, height: 50 }}
+                  source={require("../assets/icon/bell_check.png")}
+                />
+              )}
+            </View>
+          </TouchableOpacity>
+        )
+      }
+    </ScrollView >
   );
 };
 
@@ -1191,9 +1274,6 @@ const styles = StyleSheet.create({
   floatingbutton: {
     alignItems: "center",
     justifyContent: "center",
-    // position: 'absolute',
-    // bottom: 90,
-    // right: 20,
     width: 300,
     backgroundColor: COLORS.primary,
     borderRadius: 10,
@@ -1218,7 +1298,6 @@ const styles = StyleSheet.create({
     padding: "5%",
     marginTop: 15,
     shadowColor: "black",
-    // borderRadius: 5,
     shadowOffset: {
       width: 6,
       height: 4,
@@ -1231,16 +1310,13 @@ const styles = StyleSheet.create({
   jam: {
     justifyContent: "center",
     alignItems: "center",
-    // backgroundColor: 'yellow',
   },
   keterangan: {
-    // backgroundColor: 'grey',
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
   },
   gmbar_container: {
-    // backgroundColor: 'red',
     justifyContent: "center",
     alignItems: "center",
   },
@@ -1272,7 +1348,6 @@ const styles = StyleSheet.create({
   },
 
   centeredView_2: {
-    // flex: 1,
     justifyContent: "center",
     alignItems: "center",
     width: width - 20,
@@ -1282,14 +1357,11 @@ const styles = StyleSheet.create({
     height: height,
   },
   modalView_2: {
-    // margin: 20,
     width: width - 20,
     height: height - 30,
     paddingTop: 85,
     backgroundColor: "white",
     borderRadius: 10,
-
-    // marginVertical: 40,
     alignItems: "center",
     justifyContent: "center",
     padding: 10,
@@ -1314,7 +1386,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: "80%",
     marginVertical: 10,
-    // backgroundColor: "yellow",
   },
 
   btn_Container: {
@@ -1338,8 +1409,6 @@ const styles = StyleSheet.create({
   },
 
   input_horizontal_2: {
-    // borderWidth: 2,
-    // borderColor: COLORS.primary,
     backgroundColor: COLORS.primary,
     paddingVertical: width * 0.013,
     paddingHorizontal: width * 0.04,
@@ -1380,10 +1449,7 @@ const styles = StyleSheet.create({
   },
   imgContainer: {
     paddingHorizontal: width * 0.095,
-    // justifyContent: "center",
-    // alignItems: "center",
     paddingTop: "30%",
-    // height: "30%",
   },
   formContainer: {
     paddingHorizontal: width * 0.095,
@@ -1392,21 +1458,15 @@ const styles = StyleSheet.create({
   inputContainer: {
     marginBottom: 15,
     flexDirection: "row",
-    // justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#F2F3FC",
     borderRadius: 5,
   },
   input: {
-    // borderWidth: 2,
-    // borderColor: COLORS.primary,
-    // paddingVertical: width * 0.013,
-    // paddingHorizontal: width * 0.04,
     height: 50,
     borderRadius: 10,
     color: "black",
     paddingTop: 6,
-    // backgroundColor: "#D4D4D4",
     fontSize: 16,
     fontFamily: "Poppins-Regular",
   },
@@ -1414,7 +1474,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: "Poppins-Regular",
     color: grey,
-    // textAlign: "center",
     marginBottom: 15,
   },
   h2: {
@@ -1428,7 +1487,6 @@ const styles = StyleSheet.create({
     width: 18,
     height: 18,
     tintColor: blue_icon,
-    // backgroundColor: blue_icon,
   },
   submitBtn: {
     backgroundColor: COLORS.primary,
