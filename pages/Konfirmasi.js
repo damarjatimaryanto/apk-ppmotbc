@@ -247,7 +247,15 @@ const Konfirmasi = () => {
             <Text style={styles.judul_isi}>Fase </Text>
           </View>
           <View style={styles.ket_style}>
-            <Text style={styles.ket_isi}>: {userSession[0].fase}</Text>
+            {userSession[0].id_fase == "1" && (
+              <Text style={styles.ket_isi}>: Fase Insentif</Text>
+            )}
+            {userSession[0].id_fase == "2" && (
+              <Text style={styles.ket_isi}>: Fase Lanjutan</Text>
+            )}
+            {userSession[0].id_fase == "3" && (
+              <Text style={styles.ket_isi}>: Fase Extend</Text>
+            )}
           </View>
         </View>
       </View>

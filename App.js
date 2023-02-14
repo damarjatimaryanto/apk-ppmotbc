@@ -8,9 +8,10 @@ import {
   BackHandler,
   Alert,
   Button,
+  TouchableOpacity,
 } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React, { useRef, useEffect, useCallback } from "react";
 import { useFonts } from "expo-font";
@@ -26,12 +27,14 @@ import RegisterScreen from "./pages/RegisterScreen";
 // import Akun from './pages/Akun';
 import AkunScreen from "./pages/AkunScreen";
 import Konfirmasi from "./pages/Konfirmasi";
+import { AntDesign } from "@expo/vector-icons";
 
 const COLORS = { primary: "#1E319D", white: "#FFFFFF" };
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 const App = () => {
+  // const navigation = useNavigation();
   const [fontsLoaded] = useFonts({
     "Poppins-Bold": require("./assets/fonts/Poppins-Bold.ttf"),
     "Poppins-Regular": require("./assets/fonts/Poppins-Regular.ttf"),
@@ -113,6 +116,11 @@ const App = () => {
           options={{
             tabBarStyle: { display: "none" },
             tabBarButton: () => null,
+            headerLeft: () => (
+              <TouchableOpacity style={{ paddingLeft: 15 }}>
+                <AntDesign name="arrowleft" size={20} color={COLORS.primary} />
+              </TouchableOpacity>
+            ),
           }}
         />
         <Tab.Screen

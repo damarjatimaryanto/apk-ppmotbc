@@ -34,15 +34,15 @@ const SplashScreen = () => {
     const loggedIn = await AsyncStorage.getItem("loggedIn");
     const intro = await AsyncStorage.getItem("intro");
     setTimeout(async () => {
-      // if (intro == 1 && loggedIn == 1) {
-      //   navigation.navigate("AlarmScreen");
-      // } else if (intro != 1 && loggedIn != 1) {
-      navigation.navigate("IntroScreen");
-      // } else if (intro == 1 && loggedIn != 1) {
-      //   navigation.navigate("LoginScreen");
-      // } else {
-      //   navigation.navigate("IntroScreen");
-      // }
+      if (intro == 1 && loggedIn == 1) {
+        navigation.navigate("AlarmScreen");
+      } else if (intro != 1 && loggedIn != 1) {
+        navigation.navigate("IntroScreen");
+      } else if (intro == 1 && loggedIn != 1) {
+        navigation.navigate("LoginScreen");
+      } else {
+        navigation.navigate("IntroScreen");
+      }
     }, 3000);
   };
 

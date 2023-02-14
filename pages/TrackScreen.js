@@ -14,7 +14,8 @@ import { Calendar, Agenda } from "react-native-calendars";
 import { useFonts } from "expo-font";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FlatList } from "react-native-gesture-handler";
-
+import moment from "moment";
+import "moment/locale/id";
 const COLORS = {
   primary: "#1E319D",
   white: "#FFFFFF",
@@ -221,6 +222,17 @@ const TrackScreen = () => {
       {selectedDate == "" && <View></View>}
       {selectedDate != null && selectedDate != "" && (
         <View style={styles.box}>
+          <View style={styles.baris}>
+            <View style={styles.judul_style}>
+              <Text style={styles.judul_isi}>Tgl</Text>
+            </View>
+            <View style={styles.ket_style}>
+              <Text style={styles.ket_isi}>
+                : {moment(selectedDate.tgl).format("dddd")},{" "}
+                {moment(selectedDate.tgl).format("DD MMMM YYYY")}
+              </Text>
+            </View>
+          </View>
           <View style={styles.baris}>
             <View style={styles.judul_style}>
               <Text style={styles.judul_isi}>Hari Ke</Text>

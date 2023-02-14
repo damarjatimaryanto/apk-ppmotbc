@@ -356,15 +356,14 @@ const styles = StyleSheet.create({
     height: 330,
     justifyContent: "center",
     alignItems: "center",
-    shadowColor: "black",
+    borderWidth: 1,
     // borderRadius: 5,
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 0.4,
-
+    borderColor: "#ddd",
+    borderBottomWidth: 0,
+    shadowColor: "#000000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.9,
+    shadowRadius: 3,
     elevation: 5,
   },
   box_image: {
