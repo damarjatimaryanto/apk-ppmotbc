@@ -108,10 +108,16 @@ const RegisterScreen = () => {
         setLoading(true);
         setTimeout(() => {
           if (response == 1) {
-            Alert.alert("", "Registrasi Berhasil!");
-            navigation.navigate("LoginScreen");
+            Alert.alert("", "Registrasi Berhasil!", [
+              {
+                onPress: () => {
+                  navigation.navigate("LoginScreen");
+                },
+              },
+            ]);
           } else {
             Alert.alert("", "Registrasi Gagal!");
+            setLoading(false);
           }
         }, 3000);
       });
@@ -121,11 +127,9 @@ const RegisterScreen = () => {
     <View>
       <TouchableOpacity
         style={{
-          // width: "100%",
           height: 40,
           backgroundColor: "white",
           justifyContent: "center",
-          // alignItems: "center",
           borderRadius: 10,
           marginVertical: 4,
         }}
@@ -158,11 +162,9 @@ const RegisterScreen = () => {
     <View>
       <TouchableOpacity
         style={{
-          // width: "100%",
           height: 40,
           backgroundColor: "white",
           justifyContent: "center",
-          // alignItems: "center",
           borderRadius: 10,
           marginVertical: 4,
         }}
@@ -210,8 +212,6 @@ const RegisterScreen = () => {
             alignItems: "center",
             height: "100%",
             width: "100%",
-
-            // backgroundColor: grey,
           }}
         >
           <ActivityIndicator size="large" color={COLORS.primary} />
@@ -229,7 +229,6 @@ const RegisterScreen = () => {
           <View
             style={{
               flexDirection: "row",
-              // backgroundColor: "white",
               width: width * 0.6,
               borderRadius: 10,
             }}
@@ -254,7 +253,6 @@ const RegisterScreen = () => {
           <View
             style={{
               flexDirection: "row",
-              // backgroundColor: "white",
               width: width * 0.6,
               borderRadius: 10,
             }}
@@ -285,7 +283,6 @@ const RegisterScreen = () => {
 
         <Text style={styles.h2}>Nama Lengkap</Text>
         <View style={styles.inputContainer}>
-          {/* <Text style={styles.h2}>Username :</Text> */}
           <View style={{ width: "15%", alignItems: "center" }}>
             <Image
               style={styles.icon_style}
@@ -325,7 +322,6 @@ const RegisterScreen = () => {
 
         <Text style={styles.h2}>Password</Text>
         <View style={styles.inputContainer}>
-          {/* <Text style={styles.h2}>Username :</Text> */}
           <View style={{ width: "15%", alignItems: "center" }}>
             <Image
               style={styles.icon_style}
@@ -339,44 +335,8 @@ const RegisterScreen = () => {
               onChangeText={setPassword}
               value={password}
               placeholder="Password"
+              secureTextEntry={true}
             />
-          </View>
-        </View>
-        <Text style={styles.h2}>Kategori Pasien</Text>
-        <View style={styles.inputContainer}>
-          {/* <Text style={styles.h2}>Username :</Text> */}
-          <View style={{ width: "15%", alignItems: "center" }}>
-            <Image
-              style={styles.icon_style}
-              source={require("./../assets/icon/kategori_fill.png")}
-            />
-          </View>
-          <View style={{ width: "85%" }}>
-            <TouchableOpacity onPress={toggleModal} style={[styles.input]}>
-              {kat == null && (
-                <Text
-                  style={{
-                    fontSize: 16,
-                    color: blue_icon,
-                    fontFamily: "Poppins-Regular",
-                    alignItems: "center",
-                  }}
-                >
-                  Pilih Kategori Pasien
-                </Text>
-              )}
-              {kat != null && (
-                <Text
-                  style={{
-                    fontSize: 16,
-                    color: "black",
-                    fontFamily: "Poppins-Regular",
-                  }}
-                >
-                  {katLabel}
-                </Text>
-              )}
-            </TouchableOpacity>
           </View>
         </View>
 
@@ -455,7 +415,6 @@ const styles = StyleSheet.create({
 
   imgContainer: {
     justifyContent: "center",
-    // alignItems: "center",
     paddingTop: "20%",
     paddingHorizontal: width * 0.095,
   },
@@ -466,7 +425,6 @@ const styles = StyleSheet.create({
   inputContainer: {
     marginBottom: 15,
     flexDirection: "row",
-    // justifyContent: "center",
     alignItems: "center",
     backgroundColor: blue_input,
     borderRadius: 5,
@@ -489,28 +447,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   input: {
-    // borderWidth: 2,
-    // borderColor: COLORS.primary,
-    // paddingVertical: width * 0.013,
-    // paddingHorizontal: width * 0.04,
     height: 50,
     borderRadius: 10,
     color: "black",
     paddingTop: 6,
-    // backgroundColor: "#D4D4D4",
     fontSize: 16,
     fontFamily: "Poppins-Regular",
     justifyContent: "center",
-
-    // shadowColor: "#000000",
-    // shadowOffset: {
-    //   width: 2,
-    //   height: 5,
-    // },
-    // shadowOpacity: 0.25,
-    // shadowRadius: 3.84,
-
-    // elevation: 9,
   },
   inputselect: {
     borderWidth: 2,
@@ -572,8 +515,6 @@ const styles = StyleSheet.create({
     margin: width * 0.05,
     backgroundColor: "white",
     borderRadius: 5,
-    // paddingHorizontal: 10,
-    // paddingTop: 10,
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
@@ -605,13 +546,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   inputContainer_2: {
-    // marginVertical: 5,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    // bottom: 30,
-    // position: "absolute",
-    // width: width,
   },
   kamu_nanya: {
     fontSize: 16,
@@ -631,6 +568,5 @@ const styles = StyleSheet.create({
     width: 18,
     height: 18,
     tintColor: blue_icon,
-    // backgroundColor: blue_icon,
   },
 });

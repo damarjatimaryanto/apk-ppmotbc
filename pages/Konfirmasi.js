@@ -18,6 +18,7 @@ import React, { useRef, useEffect, useState } from "react";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import moment from "moment";
+import { AntDesign } from "@expo/vector-icons";
 const actions = [
   {
     text: "Buat Alarm",
@@ -106,6 +107,7 @@ const Konfirmasi = () => {
 
   const getHari = async () => {
     const id = await AsyncStorage.getItem("uid");
+    const id_fase = userSession[0].id_fase;
     fetch("https://afanalfiandi.com/ppmo/api/api.php?op=getHari", {
       method: "POST",
       headers: {
@@ -114,11 +116,12 @@ const Konfirmasi = () => {
       },
       body: JSON.stringify({
         id: id,
+        fase: id_fase,
       }),
     })
       .then((res) => res.json())
       .then((resp) => {
-        // console.warn(resp.msg);
+        console.log(resp);
         if (resp.msg == "riwayat") {
           var a = parseFloat(resp.hari) + 1;
           setHari(a);
@@ -212,14 +215,73 @@ const Konfirmasi = () => {
               position: "absolute",
               justifyContent: "center",
               alignItems: "center",
-              height: "100%",
-              width: "100%",
+              height: 60,
+              width: "40%",
+              left: "30%",
+              top: "40%",
+              backgroundColor: "white",
+              borderRadius: 10,
+              borderColor: "#ddd",
+              borderBottomWidth: 0,
+              shadowColor: "#000000",
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.9,
+              shadowRadius: 3,
+              elevation: 5,
             }}
           >
             <ActivityIndicator size="large" color={COLORS.primary} />
+            <Text style={{ fontFamily: "Poppins-Regular" }}>Loading</Text>
           </View>
         </Modal>
       )}
+
+      <View
+        style={{
+          // backgroundColor: "white",
+          height: 80,
+          width: width,
+          flexDirection: "row",
+          // paddingTop: 10,
+          // alignItems: "center",
+          // justifyContent: "center",
+          marginBottom: 15,
+        }}
+      >
+        <TouchableOpacity
+          onPress={() => navigation.navigate("AlarmScreen")}
+          style={{
+            // backgroundColor: "green",
+            width: "15%",
+            height: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+            paddingTop: 20,
+          }}
+        >
+          <AntDesign name="arrowleft" size={25} color={COLORS.primary} />
+        </TouchableOpacity>
+        <View
+          style={{
+            // backgroundColor: "yellow",
+            width: "70%",
+            height: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+            paddingTop: 20,
+          }}
+        >
+          <Text
+            style={{
+              color: COLORS.primary,
+              fontFamily: "Poppins-Medium",
+              fontSize: 20,
+            }}
+          >
+            Konfirmasi
+          </Text>
+        </View>
+      </View>
       <View style={styles.box}>
         <View style={{ flexDirection: "row", width: "100%" }}>
           <View style={styles.judul_style}>

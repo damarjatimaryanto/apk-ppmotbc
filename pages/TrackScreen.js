@@ -102,52 +102,6 @@ const TrackScreen = () => {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.white} />
-      {/* jika belum ada progress */}
-      {/* <View
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          paddingTop: "50%",
-          // width: "90%",
-          // paddingHorizontal: 10,
-        }}
-      >
-        <Image
-          style={{ width: 250, height: 138 }}
-          source={require("../assets/icon/illus_calendar.png")}
-        />
-
-        <View
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            height: 200,
-            width: "90%",
-            paddingHorizontal: 10,
-          }}
-        >
-          <Text
-            style={{
-              color: COLORS.primary,
-              fontSize: 18,
-              fontFamily: "Poppins-Medium",
-            }}
-          >
-            Melihat progress anda dengan mudah
-          </Text>
-          <Text
-            style={{
-              color: "grey",
-              fontSize: 14,
-              textAlign: "center",
-              fontFamily: "Poppins-LightItalic",
-            }}
-          >
-            Track record harian anda dalam kepatuhan meminum obat akan muncul
-            disini.
-          </Text>
-        </View>
-      </View> */}
 
       <View
         style={{
@@ -171,7 +125,7 @@ const TrackScreen = () => {
             backgroundColor: "white",
             padding: 10,
             shadowColor: "black",
-            // borderRadius: 5,
+            borderRadius: 5,
             shadowOffset: {
               width: 0,
               height: 4,
@@ -182,8 +136,8 @@ const TrackScreen = () => {
             elevation: 5,
             paddingTop: 15,
             // height: 700,
-            borderWidth: 4,
-            borderColor: COLORS.abu1,
+            // borderWidth: 4,
+            // borderColor: COLORS.abu1,
           }}
           theme={{
             backgroundColor: COLORS.white,
@@ -192,7 +146,7 @@ const TrackScreen = () => {
             textSectionTitleDisabledColor: "green",
             selectedDayBackgroundColor: "red",
             selectedDayTextColor: "#ffffff",
-            todayTextColor: "#00adf5",
+            todayTextColor: "red",
             dayTextColor: COLORS.primary,
             textDisabledColor: "grey",
             dotColor: "red",
@@ -201,9 +155,9 @@ const TrackScreen = () => {
             disabledArrowColor: "#d9e1e8",
             monthTextColor: COLORS.primary,
             indicatorColor: COLORS.primary,
-            textDayFontFamily: "Poppins-Regular",
-            textMonthFontFamily: "Poppins-Regular",
-            textDayHeaderFontFamily: "Poppins-Regular",
+            textDayFontFamily: "Poppins-SemiBold",
+            textMonthFontFamily: "Poppins-SemiBold",
+            textDayHeaderFontFamily: "Poppins-SemiBold",
             textDayFontWeight: "300",
             textMonthFontWeight: "bold",
             textDayHeaderFontWeight: "300",
@@ -276,7 +230,7 @@ export default TrackScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.abu1,
+    backgroundColor: COLORS.white,
     // justifyContent: "center",
     alignItems: "center",
   },

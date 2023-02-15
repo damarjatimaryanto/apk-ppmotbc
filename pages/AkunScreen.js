@@ -164,15 +164,32 @@ const AkunScreen = () => {
             position: "absolute",
             justifyContent: "center",
             alignItems: "center",
-            height: "100%",
-            width: "100%",
+            height: 60,
+            width: "40%",
+            left: "30%",
+            top: "40%",
+            backgroundColor: "white",
+            borderRadius: 10,
+            borderColor: "#ddd",
+            borderBottomWidth: 0,
+            shadowColor: "#000000",
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.9,
+            shadowRadius: 3,
+            elevation: 5,
           }}
         >
           <ActivityIndicator size="large" color={COLORS.primary} />
+          <Text style={{ fontFamily: "Poppins-Regular" }}>Loading</Text>
         </View>
       </Modal>
       {loading != true && (
         <View>
+          <View>
+            <Text style={{ fontFamily: "Poppins-Regular", color: "grey" }}>
+              Biodata
+            </Text>
+          </View>
           <View style={styles.box}>
             <View style={{ flexDirection: "row", width: "100%" }}>
               <View style={styles.box_image}>
@@ -224,75 +241,382 @@ const AkunScreen = () => {
             </View>
           </View>
 
-          <View style={styles.box_2}>
-            <View style={{ height: 50, justifyContent: "center" }}>
-              <Text
+          <View>
+            <Text
+              style={{
+                fontFamily: "Poppins-Regular",
+                color: "grey",
+                marginVertical: 15,
+              }}
+            >
+              Presentase Kesembuhan
+            </Text>
+          </View>
+          {/* // ! --------------------------------------------- Tipe Persentase Pertama --------------- */}
+          {/* <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-around",
+              marginBottom: 10,
+            }}
+          >
+            
+            <View
+              style={{
+                width: "30%",
+                height: 50,
+                backgroundColor: "white",
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: 2,
+                borderColor: "#ddd",
+                borderBottomWidth: 0,
+                shadowColor: "#000000",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.9,
+                shadowRadius: 3,
+                elevation: 5,
+                flexDirection: "row",
+              }}
+            >
+              <Text style={{ fontFamily: "Poppins-Regular" }}>Intensif</Text>
+              <View
                 style={{
-                  fontFamily: "Poppins-Regular",
-                  fontSize: 16,
-                  color: "grey",
+                  backgroundColor: COLORS.primary,
+                  width: 35,
+                  height: 35,
+                  borderRadius: 50,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  position: "absolute",
+
+                  left: 95,
+                  bottom: 30,
                 }}
               >
-                Prosentase Kepatuhan Minum Obat
-              </Text>
+                <Text style={{ color: "white", fontFamily: "Poppins-Medium" }}>
+                  70%
+                </Text>
+              </View>
             </View>
-
-            <PieChart
-              data={total}
-              length={200}
-              rotation={-90}
-              // zeroTotalCircleColor={COLORS.primary}
-              centerLabelComponent={() => {
-                return <Text style={{ fontSize: 30, color: "grey" }}>70%</Text>;
-              }}
-            />
 
             <View
               style={{
-                // backgroundColor: "yellow",
+                width: "30%",
+                height: 50,
+                backgroundColor: "white",
                 justifyContent: "center",
                 alignItems: "center",
+                borderRadius: 2,
+                borderColor: "#ddd",
+                borderBottomWidth: 0,
+                shadowColor: "#000000",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.9,
+                shadowRadius: 3,
+                elevation: 5,
+                flexDirection: "row",
+              }}
+            >
+              <Text style={{ fontFamily: "Poppins-Regular" }}>Lanjutan</Text>
+              <View
+                style={{
+                  backgroundColor: "red",
+                  width: 35,
+                  height: 35,
+                  borderRadius: 50,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  position: "absolute",
+
+                  left: 95,
+                  bottom: 30,
+                }}
+              >
+                <Text style={{ color: "white", fontFamily: "Poppins-Medium" }}>
+                  70%
+                </Text>
+              </View>
+            </View>
+
+            <View
+              style={{
+                width: "30%",
                 height: 50,
-                width: "100%",
+                backgroundColor: "white",
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: 2,
+                borderColor: "#ddd",
+                borderBottomWidth: 0,
+                shadowColor: "#000000",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.9,
+                shadowRadius: 3,
+                elevation: 5,
+                flexDirection: "row",
+              }}
+            >
+              <Text style={{ fontFamily: "Poppins-Regular" }}>Extend</Text>
+              <View
+                style={{
+                  backgroundColor: "green",
+                  width: 35,
+                  height: 35,
+                  borderRadius: 30,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  position: "absolute",
+
+                  left: 95,
+                  bottom: 30,
+                }}
+              >
+                <Text
+                  style={{
+                    color: "white",
+                    fontFamily: "Poppins-Medium",
+                    fontSize: 14,
+                  }}
+                >
+                  70%
+                </Text>
+              </View>
+            </View>
+          </View> */}
+
+          {/* // !--------------------------------------------------- TIPE KEDUA ------------------------------------------------ */}
+          {/* <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-around",
+              marginBottom: 10,
+            }}
+          >
+            <View
+              style={{
+                width: "30%",
+                height: 150,
+                backgroundColor: "white",
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: 15,
+                borderColor: "#ddd",
+                borderBottomWidth: 0,
+                shadowColor: "#000000",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.9,
+                shadowRadius: 3,
+                elevation: 5,
+                flexDirection: "column",
               }}
             >
               <View
                 style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
+                  backgroundColor: COLORS.primary,
+                  width: "100%",
+                  height: "80%",
+                  // borderRadius: 50,
+                  justifyContent: "center",
                   alignItems: "center",
+                  // position: "absolute",
+
+                  // left: 95,
+                  // bottom: 30,
+                  borderTopEndRadius: 15,
+                  borderTopLeftRadius: 15,
                 }}
               >
-                <View
+                <Text
                   style={{
-                    backgroundColor: "grey",
-                    height: 20,
-                    width: 20,
-                    margin: 5,
-                    borderRadius: 5,
+                    color: "white",
+                    fontFamily: "Poppins-Medium",
+                    fontSize: 40,
                   }}
-                ></View>
-                <Text style={{ margin: 5, fontFamily: "Poppins-Regular" }}>
-                  {" "}
-                  Tidak Minum Obat
-                </Text>
-                <View
-                  style={{
-                    backgroundColor: COLORS.primary,
-                    height: 20,
-                    width: 20,
-                    margin: 5,
-                    borderRadius: 5,
-                  }}
-                ></View>
-                <Text style={{ margin: 5, fontFamily: "Poppins-Regular" }}>
-                  Minum Obat
+                >
+                  70%
                 </Text>
               </View>
+              <Text
+                style={{
+                  fontFamily: "Poppins-Regular",
+                  height: "20%",
+                  alignItems: "center",
+                  textAlignVertical: "center",
+                }}
+              >
+                Intensif
+              </Text>
+            </View>
+
+            <View
+              style={{
+                width: "30%",
+                height: 150,
+                backgroundColor: "white",
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: 15,
+                borderColor: "#ddd",
+                borderBottomWidth: 0,
+                shadowColor: "#000000",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.9,
+                shadowRadius: 3,
+                elevation: 5,
+                flexDirection: "column",
+              }}
+            >
+              <View
+                style={{
+                  backgroundColor: COLORS.primary,
+                  width: "100%",
+                  height: "80%",
+                  // borderRadius: 50,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  // position: "absolute",
+
+                  // left: 95,
+                  // bottom: 30,
+                  borderTopEndRadius: 15,
+                  borderTopLeftRadius: 15,
+                }}
+              >
+                <Text
+                  style={{
+                    color: "white",
+                    fontFamily: "Poppins-Medium",
+                    fontSize: 40,
+                  }}
+                >
+                  85%
+                </Text>
+              </View>
+              <Text
+                style={{
+                  fontFamily: "Poppins-Regular",
+                  height: "20%",
+                  alignItems: "center",
+                  textAlignVertical: "center",
+                }}
+              >
+                Lanjutan
+              </Text>
+            </View>
+
+            <View
+              style={{
+                width: "30%",
+                height: 150,
+                backgroundColor: "white",
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: 15,
+                borderColor: "#ddd",
+                borderBottomWidth: 0,
+                shadowColor: "#000000",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.9,
+                shadowRadius: 3,
+                elevation: 5,
+                flexDirection: "column",
+              }}
+            >
+              <View
+                style={{
+                  backgroundColor: COLORS.primary,
+                  width: "100%",
+                  height: "80%",
+                  // borderRadius: 50,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  // position: "absolute",
+
+                  // left: 95,
+                  // bottom: 30,
+                  borderTopEndRadius: 15,
+                  borderTopLeftRadius: 15,
+                }}
+              >
+                <Text
+                  style={{
+                    color: "white",
+                    fontFamily: "Poppins-Medium",
+                    fontSize: 40,
+                  }}
+                >
+                  90%
+                </Text>
+              </View>
+              <Text
+                style={{
+                  fontFamily: "Poppins-Regular",
+                  height: "20%",
+                  alignItems: "center",
+                  textAlignVertical: "center",
+                }}
+              >
+                Extend
+              </Text>
+            </View>
+          </View> */}
+
+          {/* // ?--------------------------------------------------- TIPE KETIGA ------------------------------------------------ */}
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-around",
+              marginBottom: 10,
+            }}
+          >
+            <View style={styles.persen_container}>
+              <View style={styles.persen_circle}>
+                <Text
+                  style={{
+                    color: "black",
+                    fontFamily: "Poppins-Medium",
+                    fontSize: 40,
+                  }}
+                >
+                  70%
+                </Text>
+              </View>
+              <Text style={styles.persen_text}>Intensif</Text>
+            </View>
+
+            <View style={styles.persen_container}>
+              <View style={styles.persen_circle}>
+                <Text
+                  style={{
+                    color: "black",
+                    fontFamily: "Poppins-Medium",
+                    fontSize: 40,
+                  }}
+                >
+                  70%
+                </Text>
+              </View>
+              <Text style={styles.persen_text}>Lanjutan</Text>
+            </View>
+
+            <View style={styles.persen_container}>
+              <View style={styles.persen_circle}>
+                <Text
+                  style={{
+                    color: "black",
+                    fontFamily: "Poppins-Medium",
+                    fontSize: 40,
+                  }}
+                >
+                  70%
+                </Text>
+              </View>
+              <Text style={styles.persen_text}>Extend</Text>
             </View>
           </View>
 
-          <View style={styles.box}>
+          <View style={styles.box_keluar}>
             <TouchableOpacity
               onPress={() => {
                 onLogout();
@@ -324,7 +648,7 @@ export default AkunScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.abu1,
+    backgroundColor: COLORS.white,
     alignItems: "center",
     paddingTop: 10,
   },
@@ -352,7 +676,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     width: width - 15,
     paddingHorizontal: "2%",
-    marginVertical: 15,
+    marginBottom: 15,
     height: 330,
     justifyContent: "center",
     alignItems: "center",
@@ -364,6 +688,27 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.9,
     shadowRadius: 3,
+    elevation: 5,
+  },
+  box_keluar: {
+    backgroundColor: "#FFFFFF",
+    width: width - 15,
+    paddingHorizontal: "2%",
+    marginTop: 2,
+    height: 45,
+    // position: "absolute",
+    // bottom: 100,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "black",
+    // borderRadius: 5,
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 0.4,
+
     elevation: 5,
   },
   box_image: {
@@ -397,5 +742,52 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins-Regular",
     textAlign: "right",
     color: COLORS.primary,
+  },
+  persen_container: {
+    width: "30%",
+    height: 155,
+    // backgroundColor: "white",
+    justifyContent: "center",
+    alignItems: "center",
+
+    flexDirection: "column",
+  },
+  persen_circle: {
+    backgroundColor: COLORS.abu1,
+    width: "100%",
+    height: "75%",
+    borderRadius: 160,
+    justifyContent: "center",
+    alignItems: "center",
+
+    marginBottom: "5%",
+    borderWidth: 15,
+    borderColor: COLORS.primary,
+
+    shadowColor: "#000000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.9,
+    shadowRadius: 3,
+    elevation: 5,
+  },
+  persen_text: {
+    fontFamily: "Poppins-Regular",
+    height: "20%",
+    alignItems: "center",
+    textAlignVertical: "center",
+    textAlign: "center",
+    // backgroundColor: "white",
+    width: "100%",
+    // borderBottomLeftRadius: 15,
+    // borderBottomRightRadius: 15,
+    borderRadius: 5,
+
+    // borderColor: "#ddd",
+    // borderBottomWidth: 0,
+    // shadowColor: "#000000",
+    // shadowOffset: { width: 0, height: 2 },
+    // shadowOpacity: 0.9,
+    // shadowRadius: 3,
+    // elevation: 5,
   },
 });

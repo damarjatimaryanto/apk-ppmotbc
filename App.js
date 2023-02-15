@@ -114,6 +114,7 @@ const App = () => {
           name="Konfirmasi"
           component={Konfirmasi}
           options={{
+            headerShown: false,
             tabBarStyle: { display: "none" },
             tabBarButton: () => null,
             headerLeft: () => (

@@ -56,9 +56,15 @@ const SplashScreen = () => {
     <View style={styles.container}>
       <StatusBar backgroundColor={COLORS.primary}></StatusBar>
       <Image
-        style={{ width: 200, height: 200 }}
-        source={require("../assets/icon/lung_iconkanan.png")}
+        style={{ width: 100, height: 121 }}
+        source={require("../assets/icon/lung_white.png")}
       ></Image>
+
+      <View style={styles.kotak}>
+        {/* <Text style={styles.text2}>Design By</Text> */}
+        <Text style={styles.text}>PPMO TBC</Text>
+      </View>
+
       {/* <Text style={styles.splash_title}>PPMO TBC</Text> */}
     </View>
   );
@@ -76,8 +82,24 @@ const styles = StyleSheet.create({
 
   splash_title: {
     fontSize: 30,
-    fontWeight: "bold",
+    // fontWeight: "bold",
     color: "white",
     marginTop: "5%",
+    fontFamily: "Poppins-LightItalic",
+  },
+  text: {
+    fontSize: 20,
+    fontFamily: "Poppins-Medium",
+    color: "white",
+  },
+  text2: {
+    fontSize: 16,
+    fontFamily: "Poppins-Medium",
+    color: "white",
+  },
+  kotak: {
+    position: "absolute",
+    bottom: 70,
+    alignItems: "center",
   },
 });

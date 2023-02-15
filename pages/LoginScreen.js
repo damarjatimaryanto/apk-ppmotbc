@@ -17,9 +17,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFonts } from "expo-font";
 import { StatusBar } from "react-native";
 
-const countries = ["Fase Pertama (Ke 1)", "Fase Kedua ( Ke 2)"];
-const kategori = ["Anak-anak", "Remaja", "Dewasa"];
-
 const blue_icon = "#9695C0";
 const black = "#3d3d3d";
 const blue_input = "#F2F3FC";
@@ -49,7 +46,6 @@ const LoginScreen = () => {
   }
 
   const onSubmit = async () => {
-    // console.warn(password);
     fetch("https://afanalfiandi.com/ppmo/api/api.php?op=login", {
       method: "POST",
       headers: {
@@ -111,8 +107,6 @@ const LoginScreen = () => {
             alignItems: "center",
             height: "100%",
             width: "100%",
-
-            // backgroundColor: grey,
           }}
         >
           <ActivityIndicator size="large" color={COLORS.primary} />
