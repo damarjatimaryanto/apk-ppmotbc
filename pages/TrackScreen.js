@@ -10,7 +10,7 @@ import {
   Dimensions,
 } from "react-native";
 // import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Calendar, Agenda } from "react-native-calendars";
+import { Calendar, LocaleConfig } from "react-native-calendars";
 import { useFonts } from "expo-font";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FlatList } from "react-native-gesture-handler";
@@ -25,6 +25,40 @@ const COLORS = {
 const width = Dimensions.get("screen").width;
 const height = Dimensions.get("screen").height;
 const TrackScreen = () => {
+  LocaleConfig.locales["id"] = {
+    monthNames: [
+      "Januari",
+      "Februari",
+      "Maret",
+      "April",
+      "Mei",
+      "Juni",
+      "Juli",
+      "Agustus",
+      "September",
+      "Oktober",
+      "November",
+      "Desember",
+    ],
+    monthNamesShort: [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "Mei",
+      "Jun",
+      "Jul",
+      "Agust",
+      "Sept",
+      "Okt",
+      "Nov",
+      "Des",
+    ],
+    dayNames: ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"],
+    dayNamesShort: ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"],
+    today: "Hari ini",
+  };
+  LocaleConfig.defaultLocale = "id";
   const [data, setData] = useState([
     {
       hari: null,
@@ -155,9 +189,9 @@ const TrackScreen = () => {
             disabledArrowColor: "#d9e1e8",
             monthTextColor: COLORS.primary,
             indicatorColor: COLORS.primary,
-            textDayFontFamily: "Poppins-SemiBold",
-            textMonthFontFamily: "Poppins-SemiBold",
-            textDayHeaderFontFamily: "Poppins-SemiBold",
+            textDayFontFamily: "Poppins-Medium",
+            textMonthFontFamily: "Poppins-Medium",
+            textDayHeaderFontFamily: "Poppins-Medium",
             textDayFontWeight: "300",
             textMonthFontWeight: "bold",
             textDayHeaderFontWeight: "300",

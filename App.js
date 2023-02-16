@@ -69,7 +69,7 @@ const App = () => {
             marginHorizontal: 40,
             elevation: 0,
             borderRadius: 15,
-            height: 55,
+            height: 65,
             // ...styles.shadow,
           },
         }}

@@ -61,19 +61,22 @@ const LoginScreen = () => {
       .then((response) => {
         setLoading(true);
         setTimeout(async () => {
+          // console.log(response);
           if (response != 0) {
             const uid = response.id_user;
-            const id_kat = response.id_kategori_detail;
-            const kategori = response.kategori;
+            const id_fase = response.id_fase_detail;
             const nama = response.nama;
             const username = response.username;
+            const fase = response.fase;
 
             AsyncStorage.setItem("loggedIn", "1");
-            AsyncStorage.setItem("uid", uid);
-            AsyncStorage.setItem("id_kat", id_kat);
-            AsyncStorage.setItem("kategori", kategori);
-            AsyncStorage.setItem("nama", nama);
-            AsyncStorage.setItem("username", username);
+
+            AsyncStorage.setItem("userData", JSON.stringify(response));
+            // AsyncStorage.setItem("uid", uid);
+            // AsyncStorage.setItem("id_fase_detail", id_fase);
+            // AsyncStorage.setItem("nama", nama);
+            // AsyncStorage.setItem("username", username);
+            // AsyncStorage.setItem("fase", fase);
 
             setLoading(false);
             navigation.navigate("AlarmScreen");
@@ -100,16 +103,9 @@ const LoginScreen = () => {
           setModal(false);
         }}
       >
-        <View
-          style={{
-            position: "absolute",
-            justifyContent: "center",
-            alignItems: "center",
-            height: "100%",
-            width: "100%",
-          }}
-        >
+        <View style={styles.modal_lodaing_style}>
           <ActivityIndicator size="large" color={COLORS.primary} />
+          <Text style={{ fontFamily: "Poppins-Regular" }}>Loading...</Text>
         </View>
       </Modal>
 
@@ -323,5 +319,23 @@ const styles = StyleSheet.create({
   ownerText: {
     color: "#F7B44C",
     fontWeight: "bold",
+  },
+  modal_lodaing_style: {
+    position: "absolute",
+    justifyContent: "center",
+    alignItems: "center",
+    height: 60,
+    width: "40%",
+    left: "30%",
+    top: "40%",
+    backgroundColor: "white",
+    borderRadius: 5,
+    borderColor: "#ddd",
+    borderBottomWidth: 0,
+    shadowColor: "#000000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.9,
+    shadowRadius: 3,
+    elevation: 5,
   },
 });

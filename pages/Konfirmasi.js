@@ -13,6 +13,7 @@ import {
   StatusBar,
   AppRegistry,
   Dimensions,
+  SafeAreaView,
 } from "react-native";
 import React, { useRef, useEffect, useState } from "react";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
@@ -198,7 +199,7 @@ const Konfirmasi = () => {
     }, 2000);
   }, []);
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.white} />
       {loading == true && (
         <Modal
@@ -238,8 +239,8 @@ const Konfirmasi = () => {
 
       <View
         style={{
-          // backgroundColor: "white",
-          height: 80,
+          // backgroundColor: "yellow",
+          height: 50,
           width: width,
           flexDirection: "row",
           // paddingTop: 10,
@@ -256,7 +257,7 @@ const Konfirmasi = () => {
             height: "100%",
             justifyContent: "center",
             alignItems: "center",
-            paddingTop: 20,
+            // paddingTop: 20,
           }}
         >
           <AntDesign name="arrowleft" size={25} color={COLORS.primary} />
@@ -268,7 +269,7 @@ const Konfirmasi = () => {
             height: "100%",
             justifyContent: "center",
             alignItems: "center",
-            paddingTop: 20,
+            // paddingTop: 20,
           }}
         >
           <Text
@@ -371,7 +372,7 @@ const Konfirmasi = () => {
           Konfirmasi
         </Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 };
 

@@ -697,7 +697,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
     height: 45,
     // position: "absolute",
-    // bottom: 100,
+    // bottom: "-90%",
     justifyContent: "center",
     alignItems: "center",
     shadowColor: "black",
