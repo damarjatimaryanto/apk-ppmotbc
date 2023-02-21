@@ -107,8 +107,8 @@ const Konfirmasi = () => {
   };
 
   const getHari = async () => {
-    const id = await AsyncStorage.getItem("uid");
-    const id_fase = userSession[0].id_fase;
+    const userData = JSON.parse(await AsyncStorage.getItem("userData"));
+
     fetch("https://afanalfiandi.com/ppmo/api/api.php?op=getHari", {
       method: "POST",
       headers: {

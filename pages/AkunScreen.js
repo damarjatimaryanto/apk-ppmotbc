@@ -253,14 +253,13 @@ const AkunScreen = () => {
             </Text>
           </View>
           {/* // ! --------------------------------------------- Tipe Persentase Pertama --------------- */}
-          {/* <View
+          <View
             style={{
               flexDirection: "row",
               justifyContent: "space-around",
               marginBottom: 10,
             }}
           >
-            
             <View
               style={{
                 width: "30%",
@@ -383,7 +382,7 @@ const AkunScreen = () => {
                 </Text>
               </View>
             </View>
-          </View> */}
+          </View>
 
           {/* // !--------------------------------------------------- TIPE KEDUA ------------------------------------------------ */}
           {/* <View

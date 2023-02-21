@@ -2,6 +2,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import moment from "moment";
 import { ToastAndroid } from "react-native";
 import pushScheduled from "./pushScheduled";
+import getAlarm from "./getAlarm";
+import { useNavigation } from "@react-navigation/native";
 const addLanjutan = async (
   hours,
   minutes,
@@ -45,10 +47,10 @@ const addLanjutan = async (
     .then((res) => res.json())
     .then((resp) => {
       if (resp == "1") {
-        // hariAlarm.map((d) => {
-        pushScheduled(hrs, min, d);
-        // });
         ToastAndroid.show("Alarm Berhasil Ditambahkan!", ToastAndroid.SHORT);
+        hariAlarm.map((d) => {
+          pushScheduled(hrs, min, d);
+        });
       } else {
         ToastAndroid.show("Alarm Gagal Ditambahkan!", ToastAndroid.SHORT);
       }

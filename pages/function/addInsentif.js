@@ -3,6 +3,7 @@ import moment from "moment";
 import { ToastAndroid } from "react-native";
 import pushNotification from "./pushNotification";
 import * as Notifications from "expo-notifications";
+import getAlarm from "./getAlarm";
 
 const addInsentif = async (hours, minutes, lamaPengobatan, hari, jam, fase) => {
   const userData = JSON.parse(await AsyncStorage.getItem("userData"));
@@ -37,6 +38,8 @@ const addInsentif = async (hours, minutes, lamaPengobatan, hari, jam, fase) => {
       } else {
         ToastAndroid.show("Alarm Gagal Ditambahkan!", ToastAndroid.SHORT);
       }
+
+      // getAlarm();
     });
 };
 

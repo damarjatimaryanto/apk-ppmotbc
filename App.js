@@ -28,6 +28,7 @@ import RegisterScreen from "./pages/RegisterScreen";
 import AkunScreen from "./pages/AkunScreen";
 import Konfirmasi from "./pages/Konfirmasi";
 import { AntDesign } from "@expo/vector-icons";
+import TambahAlarm from "./pages/TambahAlarm";
 
 const COLORS = { primary: "#1E319D", white: "#FFFFFF" };
 const Tab = createBottomTabNavigator();
@@ -125,9 +126,24 @@ const App = () => {
           }}
         />
         <Tab.Screen
+          name="TambahAlarm"
+          component={TambahAlarm}
+          options={{
+            headerShown: false,
+            tabBarStyle: { display: "none" },
+            tabBarButton: () => null,
+            headerLeft: () => (
+              <TouchableOpacity style={{ paddingLeft: 15 }}>
+                <AntDesign name="arrowleft" size={20} color={COLORS.primary} />
+              </TouchableOpacity>
+            ),
+          }}
+        />
+        <Tab.Screen
           name="AlarmScreen"
           component={AlarmScreen}
           options={{
+            headerShown: false,
             title: "Alarm",
             // tabBarStyle: {display: 'none'},
             tabBarIcon: ({ focused }) => {

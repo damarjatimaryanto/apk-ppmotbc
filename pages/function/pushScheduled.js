@@ -1,7 +1,7 @@
 import * as Notifications from "expo-notifications";
 
 const pushScheduled = async (hrs, min, day) => {
-  //   console.log(hrs);
+  // console.log("jam : " + hrs, " min : " + min, " day : " + day);
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
       shouldShowAlert: true,
@@ -23,19 +23,12 @@ const pushScheduled = async (hrs, min, day) => {
       sound: "default",
     },
     trigger: {
-      //   weekday: 5,
-      hour: 21,
-      minute: 24,
+      weekday: day,
+      hour: hrs,
+      minute: min,
       repeats: true,
       channelId: "ppmo-tbc-",
     },
-    // trigger: {
-    //   weekday: day,
-    //   hour: hrs,
-    //   minute: min,
-    //   repeats: true,
-    //   channelId: "ppmo-tbc-",
-    // },
   });
   await Notifications.setNotificationCategoryAsync("ppmo-tbc", [
     {
