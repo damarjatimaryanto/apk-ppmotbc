@@ -12,7 +12,7 @@ import {
   TextInput,
 } from "react-native";
 import React, { useRef, useEffect, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 // import { PieChart } from "react-native-gifted-charts";
 import PieChart from "react-native-expo-pie-chart";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -27,6 +27,7 @@ const AkunScreen = () => {
   const navigation = useNavigation();
 
   const [loading, setLoading] = useState(true);
+  const [loadingDua, setLoadingDua] = useState(false);
   const data = [
     {
       key: "First Data",
@@ -59,6 +60,9 @@ const AkunScreen = () => {
     },
   ]);
 
+  const [dataFase, setDataFase] = useState(null);
+  const [extend, setExtend] = useState(null);
+
   const [total, setTotal] = useState([
     {
       key: "First Data",
@@ -71,34 +75,60 @@ const AkunScreen = () => {
       color: COLORS.primary,
     },
   ]);
+
+  const [tInsentif, setTInsentif] = useState(null);
+  const [tLanjutan, setTLanjutan] = useState(null);
+  const [tExtend, setTExtend] = useState(null);
+
+  const [lInsentif, setLInsentif] = useState(null);
+  const [lLanjutan, setLLanjutan] = useState(null);
+  const [lExtend, setLExtend] = useState(null);
+
+  const [pInsentif, setPInsentif] = useState(null);
+  const [pLanjutan, setPLanjutan] = useState(null);
+  const [pExtend, setPExtend] = useState(null);
+
   const getSession = async () => {
-    const uid = await AsyncStorage.getItem("uid");
-    const id_kat = await AsyncStorage.getItem("id_kat");
-    const kategori = await AsyncStorage.getItem("kategori");
-    const nama = await AsyncStorage.getItem("nama");
-    const username = await AsyncStorage.getItem("username");
+    const userData = JSON.parse(await AsyncStorage.getItem("userData"));
 
-    const session = [];
-    session.push({
-      uid: uid,
-      id_kat: id_kat,
-      kategori: kategori,
-      nama: nama,
-      username: username,
-    });
+    fetch("https://afanalfiandi.com/ppmo/api/api.php?op=getUser", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: userData[0].id_user,
+      }),
+    })
+      .then((res) => res.json())
+      .then((resp) => {
+        const result = [];
 
-    setUserSession(session);
-    setTimeout(() => {
-      setLoading(false);
-    }, 3000);
+        result.push({
+          uid: resp.id_user,
+          id_fase_detail: resp.id_fase_detail,
+          fase: resp.fase,
+          nama: resp.nama,
+          username: resp.username,
+        });
+
+        setUserSession(result);
+
+        // console.log(resp);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   };
 
   const onLogout = async () => {
-    await AsyncStorage.removeItem("loggedIn");
-    setLoading(true);
-    setTimeout(() => {
+    // await AsyncStorage.removeItem("loggedIn");
+    setLoadingDua(true);
+    setTimeout(async () => {
       navigation.navigate("LoginScreen");
-      setLoading(false);
+      await AsyncStorage.clear();
+      setLoadingDua(false);
     }, 2000);
   };
   const pieData = [
@@ -108,8 +138,7 @@ const AkunScreen = () => {
   ];
 
   const getPresentase = async () => {
-    const uid = await AsyncStorage.getItem("uid");
-    const id_fase = await AsyncStorage.getItem("id_fase");
+    const userData = JSON.parse(await AsyncStorage.getItem("userData"));
 
     fetch("https://afanalfiandi.com/ppmo/api/api.php?op=getPresentase", {
       method: "POST",
@@ -118,34 +147,102 @@ const AkunScreen = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        id: uid,
-        fase: id_fase,
+        id: userData[0].id_user,
       }),
     })
       .then((res) => res.json())
       .then((resp) => {
-        const result = [];
+        setTInsentif(resp[0].total);
+        setTLanjutan(resp[1].total);
+        setTExtend(resp[2].total);
 
-        result.push(
-          {
-            key: "tidak selesai",
-            count: 10,
-            color: "grey",
-          },
-          {
-            key: "selesai",
-            count: parseFloat(resp.total),
-            color: COLORS.primary,
-          }
-        );
-        setTotal(result);
-        console.log(total);
+        const pInsentif = ((tInsentif / lInsentif) * 100) / 100;
+        const pLanjutan = ((tLanjutan / 48) * 100) / 100;
+
+        const lamaHari = (60 / 7).toFixed(0) * 3;
+        const pExtend = (tExtend / lamaHari) * (100 / 100);
+
+        setPInsentif(pInsentif.toFixed(2));
+        setPLanjutan(pLanjutan.toFixed(2));
+        setPExtend(pExtend.toFixed(2));
+        // result.push(resp);
+        // setTotal(result);
+
+        // dataFase.map((item, index) => {
+        //   const presentase =
+        //     ((resp[index].total / item.lama_pengobatan) * 100) / 100;
+
+        //   // if (resp[index].id == 3) {
+        //   //   const pExtend =
+        //   //     ((resp[2].total / extend[0].lama_pengobatan) * 100) / 100;
+        //   //   console.log("extend : " + pex);
+        //   // }
+        //   console.log(
+        //     "total fase " +
+        //       resp[index].id +
+        //       " : " +
+        //       resp[index].total +
+        //       ", lama pengobatan : " +
+        //       item.lama_pengobatan +
+        //       ", presentase : " +
+        //       presentase.toFixed(2)
+        //   );
+        // });
+        // const pLanjutan = ((konfirmasi / total) * 100) / 100;
+        // const pExtend = ((konfirmasi / total) * 100) / 100;
       });
   };
-  useEffect(() => {
-    getSession();
-    getPresentase();
-  }, []);
+
+  const getFase = () => {
+    fetch("https://afanalfiandi.com/ppmo/api/api.php?op=getFase", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: 3,
+      }),
+    })
+      .then((res) => res.json())
+      .then((response) => {
+        // console.log(response[0].lama_pengobatan);
+        // setDataFase(response);
+
+        setLInsentif(response[0].lama_pengobatan);
+        setLLanjutan(response[1].lama_pengobatan);
+        setLExtend(response[2].lama_pengobatan);
+      });
+  };
+
+  const getFaseDetail = () => {
+    fetch("https://afanalfiandi.com/ppmo/api/api.php?op=getFaseDetail", {})
+      .then((res) => res.json())
+      .then((response) => {
+        // console.log(response);
+        setExtend(response);
+      });
+  };
+
+  // useEffect(() => {
+  //   getSession();
+  //   getPresentase();
+  //   getFase();
+  //   setTimeout(() => {
+  //     setLoading(false);
+  //   }, 3000);
+  // }, [userSession]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      getSession();
+      getPresentase();
+      getFase();
+      setTimeout(() => {
+        setLoading(false);
+      }, 3000);
+    }, [userSession])
+  );
 
   return (
     <View style={styles.container}>
@@ -159,6 +256,31 @@ const AkunScreen = () => {
           setModal(false);
         }}
       >
+        <View
+          style={{
+            position: "absolute",
+            justifyContent: "center",
+            alignItems: "center",
+            height: 60,
+            width: "40%",
+            left: "30%",
+            top: "40%",
+            backgroundColor: "white",
+            borderRadius: 10,
+            borderColor: "#ddd",
+            borderBottomWidth: 0,
+            shadowColor: "#000000",
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.9,
+            shadowRadius: 3,
+            elevation: 5,
+          }}
+        >
+          <ActivityIndicator size="large" color={COLORS.primary} />
+          <Text style={{ fontFamily: "Poppins-Regular" }}>Loading</Text>
+        </View>
+      </Modal>
+      <Modal animationType="fade" transparent={true} visible={loadingDua}>
         <View
           style={{
             position: "absolute",
@@ -229,14 +351,14 @@ const AkunScreen = () => {
               <View style={styles.box_image}>
                 <Image
                   style={styles.img_style}
-                  source={require("../assets/icon/kategori_fill.png")}
+                  source={require("./../assets/icon/at_fill.png")}
                 />
               </View>
               <View style={styles.judul_style}>
-                <Text style={styles.judul_isi}>Kategori Pasien</Text>
+                <Text style={styles.judul_isi}>Fase</Text>
               </View>
               <View style={styles.ket_style}>
-                <Text style={styles.ket_isi}>{userSession[0].kategori}</Text>
+                <Text style={styles.ket_isi}>{userSession[0].fase}</Text>
               </View>
             </View>
           </View>
@@ -252,314 +374,6 @@ const AkunScreen = () => {
               Presentase Kesembuhan
             </Text>
           </View>
-          {/* // ! --------------------------------------------- Tipe Persentase Pertama --------------- */}
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-around",
-              marginBottom: 10,
-            }}
-          >
-            <View
-              style={{
-                width: "30%",
-                height: 50,
-                backgroundColor: "white",
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: 2,
-                borderColor: "#ddd",
-                borderBottomWidth: 0,
-                shadowColor: "#000000",
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.9,
-                shadowRadius: 3,
-                elevation: 5,
-                flexDirection: "row",
-              }}
-            >
-              <Text style={{ fontFamily: "Poppins-Regular" }}>Intensif</Text>
-              <View
-                style={{
-                  backgroundColor: COLORS.primary,
-                  width: 35,
-                  height: 35,
-                  borderRadius: 50,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  position: "absolute",
-
-                  left: 95,
-                  bottom: 30,
-                }}
-              >
-                <Text style={{ color: "white", fontFamily: "Poppins-Medium" }}>
-                  70%
-                </Text>
-              </View>
-            </View>
-
-            <View
-              style={{
-                width: "30%",
-                height: 50,
-                backgroundColor: "white",
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: 2,
-                borderColor: "#ddd",
-                borderBottomWidth: 0,
-                shadowColor: "#000000",
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.9,
-                shadowRadius: 3,
-                elevation: 5,
-                flexDirection: "row",
-              }}
-            >
-              <Text style={{ fontFamily: "Poppins-Regular" }}>Lanjutan</Text>
-              <View
-                style={{
-                  backgroundColor: "red",
-                  width: 35,
-                  height: 35,
-                  borderRadius: 50,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  position: "absolute",
-
-                  left: 95,
-                  bottom: 30,
-                }}
-              >
-                <Text style={{ color: "white", fontFamily: "Poppins-Medium" }}>
-                  70%
-                </Text>
-              </View>
-            </View>
-
-            <View
-              style={{
-                width: "30%",
-                height: 50,
-                backgroundColor: "white",
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: 2,
-                borderColor: "#ddd",
-                borderBottomWidth: 0,
-                shadowColor: "#000000",
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.9,
-                shadowRadius: 3,
-                elevation: 5,
-                flexDirection: "row",
-              }}
-            >
-              <Text style={{ fontFamily: "Poppins-Regular" }}>Extend</Text>
-              <View
-                style={{
-                  backgroundColor: "green",
-                  width: 35,
-                  height: 35,
-                  borderRadius: 30,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  position: "absolute",
-
-                  left: 95,
-                  bottom: 30,
-                }}
-              >
-                <Text
-                  style={{
-                    color: "white",
-                    fontFamily: "Poppins-Medium",
-                    fontSize: 14,
-                  }}
-                >
-                  70%
-                </Text>
-              </View>
-            </View>
-          </View>
-
-          {/* // !--------------------------------------------------- TIPE KEDUA ------------------------------------------------ */}
-          {/* <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-around",
-              marginBottom: 10,
-            }}
-          >
-            <View
-              style={{
-                width: "30%",
-                height: 150,
-                backgroundColor: "white",
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: 15,
-                borderColor: "#ddd",
-                borderBottomWidth: 0,
-                shadowColor: "#000000",
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.9,
-                shadowRadius: 3,
-                elevation: 5,
-                flexDirection: "column",
-              }}
-            >
-              <View
-                style={{
-                  backgroundColor: COLORS.primary,
-                  width: "100%",
-                  height: "80%",
-                  // borderRadius: 50,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  // position: "absolute",
-
-                  // left: 95,
-                  // bottom: 30,
-                  borderTopEndRadius: 15,
-                  borderTopLeftRadius: 15,
-                }}
-              >
-                <Text
-                  style={{
-                    color: "white",
-                    fontFamily: "Poppins-Medium",
-                    fontSize: 40,
-                  }}
-                >
-                  70%
-                </Text>
-              </View>
-              <Text
-                style={{
-                  fontFamily: "Poppins-Regular",
-                  height: "20%",
-                  alignItems: "center",
-                  textAlignVertical: "center",
-                }}
-              >
-                Intensif
-              </Text>
-            </View>
-
-            <View
-              style={{
-                width: "30%",
-                height: 150,
-                backgroundColor: "white",
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: 15,
-                borderColor: "#ddd",
-                borderBottomWidth: 0,
-                shadowColor: "#000000",
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.9,
-                shadowRadius: 3,
-                elevation: 5,
-                flexDirection: "column",
-              }}
-            >
-              <View
-                style={{
-                  backgroundColor: COLORS.primary,
-                  width: "100%",
-                  height: "80%",
-                  // borderRadius: 50,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  // position: "absolute",
-
-                  // left: 95,
-                  // bottom: 30,
-                  borderTopEndRadius: 15,
-                  borderTopLeftRadius: 15,
-                }}
-              >
-                <Text
-                  style={{
-                    color: "white",
-                    fontFamily: "Poppins-Medium",
-                    fontSize: 40,
-                  }}
-                >
-                  85%
-                </Text>
-              </View>
-              <Text
-                style={{
-                  fontFamily: "Poppins-Regular",
-                  height: "20%",
-                  alignItems: "center",
-                  textAlignVertical: "center",
-                }}
-              >
-                Lanjutan
-              </Text>
-            </View>
-
-            <View
-              style={{
-                width: "30%",
-                height: 150,
-                backgroundColor: "white",
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: 15,
-                borderColor: "#ddd",
-                borderBottomWidth: 0,
-                shadowColor: "#000000",
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.9,
-                shadowRadius: 3,
-                elevation: 5,
-                flexDirection: "column",
-              }}
-            >
-              <View
-                style={{
-                  backgroundColor: COLORS.primary,
-                  width: "100%",
-                  height: "80%",
-                  // borderRadius: 50,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  // position: "absolute",
-
-                  // left: 95,
-                  // bottom: 30,
-                  borderTopEndRadius: 15,
-                  borderTopLeftRadius: 15,
-                }}
-              >
-                <Text
-                  style={{
-                    color: "white",
-                    fontFamily: "Poppins-Medium",
-                    fontSize: 40,
-                  }}
-                >
-                  90%
-                </Text>
-              </View>
-              <Text
-                style={{
-                  fontFamily: "Poppins-Regular",
-                  height: "20%",
-                  alignItems: "center",
-                  textAlignVertical: "center",
-                }}
-              >
-                Extend
-              </Text>
-            </View>
-          </View> */}
 
           {/* // ?--------------------------------------------------- TIPE KETIGA ------------------------------------------------ */}
           <View
@@ -575,10 +389,10 @@ const AkunScreen = () => {
                   style={{
                     color: "black",
                     fontFamily: "Poppins-Medium",
-                    fontSize: 40,
+                    fontSize: 30,
                   }}
                 >
-                  70%
+                  {pInsentif}%
                 </Text>
               </View>
               <Text style={styles.persen_text}>Intensif</Text>
@@ -590,10 +404,10 @@ const AkunScreen = () => {
                   style={{
                     color: "black",
                     fontFamily: "Poppins-Medium",
-                    fontSize: 40,
+                    fontSize: 30,
                   }}
                 >
-                  70%
+                  {pLanjutan}%
                 </Text>
               </View>
               <Text style={styles.persen_text}>Lanjutan</Text>
@@ -605,10 +419,10 @@ const AkunScreen = () => {
                   style={{
                     color: "black",
                     fontFamily: "Poppins-Medium",
-                    fontSize: 40,
+                    fontSize: 30,
                   }}
                 >
-                  70%
+                  {pExtend}%
                 </Text>
               </View>
               <Text style={styles.persen_text}>Extend</Text>

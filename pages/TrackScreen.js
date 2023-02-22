@@ -73,7 +73,8 @@ const TrackScreen = () => {
   const [selectedDate, setSelectedDate] = useState("");
 
   const onSelectDate = async (day) => {
-    const uid = await AsyncStorage.getItem("uid");
+    const userData = JSON.parse(await AsyncStorage.getItem("userData"));
+
     fetch("https://afanalfiandi.com/ppmo/api/api.php?op=selectDate", {
       method: "POST",
       headers: {
@@ -81,7 +82,7 @@ const TrackScreen = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        id: uid,
+        id: userData[0].id_user,
         tgl: day.dateString,
       }),
     })
@@ -95,7 +96,8 @@ const TrackScreen = () => {
       });
   };
   const getRiwayat = async () => {
-    const uid = await AsyncStorage.getItem("uid");
+    const userData = JSON.parse(await AsyncStorage.getItem("userData"));
+
     fetch("https://afanalfiandi.com/ppmo/api/api.php?op=getRiwayat", {
       method: "POST",
       headers: {
@@ -103,7 +105,7 @@ const TrackScreen = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        id: uid,
+        id: userData[0].id_user,
       }),
     })
       .then((res) => res.json())
@@ -227,15 +229,6 @@ const TrackScreen = () => {
             </View>
             <View style={styles.ket_style}>
               <Text style={styles.ket_isi}>: {selectedDate.hari}</Text>
-            </View>
-          </View>
-
-          <View style={styles.baris}>
-            <View style={styles.judul_style}>
-              <Text style={styles.judul_isi}>Kategori</Text>
-            </View>
-            <View style={styles.ket_style}>
-              <Text style={styles.ket_isi}>: {selectedDate.kategori}</Text>
             </View>
           </View>
 

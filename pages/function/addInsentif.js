@@ -38,8 +38,6 @@ const addInsentif = async (hours, minutes, lamaPengobatan, hari, jam, fase) => {
       } else {
         ToastAndroid.show("Alarm Gagal Ditambahkan!", ToastAndroid.SHORT);
       }
-
-      // getAlarm();
     });
 };
 

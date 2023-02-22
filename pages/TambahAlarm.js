@@ -13,6 +13,7 @@ import {
   ToastAndroid,
   FlatList,
   TextInput,
+  ImageBackground,
 } from "react-native";
 import React, { useRef, useCallback, useEffect, useState } from "react";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
@@ -223,426 +224,495 @@ const TambahAlarm = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.white} />
-      <View
-        style={{
-          // backgroundColor: "yellow",
-          height: 50,
-          width: width,
-          flexDirection: "row",
-          // paddingTop: 10,
-          // alignItems: "center",
-          // justifyContent: "center",
-          marginBottom: 15,
-        }}
+      <ImageBackground
+        style={[styles.container]}
+        resizeMode="cover"
+        source={require("./../assets/icon/bg4.png")}
       >
-        <TouchableOpacity
-          onPress={() => navigation.navigate("AlarmScreen")}
-          style={{
-            // backgroundColor: "green",
-            width: "15%",
-            height: "100%",
-            justifyContent: "center",
-            alignItems: "center",
-            // paddingTop: 20,
-          }}
-        >
-          <AntDesign name="arrowleft" size={25} color={COLORS.primary} />
-        </TouchableOpacity>
         <View
           style={{
             // backgroundColor: "yellow",
-            width: "70%",
-            height: "100%",
-            justifyContent: "center",
-            alignItems: "center",
-            // paddingTop: 20,
+            height: 50,
+            width: width,
+            flexDirection: "row",
+            // paddingTop: 10,
+            // alignItems: "center",
+            // justifyContent: "center",
+            marginBottom: 15,
           }}
         >
-          <Text
+          <TouchableOpacity
+            onPress={() => navigation.navigate("AlarmScreen")}
             style={{
-              color: COLORS.primary,
-              fontFamily: "Poppins-Medium",
-              fontSize: 20,
+              // backgroundColor: "green",
+              width: "15%",
+              height: "100%",
+              justifyContent: "center",
+              alignItems: "center",
+              // paddingTop: 20,
             }}
           >
-            Tambah Alarm
-          </Text>
-        </View>
-      </View>
-
-      <DateTimePickerModal
-        date={selectedDate}
-        isVisible={datePickerVisible}
-        mode="time"
-        is24Hour
-        onConfirm={handleConfirm}
-        onCancel={hideDatePicker}
-      />
-
-      {/* // ! ---------------------------------- Modal FASE PENGOBATAN -------------------------------------*/}
-      <Modal
-        isVisible={isFaseKaton}
-        onBackdropPress={() => setFaseKaton(false)}
-        animationIn="fadeIn"
-        animationOut="fadeOut"
-        // animationOutTiming={1500}
-        // animationInTiming={1500}
-      >
-        <View style={{ alignItems: "center", flex: 0.5 }}>
+            <AntDesign name="arrowleft" size={25} color={COLORS.primary} />
+          </TouchableOpacity>
           <View
             style={{
-              flexDirection: "row",
               // backgroundColor: "yellow",
-              width: width * 0.9,
-              borderRadius: 10,
-              height: 200,
+              width: "70%",
+              height: "100%",
+              justifyContent: "center",
+              alignItems: "center",
+              // paddingTop: 20,
             }}
           >
-            <FlatList
-              data={dataFase}
-              renderItem={renderFase}
-              keyExtractor={(item) => item.id_fase_detail}
-            />
+            <Text
+              style={{
+                color: COLORS.primary,
+                fontFamily: "Poppins-Medium",
+                fontSize: 20,
+              }}
+            >
+              Tambah Alarm
+            </Text>
           </View>
         </View>
-      </Modal>
-      {/* 
+
+        <DateTimePickerModal
+          date={selectedDate}
+          isVisible={datePickerVisible}
+          mode="time"
+          is24Hour
+          onConfirm={handleConfirm}
+          onCancel={hideDatePicker}
+        />
+
+        {/* // ! ---------------------------------- Modal FASE PENGOBATAN -------------------------------------*/}
+        <Modal
+          isVisible={isFaseKaton}
+          onBackdropPress={() => setFaseKaton(false)}
+          animationIn="fadeIn"
+          animationOut="fadeOut"
+          // animationOutTiming={1500}
+          // animationInTiming={1500}
+        >
+          <View style={{ alignItems: "center", flex: 0.3 }}>
+            <View
+              style={{
+                flexDirection: "row",
+                // backgroundColor: "yellow",
+                width: width * 0.7,
+                borderRadius: 10,
+                height: 200,
+              }}
+            >
+              <FlatList
+                data={dataFase}
+                renderItem={renderFase}
+                keyExtractor={(item) => item.id_fase_detail}
+              />
+            </View>
+          </View>
+        </Modal>
+        {/* 
       {loadingAdd == true && (
       )} */}
 
-      <Modal animationType="fade" transparent={true} visible={loadingAdd}>
-        <View style={styles.modal_lodaing_style}>
-          <ActivityIndicator size="large" color={COLORS.primary} />
-          <Text style={{ fontFamily: "Poppins-Regular" }}>Loading</Text>
-        </View>
-      </Modal>
-      <View style={{ justifyContent: "center", alignItems: "center" }}>
-        <TouchableOpacity
-          onPress={showDatePicker}
-          style={{
-            height: 120,
-            width: "80%",
-            justifyContent: "center",
-            alignItems: "center",
-            borderRadius: 10,
-          }}
-        >
-          <Text
+        <Modal animationType="fade" transparent={true} visible={loadingAdd}>
+          <View style={styles.modal_lodaing_style}>
+            <ActivityIndicator size="large" color={COLORS.primary} />
+            <Text style={{ fontFamily: "Poppins-Regular" }}>Loading</Text>
+          </View>
+        </Modal>
+        <View style={{ justifyContent: "center", alignItems: "center" }}>
+          <TouchableOpacity
+            onPress={showDatePicker}
             style={{
-              color: COLORS.primary,
-              fontFamily: "Poppins-Bold",
-              fontSize: 80,
+              height: 120,
+              width: "80%",
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: 10,
             }}
           >
-            {jam}
-          </Text>
-        </TouchableOpacity>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            paddingHorizontal: 22,
-          }}
-        >
-          <Text
-            style={{ color: COLORS.primary, fontFamily: "Poppins-Regular" }}
-          >
-            Pilih Hari
-          </Text>
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            height: 50,
-            justifyContent: "center",
-            alignItems: "center",
-            marginVertical: 10,
-          }}
-        >
-          {dataHari.map((hr, index) => (
-            <TouchableOpacity
-              style={styles.boxhari_blue}
-              key={hr.key}
-              onPress={() => {
-                pilihHari(hr.key);
+            <Text
+              style={{
+                color: COLORS.primary,
+                fontFamily: "Poppins-Bold",
+                fontSize: 80,
               }}
             >
-              <Text
-                style={{
-                  color: COLORS.white,
-
-                  fontFamily: "Poppins-Regular",
+              {jam}
+            </Text>
+          </TouchableOpacity>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              paddingHorizontal: 22,
+            }}
+          >
+            <Text
+              style={{ color: COLORS.primary, fontFamily: "Poppins-Regular" }}
+            >
+              Pilih Hari
+            </Text>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              height: 50,
+              justifyContent: "center",
+              alignItems: "center",
+              marginVertical: 10,
+            }}
+          >
+            {dataHari.map((hr, index) => (
+              <TouchableOpacity
+                style={styles.boxhari_blue}
+                key={hr.key}
+                onPress={() => {
+                  pilihHari(hr.key);
                 }}
               >
-                {hr.hari[0]}
-              </Text>
-            </TouchableOpacity>
-          ))}
+                <Text
+                  style={{
+                    color: COLORS.white,
+
+                    fontFamily: "Poppins-Regular",
+                  }}
+                >
+                  {hr.hari[0]}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
         </View>
-      </View>
-      <View
-        style={{
-          height: 100,
-          flexDirection: "row",
-          justifyContent: "space-evenly",
-          alignItems: "center",
-          width: width * 0.9,
-        }}
-      >
-        {/* //?-----------------JIKA FASE INTENSIF FASE CONTAINER -------------------------------------- */}
-        {fase != "1" && fase != "2" && fase != "3" && (
-          <View
-            style={{
-              height: 45,
-              width: "50%",
-            }}
-          >
-            <Text style={styles.fase_judul}>Fase</Text>
-            <TouchableOpacity onPress={modalFase} style={styles.fase_container}>
-              {fase == null && (
-                <Text style={styles.fase_text}>Pilih Fase Pengobatan</Text>
-              )}
-              {fase != null && (
-                <Text style={styles.fase_text}>{faseLabel}</Text>
-              )}
-            </TouchableOpacity>
-          </View>
-        )}
-
-        {/* //?-----------------JIKA FASE INTENSIF FASE CONTAINER -------------------------------------- */}
-        {fase == "1" && (
-          <View
-            style={{
-              height: 45,
-              width: "50%",
-            }}
-          >
-            <Text style={styles.fase_judul}>Fase</Text>
-            <TouchableOpacity onPress={modalFase} style={styles.fase_container}>
-              {fase == null && (
-                <Text style={styles.fase_text}>Pilih Fase Pengobatan</Text>
-              )}
-              {fase != null && (
-                <Text style={styles.fase_text}>{faseLabel}</Text>
-              )}
-            </TouchableOpacity>
-          </View>
-        )}
-
-        {/* //?-----------------JIKA FASE LANJUTAN FASE CONTAINER -------------------------------------- */}
-        {fase == "2" && (
-          <View
-            style={{
-              height: 45,
-              width: "50%",
-            }}
-          >
-            <Text style={styles.fase_judul}>Fase</Text>
-            <TouchableOpacity onPress={modalFase} style={styles.fase_container}>
-              {fase == null && (
-                <Text style={styles.fase_text}>Pilih Fase Pengobatan</Text>
-              )}
-              {fase != null && (
-                <Text style={styles.fase_text}>{faseLabel}</Text>
-              )}
-            </TouchableOpacity>
-          </View>
-        )}
-
-        {/* //?-----------------JIKA EXTEND FASE CONTAINER -------------------------------------- */}
-        {fase == "3" && (
-          <View
-            style={{
-              height: 45,
-              width: "35%",
-            }}
-          >
-            <Text style={styles.fase_judul}>Fase</Text>
-            <TouchableOpacity onPress={modalFase} style={styles.fase_container}>
-              {fase == null && (
-                <Text style={styles.fase_text}>Pilih Fase Pengobatan</Text>
-              )}
-              {fase != null && (
-                <Text style={styles.fase_text}>{faseLabel}</Text>
-              )}
-            </TouchableOpacity>
-          </View>
-        )}
-
-        {/* //?-----------------JIKA FASE BELUM PILIH Hari Ke CONTAINER -------------------------------------- */}
-        {fase != "1" && fase != "2" && fase != "3" && (
-          <View style={styles.hari_text}>
-            <Text style={styles.fase_judul}>Hari Ke</Text>
-            <View style={styles.hari_container}>
-              <TextInput
-                textAlign="center"
-                style={{
-                  opacity: userData[0].id_kat == 1 ? 0.6 : 1,
-                  fontFamily: "Poppins-Medium",
-                  fontSize: 16,
-                  color: "black",
-                  width: 30,
-                }}
-                placeholderTextColor={black}
-                keyboardType="number-pad"
-                placeholder="0"
-                onChangeText={setHari}
-                value={hari}
-              />
+        <View
+          style={{
+            height: 100,
+            flexDirection: "row",
+            justifyContent: "space-evenly",
+            alignItems: "center",
+            width: width * 0.9,
+          }}
+        >
+          {/* //?-----------------JIKA FASE INTENSIF FASE CONTAINER -------------------------------------- */}
+          {fase != "1" && fase != "2" && fase != "3" && (
+            <View
+              style={{
+                height: 45,
+                width: "50%",
+              }}
+            >
+              <Text style={styles.fase_judul}>Fase</Text>
+              <TouchableOpacity
+                onPress={modalFase}
+                style={styles.fase_container}
+              >
+                {fase == null && (
+                  <Text style={styles.fase_text}>Pilih Fase Pengobatan</Text>
+                )}
+                {fase != null && (
+                  <Text style={styles.fase_text}>{faseLabel}</Text>
+                )}
+              </TouchableOpacity>
             </View>
-          </View>
-        )}
+          )}
 
-        {/* //?-----------------JIKA FASE INTENSIF Hari Ke CONTAINER -------------------------------------- */}
-        {fase == "1" && (
-          <View style={styles.hari_text}>
-            <Text style={styles.fase_judul}>Hari Ke</Text>
-            <View style={styles.hari_container}>
-              <TextInput
-                textAlign="center"
-                style={{
-                  opacity: userData[0].id_kat == 1 ? 0.6 : 1,
-                  fontFamily: "Poppins-Medium",
-                  fontSize: 16,
-                  color: "black",
-                  width: 30,
-                }}
-                placeholderTextColor={black}
-                keyboardType="number-pad"
-                placeholder="0"
-                onChangeText={setHari}
-                value={hari}
-              />
+          {/* //?-----------------JIKA FASE INTENSIF FASE CONTAINER -------------------------------------- */}
+          {fase == "1" && (
+            <View
+              style={{
+                height: 45,
+                width: "50%",
+              }}
+            >
+              <Text style={styles.fase_judul}>Fase</Text>
+              <TouchableOpacity
+                onPress={modalFase}
+                style={styles.fase_container}
+              >
+                {fase == null && (
+                  <Text style={styles.fase_text}>Pilih Fase Pengobatan</Text>
+                )}
+                {fase != null && (
+                  <Text style={styles.fase_text}>{faseLabel}</Text>
+                )}
+              </TouchableOpacity>
             </View>
-          </View>
-        )}
+          )}
 
-        {/* //?----------------- JIKA FASE LANJUTAN Hari Ke CONTAINER -------------------------------------- */}
-        {fase == "2" && (
-          <View style={styles.hari_text}>
-            <Text style={styles.fase_judul}>Hari Ke</Text>
-            <View style={styles.hari_container}>
-              <TextInput
-                textAlign="center"
-                style={{
-                  opacity: userData[0].id_kat == 1 ? 0.6 : 1,
-                  fontFamily: "Poppins-Medium",
-                  fontSize: 16,
-                  color: "black",
-                  width: 30,
-                }}
-                placeholderTextColor={black}
-                keyboardType="number-pad"
-                placeholder="0"
-                onChangeText={setHari}
-                value={hari}
-              />
+          {/* //?-----------------JIKA FASE LANJUTAN FASE CONTAINER -------------------------------------- */}
+          {fase == "2" && (
+            <View
+              style={{
+                height: 45,
+                width: "50%",
+              }}
+            >
+              <Text style={styles.fase_judul}>Fase</Text>
+              <TouchableOpacity
+                onPress={modalFase}
+                style={styles.fase_container}
+              >
+                {fase == null && (
+                  <Text style={styles.fase_text}>Pilih Fase Pengobatan</Text>
+                )}
+                {fase != null && (
+                  <Text style={styles.fase_text}>{faseLabel}</Text>
+                )}
+              </TouchableOpacity>
             </View>
-          </View>
-        )}
+          )}
 
-        {/* //?-----------------Hari Ke CONTAINER -------------------------------------- */}
-        {fase == "3" && (
-          <View
-            style={{
-              width: "20%",
-              justifyContent: "center",
-              height: 45,
-              marginTop: 20,
-            }}
-          >
-            <Text style={styles.fase_judul}>Hari Ke</Text>
-            <View style={styles.hari_container}>
-              <TextInput
-                textAlign="center"
-                style={{
-                  opacity: userData[0].id_kat == 1 ? 0.6 : 1,
-                  fontFamily: "Poppins-Medium",
-                  fontSize: 16,
-                  color: "black",
-                  width: 30,
-                }}
-                placeholderTextColor={black}
-                keyboardType="number-pad"
-                placeholder="0"
-                onChangeText={setHari}
-                value={hari}
-              />
+          {/* //?-----------------JIKA EXTEND FASE CONTAINER -------------------------------------- */}
+          {fase == "3" && (
+            <View
+              style={{
+                height: 45,
+                width: "35%",
+              }}
+            >
+              <Text style={styles.fase_judul}>Fase</Text>
+              <TouchableOpacity
+                onPress={modalFase}
+                style={styles.fase_container}
+              >
+                {fase == null && (
+                  <Text style={styles.fase_text}>Pilih Fase Pengobatan</Text>
+                )}
+                {fase != null && (
+                  <Text style={styles.fase_text}>{faseLabel}</Text>
+                )}
+              </TouchableOpacity>
             </View>
-          </View>
-        )}
+          )}
 
-        {/* //?-----------------LAMA Hari  CONTAINER -------------------------------------- */}
-        {fase == "3" && (
-          <View
-            style={{
-              width: "25%",
-              justifyContent: "center",
-              height: 45,
-              marginTop: 20,
-            }}
-          >
-            <Text style={styles.fase_judul}>Lama (Hari)</Text>
-            <View style={styles.hari_container}>
-              <TextInput
-                textAlign="center"
-                style={{
-                  opacity: userData[0].id_kat == 1 ? 0.6 : 1,
-                  fontFamily: "Poppins-Medium",
-                  fontSize: 16,
-                  color: "black",
-                  width: 30,
-                }}
-                placeholderTextColor={black}
-                keyboardType="number-pad"
-                placeholder="0"
-                onChangeText={setLamaPengobatan}
-                value={lamaPengobatan}
-              />
+          {/* //?-----------------JIKA FASE BELUM PILIH Hari Ke CONTAINER -------------------------------------- */}
+          {fase != "1" && fase != "2" && fase != "3" && (
+            <View style={styles.hari_text}>
+              <Text style={styles.fase_judul}>Hari Ke</Text>
+              <View style={styles.hari_container}>
+                <TextInput
+                  textAlign="center"
+                  style={{
+                    opacity: userData[0].id_kat == 1 ? 0.6 : 1,
+                    fontFamily: "Poppins-Medium",
+                    fontSize: 16,
+                    color: "black",
+                    width: 30,
+                  }}
+                  placeholderTextColor={black}
+                  keyboardType="number-pad"
+                  placeholder="0"
+                  onChangeText={setHari}
+                  value={hari}
+                />
+              </View>
             </View>
-          </View>
-        )}
-      </View>
-      <TouchableOpacity
-        style={styles.submitBtn}
-        onPress={() => {
-          setLoadingAdd(true);
-          setTimeout(() => {
-            if (hariAlarm.length == 3) {
-              if (fase == "1") {
+          )}
+
+          {/* //?-----------------JIKA FASE INTENSIF Hari Ke CONTAINER -------------------------------------- */}
+          {fase == "1" && (
+            <View style={styles.hari_text}>
+              <Text style={styles.fase_judul}>Hari Ke</Text>
+              <View style={styles.hari_container}>
+                <TextInput
+                  textAlign="center"
+                  style={{
+                    opacity: userData[0].id_kat == 1 ? 0.6 : 1,
+                    fontFamily: "Poppins-Medium",
+                    fontSize: 16,
+                    color: "black",
+                    width: 30,
+                  }}
+                  placeholderTextColor={black}
+                  keyboardType="number-pad"
+                  placeholder="0"
+                  onChangeText={setHari}
+                  value={hari}
+                />
+              </View>
+            </View>
+          )}
+
+          {/* //?----------------- JIKA FASE LANJUTAN Hari Ke CONTAINER -------------------------------------- */}
+          {fase == "2" && (
+            <View style={styles.hari_text}>
+              <Text style={styles.fase_judul}>Hari Ke</Text>
+              <View style={styles.hari_container}>
+                <TextInput
+                  textAlign="center"
+                  style={{
+                    opacity: userData[0].id_kat == 1 ? 0.6 : 1,
+                    fontFamily: "Poppins-Medium",
+                    fontSize: 16,
+                    color: "black",
+                    width: 30,
+                  }}
+                  placeholderTextColor={black}
+                  keyboardType="number-pad"
+                  placeholder="0"
+                  onChangeText={setHari}
+                  value={hari}
+                />
+              </View>
+            </View>
+          )}
+
+          {/* //?-----------------Hari Ke CONTAINER -------------------------------------- */}
+          {fase == "3" && (
+            <View
+              style={{
+                width: "20%",
+                justifyContent: "center",
+                height: 45,
+                marginTop: 20,
+              }}
+            >
+              <Text style={styles.fase_judul}>Hari Ke</Text>
+              <View style={styles.hari_container}>
+                <TextInput
+                  textAlign="center"
+                  style={{
+                    opacity: userData[0].id_kat == 1 ? 0.6 : 1,
+                    fontFamily: "Poppins-Medium",
+                    fontSize: 16,
+                    color: "black",
+                    width: 30,
+                  }}
+                  placeholderTextColor={black}
+                  keyboardType="number-pad"
+                  placeholder="0"
+                  onChangeText={setHari}
+                  value={hari}
+                />
+              </View>
+            </View>
+          )}
+
+          {/* //?-----------------LAMA Hari  CONTAINER -------------------------------------- */}
+          {fase == "3" && (
+            <View
+              style={{
+                width: "25%",
+                justifyContent: "center",
+                height: 45,
+                marginTop: 20,
+              }}
+            >
+              <Text style={styles.fase_judul}>Lama (Hari)</Text>
+              <View style={styles.hari_container}>
+                <TextInput
+                  textAlign="center"
+                  style={{
+                    opacity: userData[0].id_kat == 1 ? 0.6 : 1,
+                    fontFamily: "Poppins-Medium",
+                    fontSize: 16,
+                    color: "black",
+                    width: 30,
+                  }}
+                  placeholderTextColor={black}
+                  keyboardType="number-pad"
+                  placeholder="0"
+                  onChangeText={setLamaPengobatan}
+                  value={lamaPengobatan}
+                />
+              </View>
+            </View>
+          )}
+        </View>
+        <TouchableOpacity
+          style={styles.submitBtn}
+          onPress={() => {
+            setLoadingAdd(true);
+            setTimeout(() => {
+              // jika hari alarm berjumlah 3 dan fase bukan insentif (1)
+              if (hariAlarm.length == 3 && fase != 1) {
+                // fase lanjutan
+                if (fase == 2) {
+                  addLanjutan(
+                    hours,
+                    minutes,
+                    lamaPengobatan,
+                    hari,
+                    jam,
+                    fase,
+                    hariAlarm
+                  );
+                  // fase extend
+                } else if (fase == 3) {
+                  addExtend(
+                    hours,
+                    minutes,
+                    lamaPengobatan,
+                    hari,
+                    jam,
+                    fase,
+                    hariAlarm
+                  );
+                }
+              }
+
+              // jika fase insentif (1)
+              else if (fase == 1) {
+                // fase insentif
                 addInsentif(hours, minutes, lamaPengobatan, hari, jam, fase);
-              } else if (fase == "2") {
-                addLanjutan(
-                  hours,
-                  minutes,
-                  lamaPengobatan,
-                  hari,
-                  jam,
-                  fase,
-                  hariAlarm
+              }
+              // jika blm pilih hari dan fase bukan insentif
+              else if (hariAlarm.length <= 0 && fase != 1) {
+                // peringatan blm pilih hari
+                ToastAndroid.show(
+                  "Anda belum memilih hari!",
+                  ToastAndroid.SHORT
                 );
-              } else {
-                addExtend(
-                  hours,
-                  minutes,
-                  lamaPengobatan,
-                  hari,
-                  jam,
-                  fase,
-                  hariAlarm
+              } else if (hariAlarm.length < 3 && fase != 1) {
+                // peringatan hari 3 kali
+                ToastAndroid.show(
+                  "Pilih hari sebanyak 3 hari!",
+                  ToastAndroid.SHORT
                 );
               }
+              // if (hariAlarm.length == 3) {
+              //   if (fase == "1") {
+              //     addInsentif(hours, minutes, lamaPengobatan, hari, jam, fase);
+              //   } else if (fase == "2") {
+              //     addLanjutan(
+              //       hours,
+              //       minutes,
+              //       lamaPengobatan,
+              //       hari,
+              //       jam,
+              //       fase,
+              //       hariAlarm
+              //     );
+              //   } else {
+              //     addExtend(
+              //       hours,
+              //       minutes,
+              //       lamaPengobatan,
+              //       hari,
+              //       jam,
+              //       fase,
+              //       hariAlarm
+              //     );
+              //   }
+              //   setLoadingAdd(false);
+              //   navigation.navigate("AlarmScreen");
+              // } else if (hariAlarm.length <= 0 && fase != 1) {
+              //   ToastAndroid.show(
+              //     "Anda belum memilih hari!",
+              //     ToastAndroid.SHORT
+              //   );
               setLoadingAdd(false);
+
               navigation.navigate("AlarmScreen");
-            } else if (hariAlarm.length <= 0) {
-              ToastAndroid.show("Anda belum memilih hari!", ToastAndroid.SHORT);
-              setLoadingAdd(false);
-            }
-          }, 3000);
-        }}
-      >
-        <Text style={styles.btnText}>Simpan</Text>
-      </TouchableOpacity>
+              // }
+            }, 3000);
+          }}
+        >
+          <Text style={styles.btnText}>Simpan</Text>
+        </TouchableOpacity>
+      </ImageBackground>
     </SafeAreaView>
   );
 };
@@ -655,7 +725,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     // justifyContent: "center",
     alignItems: "center",
-    paddingTop: 10,
+    // paddingTop: 10,
+    height: height,
+    width: width,
   },
   boxhari_blue: {
     backgroundColor: COLORS.primary,
@@ -716,6 +788,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     height: 50,
     width: "80%",
+    // position: "absolute",
+    // bottom: 70,
+    marginTop: 50,
   },
   btnText: {
     fontSize: width * 0.035,
