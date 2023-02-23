@@ -95,10 +95,14 @@ const TrackScreen = () => {
         }
       });
   };
+
+  const getAlarm = async () => {
+    const userData = JSON.parse(await AsyncStorage.getItem("userData"));
+  };
   const getRiwayat = async () => {
     const userData = JSON.parse(await AsyncStorage.getItem("userData"));
 
-    fetch("https://afanalfiandi.com/ppmo/api/api.php?op=getRiwayat", {
+    fetch("https://afanalfiandi.com/ppmo/api/api.php?op=getAlarm", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -108,31 +112,80 @@ const TrackScreen = () => {
         id: userData[0].id_user,
       }),
     })
-      .then((res) => res.json())
-      .then((resp) => {
-        if (resp != null) {
-          const result = [];
-          resp.map((item, index) => {
-            result.push({
-              [item.tgl]: {
-                disabled: true,
-                startingDay: true,
-                color: COLORS.primary,
-                endingDay: true,
-                textColor: "white",
-              },
-            });
+      .then((a) => a.json())
+      .then((b) => {
+        fetch("https://afanalfiandi.com/ppmo/api/api.php?op=getRiwayat", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id: userData[0].id_user,
+          }),
+        })
+          .then((res) => res.json())
+          .then((resp) => {
+            if (resp != null) {
+              const result = [];
+              if (b.hari != 1) {
+                const strtdate = moment()
+                  .subtract(b.hari, "d")
+                  .format("YYYY-MM-DD");
 
-            const output = Object.assign({}, ...result);
+                for (var i = 1; i <= b.hari; i++) {
+                  result.push({
+                    [moment().subtract(i, "d").format("YYYY-MM-DD")]: {
+                      disabled: true,
+                      startingDay: true,
+                      color: COLORS.primary,
+                      endingDay: true,
+                      textColor: "white",
+                    },
+                  });
+                }
 
-            setMarkedDate(output);
+                resp.map((item, index) => {
+                  result.push({
+                    [item.tgl]: {
+                      disabled: true,
+                      startingDay: true,
+                      color: COLORS.primary,
+                      endingDay: true,
+                      textColor: "white",
+                    },
+                  });
+
+                  const output = Object.assign({}, ...result);
+
+                  setMarkedDate(output);
+                });
+                console.log(result);
+              } else {
+                resp.map((item, index) => {
+                  result.push({
+                    [item.tgl]: {
+                      disabled: true,
+                      startingDay: true,
+                      color: COLORS.primary,
+                      endingDay: true,
+                      textColor: "white",
+                    },
+                  });
+
+                  const output = Object.assign({}, ...result);
+
+                  setMarkedDate(output);
+                });
+              }
+            } else {
+              setMarkedDate(null);
+            }
           });
-        } else {
-          setMarkedDate(null);
-        }
       });
   };
   useEffect(() => {
+    getAlarm();
     getRiwayat();
   }, []);
   return (
@@ -212,40 +265,94 @@ const TrackScreen = () => {
       {selectedDate == "" && <View></View>}
       {selectedDate != null && selectedDate != "" && (
         <View style={styles.box}>
-          <View style={styles.baris}>
-            <View style={styles.judul_style}>
-              <Text style={styles.judul_isi}>Tgl</Text>
-            </View>
-            <View style={styles.ket_style}>
-              <Text style={styles.ket_isi}>
-                : {moment(selectedDate.tgl).format("dddd")},{" "}
-                {moment(selectedDate.tgl).format("DD MMMM YYYY")}
-              </Text>
-            </View>
+          <View
+            style={{
+              width: "25%",
+              backgroundColor: COLORS.primary,
+              height: "100%",
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: 5,
+            }}
+          >
+            <Image
+              style={{ width: "60%", height: "60%", tintColor: "white" }}
+              resizeMode="contain"
+              source={require("./../assets/icon/checklist.png")}
+            />
           </View>
-          <View style={styles.baris}>
-            <View style={styles.judul_style}>
-              <Text style={styles.judul_isi}>Hari Ke</Text>
+          <View
+            style={{
+              width: "75%",
+              // backgroundColor: "yellow",
+              height: "100%",
+              paddingLeft: 10,
+            }}
+          >
+            <View style={styles.baris}>
+              <View style={styles.judul_style}>
+                <Text style={styles.judul_isi}>Tgl</Text>
+              </View>
+              <View style={styles.ket_style}>
+                <Text style={styles.ket_isi}>
+                  : {moment(selectedDate.tgl).format("dddd")},{" "}
+                  {moment(selectedDate.tgl).format("DD MMMM YYYY")}
+                </Text>
+              </View>
             </View>
-            <View style={styles.ket_style}>
-              <Text style={styles.ket_isi}>: {selectedDate.hari}</Text>
+            <View style={styles.baris}>
+              <View style={styles.judul_style}>
+                <Text style={styles.judul_isi}>Hari Ke</Text>
+              </View>
+              <View style={styles.ket_style}>
+                <Text style={styles.ket_isi}>: {selectedDate.hari}</Text>
+              </View>
             </View>
-          </View>
 
-          <View style={styles.baris}>
-            <View style={styles.judul_style}>
-              <Text style={styles.judul_isi}>Fase</Text>
-            </View>
-            <View style={styles.ket_style}>
-              <Text style={styles.ket_isi}>: {selectedDate.fase}</Text>
+            <View style={styles.baris}>
+              <View style={styles.judul_style}>
+                <Text style={styles.judul_isi}>Fase</Text>
+              </View>
+              <View style={styles.ket_style}>
+                <Text style={styles.ket_isi}>: {selectedDate.fase}</Text>
+              </View>
             </View>
           </View>
         </View>
       )}
 
       {selectedDate == null && (
-        <View style={styles.box_2}>
-          <Text style={{ fontFamily: "Poppins-Medium" }}>Data Tidak Ada</Text>
+        <View style={styles.box}>
+          <View
+            style={{
+              width: "25%",
+              backgroundColor: "grey",
+              height: "100%",
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: 5,
+            }}
+          >
+            <Image
+              style={{ width: "60%", height: "60%", tintColor: "white" }}
+              resizeMode="contain"
+              source={require("./../assets/icon/info.png")}
+            />
+          </View>
+          <View
+            style={{
+              width: "75%",
+              // backgroundColor: "yellow",
+              height: "100%",
+              paddingLeft: 10,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Text style={{ fontFamily: "Poppins-Regular", fontSize: 16 }}>
+              Data Tidak Ada
+            </Text>
+          </View>
         </View>
       )}
     </View>
@@ -294,9 +401,11 @@ const styles = StyleSheet.create({
   box: {
     backgroundColor: "#FFFFFF",
     width: width - 30,
+    height: 110,
     paddingHorizontal: "2%",
     marginTop: 2,
     paddingVertical: 10,
+    flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
     shadowColor: "black",

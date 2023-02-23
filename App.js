@@ -143,7 +143,8 @@ const App = () => {
           name="AlarmScreen"
           component={AlarmScreen}
           options={{
-            headerShown: false,
+            // headerShown: false,
+            headerTransparent: true,
             title: "Alarm",
             // tabBarStyle: {display: 'none'},
             tabBarIcon: ({ focused }) => {

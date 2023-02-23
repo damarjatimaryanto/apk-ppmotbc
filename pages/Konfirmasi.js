@@ -267,6 +267,7 @@ const Konfirmasi = () => {
           width: width,
           flexDirection: "row",
           marginBottom: 15,
+          // backgroundColor: "grey",
         }}
       >
         <TouchableOpacity
@@ -395,7 +396,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     // justifyContent: "center",
     alignItems: "center",
-    paddingTop: 10,
+    paddingTop: 20,
   },
 
   textbtn: {

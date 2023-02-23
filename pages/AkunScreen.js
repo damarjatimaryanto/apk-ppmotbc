@@ -152,6 +152,8 @@ const AkunScreen = () => {
     })
       .then((res) => res.json())
       .then((resp) => {
+        const lExtend = JSON.stringify(resp[2].lama);
+
         setTInsentif(resp[0].total);
         setTLanjutan(resp[1].total);
         setTExtend(resp[2].total);
@@ -159,37 +161,17 @@ const AkunScreen = () => {
         const pInsentif = ((tInsentif / lInsentif) * 100) / 100;
         const pLanjutan = ((tLanjutan / 48) * 100) / 100;
 
-        const lamaHari = (60 / 7).toFixed(0) * 3;
-        const pExtend = (tExtend / lamaHari) * (100 / 100);
+        const a = 0;
+        if (lExtend == "null") {
+          setPExtend(a.toFixed(2));
+        } else if (lExtend != "null") {
+          const lamaHari = (parseFloat(JSON.parse(lExtend)) / 7).toFixed(0) * 3;
+          const pExtend = (tExtend / lamaHari) * (100 / 100);
+          setPExtend(pExtend.toFixed(2));
+        }
 
         setPInsentif(pInsentif.toFixed(2));
         setPLanjutan(pLanjutan.toFixed(2));
-        setPExtend(pExtend.toFixed(2));
-        // result.push(resp);
-        // setTotal(result);
-
-        // dataFase.map((item, index) => {
-        //   const presentase =
-        //     ((resp[index].total / item.lama_pengobatan) * 100) / 100;
-
-        //   // if (resp[index].id == 3) {
-        //   //   const pExtend =
-        //   //     ((resp[2].total / extend[0].lama_pengobatan) * 100) / 100;
-        //   //   console.log("extend : " + pex);
-        //   // }
-        //   console.log(
-        //     "total fase " +
-        //       resp[index].id +
-        //       " : " +
-        //       resp[index].total +
-        //       ", lama pengobatan : " +
-        //       item.lama_pengobatan +
-        //       ", presentase : " +
-        //       presentase.toFixed(2)
-        //   );
-        // });
-        // const pLanjutan = ((konfirmasi / total) * 100) / 100;
-        // const pExtend = ((konfirmasi / total) * 100) / 100;
       });
   };
 

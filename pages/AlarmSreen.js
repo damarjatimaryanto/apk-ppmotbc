@@ -277,31 +277,21 @@ const AlarmScreen = () => {
       .then((res) => res.json())
       .then((resp) => {
         setToday(resp);
-
-        console.log(today);
       });
   };
-  // useEffect(() => {
-  //   // setLoading(true);
-  //   // loadAsync();
-  //   // setTimeout(() => {
-  //   //   getFase();
+  useEffect(() => {
+    if (lastNotificationResponse) {
+      const route = JSON.stringify(
+        lastNotificationResponse.notification.request.content.data.path
+      );
+      navigation.navigate("Konfirmasi");
+      Notifications.dismissNotificationAsync(
+        lastNotificationResponse.notification.request.identifier
+      );
+    }
 
-  //   //   setLoading(false);
-  //   // }, 2000);
-
-  //   if (lastNotificationResponse) {
-  //     const route = JSON.stringify(
-  //       lastNotificationResponse.notification.request.content.data.path
-  //     );
-  //     navigation.navigate("Konfirmasi");
-  //     Notifications.dismissNotificationAsync(
-  //       lastNotificationResponse.notification.request.identifier
-  //     );
-  //   }
-
-  //   setRefresh(Math.random());
-  // }, [lastNotificationResponse]);
+    setRefresh(Math.random());
+  }, [lastNotificationResponse]);
 
   const modalFase = () => {
     setFaseKaton(!isFaseKaton);
@@ -338,7 +328,9 @@ const AlarmScreen = () => {
 
   const onRefresh = useCallback(() => {
     getFase();
+    getToday();
     getAlarm();
+
     setRefreshing(true);
     wait(2000).then(() => setRefreshing(false));
   }, []);
@@ -437,37 +429,17 @@ const AlarmScreen = () => {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
-      <SafeAreaView style={[styles.container]}>
-        <StatusBar
-          barStyle={"dark-content"}
-          backgroundColor={COLORS.white}
-        ></StatusBar>
+      <StatusBar
+        barStyle={"dark-content"}
+        backgroundColor={COLORS.white}
+      ></StatusBar>
 
-        <ImageBackground
-          style={{ flex: 1, height: height }}
-          resizeMode="cover"
-          source={require("./../assets/icon/bg4.png")}
-        >
-          {/* <View
-            style={{
-              height: 50,
-              width: "100%",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Text
-              style={{
-                color: COLORS.primary,
-                fontFamily: "Poppins-Medium",
-                fontSize: 20,
-              }}
-            >
-              Alarm
-            </Text>
-          </View> */}
-
-          <View
+      <ImageBackground
+        style={{ flex: 1, height: height }}
+        resizeMode="cover"
+        source={require("./../assets/icon/bg4.png")}
+      >
+        {/* <View
             style={{
               height: 50,
               width: width,
@@ -493,191 +465,188 @@ const AlarmScreen = () => {
                 Alarm
               </Text>
             </View>
-          </View>
+          </View> */}
 
-          {/* // !-----------------------------------------------------  Modal Info ------------------------------------------------------------*/}
-          <Modal
-            isVisible={isModalMetu}
-            onBackdropPress={() => setModalVisible(false)}
-            animationOutTiming={2000}
-            animationInTiming={2000}
-            animationIn={"fadeIn"}
-            animationOut={"fadeOut"}
-            // deviceHeight={height}
-            // deviceWidth={width}
+        {/* // !-----------------------------------------------------  Modal Info ------------------------------------------------------------*/}
+        <Modal
+          isVisible={isModalMetu}
+          onBackdropPress={() => setModalVisible(false)}
+          animationOutTiming={2000}
+          animationInTiming={2000}
+          animationIn={"fadeIn"}
+          animationOut={"fadeOut"}
+          // deviceHeight={height}
+          // deviceWidth={width}
+        >
+          <View
+            style={{
+              backgroundColor: COLORS.white,
+              flex: 1,
+              margin: -20,
+              justifyContent: "center",
+            }}
           >
             <View
               style={{
-                backgroundColor: COLORS.white,
-                flex: 1,
-                margin: -20,
+                alignItems: "center",
                 justifyContent: "center",
+                // backgroundColor: "grey",
               }}
             >
               <View
                 style={{
+                  width: 140,
+                  height: 140,
+                  tintColor: COLORS.primary,
+                  backgroundColor: "white",
+                  borderRadius: 90,
+                  // borderWidth: 2,
+                  // borderColor: COLORS.white,
                   alignItems: "center",
                   justifyContent: "center",
-                  // backgroundColor: "grey",
                 }}
               >
-                <View
+                <Image
                   style={{
-                    width: 140,
-                    height: 140,
-                    tintColor: COLORS.primary,
-                    backgroundColor: "white",
-                    borderRadius: 90,
-                    // borderWidth: 2,
-                    // borderColor: COLORS.white,
-                    alignItems: "center",
-                    justifyContent: "center",
+                    width: "95%",
+                    height: "95%",
+                    // tintColor: COLORS.primary,
+                    // backgroundColor: "grey",
                   }}
-                >
-                  <Image
-                    style={{
-                      width: "95%",
-                      height: "95%",
-                      // tintColor: COLORS.primary,
-                      // backgroundColor: "grey",
-                    }}
-                    source={require("./../assets/icon/modal_info.png")}
-                  />
-                </View>
-              </View>
-
-              <View
-                style={{
-                  height: 150,
-                  width: "100%",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Text
-                  style={{
-                    fontFamily: "Poppins-Medium",
-                    fontSize: 18,
-                  }}
-                >
-                  Fase Sebelumnya Telah Selesai
-                </Text>
-                <Text
-                  style={{
-                    fontFamily: "Poppins-LightItalic",
-                    fontSize: 16,
-                    color: "grey",
-                    textAlign: "center",
-                    paddingHorizontal: 20,
-                  }}
-                >
-                  Silakan setting ulang kembali alarm anda untuk fase
-                  selanjutnya.
-                </Text>
-              </View>
-
-              <View
-                style={{
-                  width: "100%",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  position: "absolute",
-                  bottom: 50,
-                }}
-              >
-                <TouchableOpacity style={styles.btn3} onPress={infoModal}>
-                  <Text
-                    style={{
-                      color: COLORS.white,
-                      fontFamily: "Poppins-Regular",
-                    }}
-                  >
-                    Tutup
-                  </Text>
-                </TouchableOpacity>
+                  source={require("./../assets/icon/modal_info.png")}
+                />
               </View>
             </View>
-          </Modal>
-          {/* // TODO ------------------------- Modal LOADING ------------------------------------------------------------------*/}
-          <Modal animationType="fade" transparent={true} visible={loading}>
-            <View style={styles.modal_lodaing_style}>
-              <ActivityIndicator size="large" color={COLORS.primary} />
-              <Text style={{ fontFamily: "Poppins-Regular" }}>
-                Loading . . .
+
+            <View
+              style={{
+                height: 150,
+                width: "100%",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text
+                style={{
+                  fontFamily: "Poppins-Medium",
+                  fontSize: 18,
+                }}
+              >
+                Fase Sebelumnya Telah Selesai
+              </Text>
+              <Text
+                style={{
+                  fontFamily: "Poppins-LightItalic",
+                  fontSize: 16,
+                  color: "grey",
+                  textAlign: "center",
+                  paddingHorizontal: 20,
+                }}
+              >
+                Silakan setting ulang kembali alarm anda untuk fase selanjutnya.
               </Text>
             </View>
-          </Modal>
 
-          {/* //! ------------------------------------------jika loading selesai dan tidak ada data alarm -------------------------------------*/}
-          {loading != true && data == null && (
+            <View
+              style={{
+                width: "100%",
+                justifyContent: "center",
+                alignItems: "center",
+                position: "absolute",
+                bottom: 50,
+              }}
+            >
+              <TouchableOpacity style={styles.btn3} onPress={infoModal}>
+                <Text
+                  style={{
+                    color: COLORS.white,
+                    fontFamily: "Poppins-Regular",
+                  }}
+                >
+                  Tutup
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+        {/* // TODO ------------------------- Modal LOADING ------------------------------------------------------------------*/}
+        <Modal animationType="fade" transparent={true} visible={loading}>
+          <View style={styles.modal_lodaing_style}>
+            <ActivityIndicator size="large" color={COLORS.primary} />
+            <Text style={{ fontFamily: "Poppins-Regular" }}>Loading . . .</Text>
+          </View>
+        </Modal>
+
+        {/* //! ------------------------------------------jika loading selesai dan tidak ada data alarm -------------------------------------*/}
+        {loading != true && data == null && (
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              paddingTop: "40%",
+              // width: "90%",
+              // paddingHorizontal: 10,
+            }}
+          >
+            <Image
+              style={{ width: 230, height: 187 }}
+              source={require("../assets/icon/illus_alarm.png")}
+            />
             <View
               style={{
                 justifyContent: "center",
                 alignItems: "center",
-                paddingTop: "35%",
-                // width: "90%",
-                // paddingHorizontal: 10,
+                height: 100,
+                width: "90%",
+                paddingHorizontal: 10,
               }}
             >
-              <Image
-                style={{ width: 230, height: 187 }}
-                source={require("../assets/icon/illus_alarm.png")}
-              />
+              <Text
+                style={{
+                  color: COLORS.primary,
+                  fontSize: 18,
+                  fontFamily: "Poppins-Medium",
+                }}
+              >
+                Ayo Mulai !
+              </Text>
+              <Text
+                style={{
+                  color: "grey",
+                  fontSize: 14,
+                  textAlign: "center",
+                  fontFamily: "Poppins-LightItalic",
+                }}
+              >
+                Track record harian anda dalam kepatuhan meminum obat akan
+                muncul disini.
+              </Text>
+            </View>
+            <TouchableOpacity
+              style={[styles.floatingbutton, { marginTop: 20 }]}
+              // onPress={toggleModal}
+              onPress={() => navigation.navigate("TambahAlarm")}
+            >
               <View
                 style={{
-                  justifyContent: "center",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
                   alignItems: "center",
-                  height: 100,
-                  width: "90%",
-                  paddingHorizontal: 10,
                 }}
               >
                 <Text
                   style={{
-                    color: COLORS.primary,
-                    fontSize: 18,
-                    fontFamily: "Poppins-Medium",
+                    fontSize: 16,
+                    color: COLORS.white,
+                    margin: 10,
+                    fontFamily: "Poppins-Regular",
                   }}
                 >
-                  Ayo Mulai !
-                </Text>
-                <Text
-                  style={{
-                    color: "grey",
-                    fontSize: 14,
-                    textAlign: "center",
-                    fontFamily: "Poppins-LightItalic",
-                  }}
-                >
-                  Track record harian anda dalam kepatuhan meminum obat akan
-                  muncul disini.
+                  Tambah Alarm
                 </Text>
               </View>
-              <TouchableOpacity
-                style={[styles.floatingbutton, { marginTop: 20 }]}
-                // onPress={toggleModal}
-                onPress={() => navigation.navigate("TambahAlarm")}
-              >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      color: COLORS.white,
-                      margin: 10,
-                      fontFamily: "Poppins-Regular",
-                    }}
-                  >
-                    Tambah Alarm
-                  </Text>
-                </View>
-              </TouchableOpacity>
-              {/* <TouchableOpacity
+            </TouchableOpacity>
+            {/* <TouchableOpacity
                 style={[styles.floatingbutton, { marginTop: 20 }]}
                 // onPress={toggleModal}
                 onPress={infoModal}
@@ -701,181 +670,170 @@ const AlarmScreen = () => {
                   </Text>
                 </View>
               </TouchableOpacity> */}
-            </View>
-          )}
-          {/* //! ------------------- jika loading selesai dan  ada data alarm -----------------------------------------------------------*/}
-          {loading != true && data != null && (
+          </View>
+        )}
+        {/* //! ------------------- jika loading selesai dan  ada data alarm -----------------------------------------------------------*/}
+        {loading != true && data != null && (
+          <View
+            style={{
+              // backgroundColor: "#FFFFFF",
+              width: "90%",
+              marginLeft: "5%",
+              borderRadius: 10,
+              marginTop: 2,
+              paddingVertical: 20,
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: "25%",
+            }}
+          >
             <View
               style={{
-                backgroundColor: "#FFFFFF",
-                width: "90%",
-                marginLeft: "5%",
-                borderRadius: 10,
-                marginTop: 2,
-                paddingVertical: 20,
                 justifyContent: "center",
                 alignItems: "center",
-                shadowColor: "#000000",
-                shadowOffset: { width: 0, height: 5 },
-                shadowOpacity: 0.3,
-                shadowRadius: 0.4,
-                elevation: 5,
+
+                width: "100%",
+                borderRadius: 5,
               }}
             >
-              <View
+              <Text
                 style={{
-                  justifyContent: "center",
-                  alignItems: "center",
-
-                  width: "100%",
+                  fontFamily: "Poppins-Regular",
+                  fontSize: 16,
+                  color: COLORS.primary,
                 }}
               >
+                {moment().format("dddd, Do MMMM YYYY")}
+              </Text>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("Konfirmasi")}
+                disabled={today != "null" ? true : false}
+              >
+                <Image
+                  style={{ width: 300, height: 300, marginTop: 30 }}
+                  source={
+                    today != "null"
+                      ? require("../assets/icon/alarm_yellow.png")
+                      : require("../assets/icon/alarm_blue.png")
+                  }
+                />
+              </TouchableOpacity>
+              <View
+                style={{
+                  borderRadius: 30,
+                  width: 250,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  paddingTop: 15,
+                }}
+              >
+                <Text
+                  style={{
+                    color: COLORS.primary,
+                    fontFamily: "Poppins-Bold",
+                    fontSize: 70,
+
+                    textAlignVertical: "center",
+                  }}
+                >
+                  {data[0].jam}
+                </Text>
+              </View>
+              {data[0].id_fase == "1" && (
+                <Text
+                  style={{
+                    color: COLORS.primary,
+                    fontFamily: "Poppins-Regular",
+                    fontSize: 16,
+                    backgroundColor: "#F2F3FC",
+                    // height: 110,
+                    textAlignVertical: "center",
+                    borderRadius: 3,
+                    paddingHorizontal: 4,
+                  }}
+                >
+                  Fase Insentif
+                </Text>
+              )}
+
+              {data[0].id_fase == "2" && (
+                <Text
+                  style={{
+                    color: COLORS.primary,
+                    fontFamily: "Poppins-Regular",
+                    fontSize: 16,
+                    backgroundColor: "#F2F3FC",
+                    // height: 110,
+                    textAlignVertical: "center",
+                    borderRadius: 3,
+                    paddingHorizontal: 4,
+                  }}
+                >
+                  Fase Lanjutan
+                </Text>
+              )}
+
+              {data[0].id_fase == "3" && (
+                <Text
+                  style={{
+                    color: COLORS.primary,
+                    fontFamily: "Poppins-Regular",
+                    fontSize: 16,
+                    backgroundColor: "#F2F3FC",
+                    // height: 110,
+                    textAlignVertical: "center",
+                    borderRadius: 3,
+                    paddingHorizontal: 4,
+                  }}
+                >
+                  Fase Extend
+                </Text>
+              )}
+
+              {data[0].id_fase == "1" && (
                 <Text
                   style={{
                     fontFamily: "Poppins-Regular",
                     fontSize: 16,
                     color: COLORS.primary,
+                    // backgroundColor: "grey",
+                    marginHorizontal: 5,
                   }}
                 >
-                  {moment().format("dddd, Do MMMM YYYY")}
+                  Setiap Hari
                 </Text>
-                <TouchableOpacity
-                  onPress={() => navigation.navigate("Konfirmasi")}
-                  disabled={today != "null" ? true : false}
-                >
-                  <Image
-                    style={{ width: 300, height: 300, marginTop: 30 }}
-                    source={
-                      today != "null"
-                        ? require("../assets/icon/alarm_green.png")
-                        : require("../assets/icon/alarm_yellow.png")
-                    }
-                  />
-
-                  {/* {today != 'null' && (
-                    <Image
-                      style={{ width: 300, height: 300, marginTop: 30 }}
-                      source={require("../assets/icon/alarm_yellow.png")}
-                    />
-                  )} */}
-                </TouchableOpacity>
-                <View
+              )}
+              {data[0].id_fase == "2" && (
+                <Text
                   style={{
-                    borderRadius: 30,
-                    width: 250,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    paddingTop: 15,
+                    fontFamily: "Poppins-Regular",
+                    fontSize: 16,
+                    color: COLORS.primary,
+                    // backgroundColor: "grey",
+                    marginHorizontal: 5,
                   }}
                 >
-                  <Text
-                    style={{
-                      color: COLORS.primary,
-                      fontFamily: "Poppins-Bold",
-                      fontSize: 70,
+                  {labelHariSatu} , {labelHariDua} , {labelHariTiga}
+                </Text>
+              )}
 
-                      textAlignVertical: "center",
-                    }}
-                  >
-                    {data[0].jam}
-                  </Text>
-                </View>
-                {data[0].id_fase == "1" && (
-                  <Text
-                    style={{
-                      color: COLORS.primary,
-                      fontFamily: "Poppins-Regular",
-                      fontSize: 16,
-                      backgroundColor: "#F2F3FC",
-                      // height: 110,
-                      textAlignVertical: "center",
-                      borderRadius: 3,
-                      paddingHorizontal: 4,
-                    }}
-                  >
-                    Fase Insentif
-                  </Text>
-                )}
-
-                {data[0].id_fase == "2" && (
-                  <Text
-                    style={{
-                      color: COLORS.primary,
-                      fontFamily: "Poppins-Regular",
-                      fontSize: 16,
-                      backgroundColor: "#F2F3FC",
-                      // height: 110,
-                      textAlignVertical: "center",
-                      borderRadius: 3,
-                      paddingHorizontal: 4,
-                    }}
-                  >
-                    Fase Lanjutan
-                  </Text>
-                )}
-
-                {data[0].id_fase == "3" && (
-                  <Text
-                    style={{
-                      color: COLORS.primary,
-                      fontFamily: "Poppins-Regular",
-                      fontSize: 16,
-                      backgroundColor: "#F2F3FC",
-                      // height: 110,
-                      textAlignVertical: "center",
-                      borderRadius: 3,
-                      paddingHorizontal: 4,
-                    }}
-                  >
-                    Fase Extend
-                  </Text>
-                )}
-
-                {data[0].id_fase == "1" && (
-                  <Text
-                    style={{
-                      fontFamily: "Poppins-Regular",
-                      fontSize: 16,
-                      color: COLORS.primary,
-                      // backgroundColor: "grey",
-                      marginHorizontal: 5,
-                    }}
-                  >
-                    Setiap Hari
-                  </Text>
-                )}
-                {data[0].id_fase == "2" && (
-                  <Text
-                    style={{
-                      fontFamily: "Poppins-Regular",
-                      fontSize: 16,
-                      color: COLORS.primary,
-                      // backgroundColor: "grey",
-                      marginHorizontal: 5,
-                    }}
-                  >
-                    {labelHariSatu} , {labelHariDua} , {labelHariTiga}
-                  </Text>
-                )}
-
-                {data[0].id_fase == "3" && (
-                  <Text
-                    style={{
-                      fontFamily: "Poppins-Regular",
-                      fontSize: 16,
-                      color: COLORS.primary,
-                      // backgroundColor: "grey",
-                      marginHorizontal: 5,
-                    }}
-                  >
-                    {labelHariSatu} , {labelHariDua} , {labelHariTiga}
-                  </Text>
-                )}
-              </View>
+              {data[0].id_fase == "3" && (
+                <Text
+                  style={{
+                    fontFamily: "Poppins-Regular",
+                    fontSize: 16,
+                    color: COLORS.primary,
+                    // backgroundColor: "grey",
+                    marginHorizontal: 5,
+                  }}
+                >
+                  {labelHariSatu} , {labelHariDua} , {labelHariTiga}
+                </Text>
+              )}
             </View>
-          )}
-        </ImageBackground>
-      </SafeAreaView>
+          </View>
+        )}
+      </ImageBackground>
     </ScrollView>
   );
 };
@@ -886,7 +844,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.white,
-    height: height,
   },
   btn: {
     backgroundColor: "#25376A",

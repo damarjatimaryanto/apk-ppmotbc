@@ -24,7 +24,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.alfiandiafan.apkppmotbc"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -33,9 +34,16 @@
       [
         "expo-notifications",
         {
-          "sounds": ["./assets/sound/sound.wav"]
+          "sounds": [
+            "./assets/sound/sound.wav"
+          ]
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "e774fd32-c3da-425a-85ae-15598a558e0c"
+      }
+    }
   }
 }

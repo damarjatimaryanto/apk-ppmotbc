@@ -77,13 +77,6 @@ const TambahAlarm = () => {
   ];
   const [refresh, setRefresh] = useState(Math.random());
   const [refreshing, setRefreshing] = useState(false);
-  const [pressedSatu, setPressedSatu] = useState(false);
-  const [pressedDua, setPressedDua] = useState(false);
-  const [pressedTiga, setPressedTiga] = useState(false);
-  const [pressedEmpat, setPressedEmpat] = useState(false);
-  const [pressedLima, setPressedLima] = useState(false);
-  const [pressedEnam, setPressedEnam] = useState(false);
-  const [pressedTujuh, setPressedTujuh] = useState(false);
 
   const [modal, setModal] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
@@ -205,24 +198,6 @@ const TambahAlarm = () => {
           setFaseLabel(item.fase);
           setFaseKaton(false);
           getLamaPengobatan(item.id_fase_detail);
-
-          if (item.id_fase_detail == "1") {
-            setPressedSatu(true);
-            setPressedDua(true);
-            setPressedTiga(true);
-            setPressedEmpat(true);
-            setPressedLima(true);
-            setPressedEnam(true);
-            setPressedTujuh(true);
-          } else {
-            setPressedSatu(false);
-            setPressedDua(false);
-            setPressedTiga(false);
-            setPressedEmpat(false);
-            setPressedLima(false);
-            setPressedEnam(false);
-            setPressedTujuh(false);
-          }
         }}
       >
         <Text
@@ -390,155 +365,7 @@ const TambahAlarm = () => {
               marginVertical: 10,
             }}
           >
-            <TouchableOpacity
-              style={pressedSatu ? styles.boxhari_blue : styles.boxhari_grey}
-              onPress={() => {
-                if (hariAlarm.length < 3) {
-                  pilihHari(1);
-                  setPressedSatu(true);
-                } else {
-                  pilihHari(1);
-                }
-              }}
-              disabled={pressedSatu ? true : false}
-            >
-              <Text
-                style={{
-                  color: pressedSatu ? COLORS.white : COLORS.primary,
-                  fontFamily: "Poppins-Regular",
-                }}
-              >
-                M
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={pressedDua ? styles.boxhari_blue : styles.boxhari_grey}
-              onPress={() => {
-                if (hariAlarm.length < 3) {
-                  pilihHari(2);
-                  setPressedDua(true);
-                } else {
-                  pilihHari(2);
-                }
-              }}
-              disabled={pressedDua ? true : false}
-            >
-              <Text
-                style={{
-                  color: pressedDua ? COLORS.white : COLORS.primary,
-                  fontFamily: "Poppins-Regular",
-                }}
-              >
-                S
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={pressedTiga ? styles.boxhari_blue : styles.boxhari_grey}
-              onPress={() => {
-                if (hariAlarm.length < 3) {
-                  pilihHari(3);
-                  setPressedTiga(true);
-                } else {
-                  pilihHari(3);
-                }
-              }}
-              disabled={pressedTiga ? true : false}
-            >
-              <Text
-                style={{
-                  color: pressedTiga ? COLORS.white : COLORS.primary,
-                  fontFamily: "Poppins-Regular",
-                }}
-              >
-                S
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={pressedEmpat ? styles.boxhari_blue : styles.boxhari_grey}
-              onPress={() => {
-                if (hariAlarm.length < 3) {
-                  pilihHari(4);
-                  setPressedEmpat(true);
-                } else {
-                  pilihHari(4);
-                }
-              }}
-              disabled={pressedEmpat ? true : false}
-            >
-              <Text
-                style={{
-                  color: pressedEmpat ? COLORS.white : COLORS.primary,
-                  fontFamily: "Poppins-Regular",
-                }}
-              >
-                R
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={pressedLima ? styles.boxhari_blue : styles.boxhari_grey}
-              onPress={() => {
-                if (hariAlarm.length < 3) {
-                  pilihHari(5);
-                  setPressedLima(true);
-                } else {
-                  pilihHari(5);
-                }
-              }}
-              disabled={pressedLima ? true : false}
-            >
-              <Text
-                style={{
-                  color: pressedLima ? COLORS.white : COLORS.primary,
-                  fontFamily: "Poppins-Regular",
-                }}
-              >
-                K
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={pressedEnam ? styles.boxhari_blue : styles.boxhari_grey}
-              onPress={() => {
-                if (hariAlarm.length < 3) {
-                  pilihHari(6);
-                  setPressedEnam(true);
-                } else {
-                  pilihHari(6);
-                }
-              }}
-              disabled={pressedEnam ? true : false}
-            >
-              <Text
-                style={{
-                  color: pressedEnam ? COLORS.white : COLORS.primary,
-                  fontFamily: "Poppins-Regular",
-                }}
-              >
-                J
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={pressedTujuh ? styles.boxhari_blue : styles.boxhari_grey}
-              onPress={() => {
-                if (hariAlarm.length < 3) {
-                  pilihHari(7);
-                  setPressedTujuh(true);
-                } else {
-                  pilihHari(7);
-                }
-              }}
-              disabled={pressedTujuh ? true : false}
-            >
-              <Text
-                style={{
-                  color: pressedTujuh ? COLORS.white : COLORS.primary,
-                  fontFamily: "Poppins-Regular",
-                }}
-              >
-                S
-              </Text>
-            </TouchableOpacity>
-
-            {/* {dataHari.map((hr, index) => (
+            {dataHari.map((hr, index) => (
               <TouchableOpacity
                 style={
                   // hariAlarm === index
@@ -560,7 +387,7 @@ const TambahAlarm = () => {
                   {hr.hari[0]}
                 </Text>
               </TouchableOpacity>
-            ))} */}
+            ))}
           </View>
         </View>
         <View
