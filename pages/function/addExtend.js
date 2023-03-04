@@ -12,20 +12,6 @@ const addExtend = async (
   fase,
   hariAlarm
 ) => {
-  // console.log(
-  //   " hours: " +
-  //     hours +
-  //     " minutes: " +
-  //     minutes +
-  //     " lamaPengobatan: " +
-  //     lamaPengobatan +
-  //     " hari: " +
-  //     hari +
-  //     " jam: " +
-  //     jam +
-  //     fase
-  // );
-  // console.warn(hariAlarm);
   const userData = JSON.parse(await AsyncStorage.getItem("userData"));
 
   const hrs = parseFloat(hours);
@@ -39,10 +25,6 @@ const addExtend = async (
   const dua = parseFloat(hariAlarm[1]);
   const tiga = parseFloat(hariAlarm[2]);
 
-  // console.warn(
-  //   "hari satu : " + satu,
-  //   " hari dua : " + dua + " hari tiga : " + tiga
-  // );
   // // insert
   fetch("https://afanalfiandi.com/ppmo/api/api.php?op=insAlarmExtend", {
     method: "POST",
@@ -61,14 +43,23 @@ const addExtend = async (
       start: newDate,
       end: newEndDate,
       lama_pengobatan: lamaPengobatan,
+      hour: hrs,
+      minute: min,
     }),
   })
     .then((res) => res.json())
-    .then((resp) => {
+    .then(async (resp) => {
       if (resp == 1) {
         hariAlarm.map((d) => {
           pushScheduled(hrs, min, d);
         });
+        AsyncStorage.setItem("alarmSession", "1");
+
+        try {
+          await AsyncStorage.removeItem("selisihSession");
+        } catch (error) {
+          console.log(error);
+        }
         ToastAndroid.show("Alarm Berhasil Ditambahkan!", ToastAndroid.SHORT);
       } else {
         ToastAndroid.show("Alarm Gagal Ditambahkan!", ToastAndroid.SHORT);

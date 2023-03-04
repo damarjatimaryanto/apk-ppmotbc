@@ -15,7 +15,6 @@ import {
   TextInput,
   ImageBackground,
   ScrollView,
-  BackHandler,
 } from "react-native";
 import React, { useRef, useCallback, useEffect, useState } from "react";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
@@ -40,7 +39,7 @@ const COLORS = {
   blue_icon: "#9695C0",
 };
 
-const TambahAlarm = () => {
+const TestScreen_3 = () => {
   const navigation = useNavigation();
   const [isHourVisible, setHourVisible] = useState(false);
   const [isMinuteVisible, setMinuteVisible] = useState(false);
@@ -54,7 +53,6 @@ const TambahAlarm = () => {
   const [pressedEnam, setPressedEnam] = useState(false);
   const [pressedTujuh, setPressedTujuh] = useState(false);
 
-  const [loading, setLoading] = useState(false);
   const [modal, setModal] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
   const [isModalMetu, setModalMetu] = useState(false);
@@ -176,23 +174,6 @@ const TambahAlarm = () => {
       getAlarm();
       getFase();
     }, 3000);
-
-    const backAction = () => {
-      Alert.alert("", "Apakah Anda yakin ingin keluar dari aplikasi?", [
-        {
-          text: "Batal",
-          onPress: () => null,
-          style: "cancel",
-        },
-        { text: "Keluar", onPress: () => BackHandler.exitApp() },
-      ]);
-      return true;
-    };
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
-    );
-    return () => backHandler.remove();
   });
   const renderFase = ({ item }) => (
     <View>
@@ -310,49 +291,6 @@ const TambahAlarm = () => {
     );
   }
 
-  var jamArr = [];
-
-  const onChangeJam = (h) => {
-    if (h <= 24) {
-      const fristChar = h.slice(0, 1);
-      const scndChar = h.slice(1, 2);
-      if (fristChar == 0) {
-        setHours(scndChar);
-        jamArr.push(scndChar + ":00");
-
-        setJam(jamArr[0]);
-      } else {
-        setHours(h);
-        jamArr.push(h + ":00");
-        setJam(jamArr[0]);
-      }
-    } else {
-      ToastAndroid.show("Jam tidak dapat melebihi 24!", ToastAndroid.SHORT);
-    }
-  };
-
-  const onChangeMenit = (m) => {
-    if (m <= 59) {
-      const fristChar = m.slice(0, 1);
-      const scndChar = m.slice(1, 2);
-
-      if (m == "00") {
-        setMinutes("00");
-      } else if (fristChar == 0) {
-        setMinutes(scndChar);
-        jamArr.push(hours + ":0" + scndChar);
-
-        setJam(jamArr[0]);
-      } else {
-        setMinutes(m);
-        jamArr.push(hours + ":" + m);
-
-        setJam(jamArr[0]);
-      }
-    } else {
-      ToastAndroid.show("Menit tidak boleh melebihi 59!", ToastAndroid.SHORT);
-    }
-  };
   return (
     <View style={styles.container}>
       {/* <ImageBackground
@@ -360,39 +298,6 @@ const TambahAlarm = () => {
         resizeMode="cover"
         source={require("./../assets/icon/bg4.png")}
       > */}
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={loadingAdd}
-        onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
-          setModal(false);
-        }}
-      >
-        <View
-          style={{
-            position: "absolute",
-            justifyContent: "center",
-            alignItems: "center",
-            height: 60,
-            width: "40%",
-            left: "30%",
-            top: "40%",
-            backgroundColor: "white",
-            borderRadius: 10,
-            borderColor: "#ddd",
-            borderBottomWidth: 0,
-            shadowColor: "#000000",
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.9,
-            shadowRadius: 3,
-            elevation: 5,
-          }}
-        >
-          <ActivityIndicator size="large" color={COLORS.primary} />
-          <Text style={{ fontFamily: "Poppins-Regular" }}>Loading . . .</Text>
-        </View>
-      </Modal>
       {/* // ? ---------------------------------- Modal FASE PENGOBATAN -------------------------------------*/}
       <Modal
         isVisible={isFaseKaton}
@@ -601,9 +506,8 @@ const TambahAlarm = () => {
                   color: COLORS.primary,
                   borderRadius: 10,
                 }}
-                maxLength={2}
+                maxLength={24}
                 placeholderTextColor={COLORS.primary}
-                onChangeText={(value) => onChangeJam(value)}
                 keyboardType="number-pad"
                 placeholder="00"
               />
@@ -641,8 +545,7 @@ const TambahAlarm = () => {
                   color: COLORS.primary,
                   borderRadius: 10,
                 }}
-                onChangeText={(value) => onChangeMenit(value)}
-                maxLength={2}
+                maxLength={24}
                 placeholderTextColor={COLORS.primary}
                 keyboardType="number-pad"
                 placeholder="00"
@@ -692,7 +595,6 @@ const TambahAlarm = () => {
           style={{
             fontFamily: "Poppins-SemiBold",
             width: "30%",
-            opacity: fase == 1 ? 0.4 : 1,
             // backgroundColor: "green",
             justifyContent: "flex-end",
             alignItems: "flex-end",
@@ -701,7 +603,6 @@ const TambahAlarm = () => {
           onPress={() => {
             onReset();
           }}
-          disabled={fase == 1 ? true : false}
         >
           <Text
             style={{
@@ -975,7 +876,7 @@ const TambahAlarm = () => {
   );
 };
 
-export default TambahAlarm;
+export default TestScreen_3;
 
 const styles = StyleSheet.create({
   container: {

@@ -10,6 +10,7 @@ import {
   Dimensions,
   Modal,
   TextInput,
+  BackHandler,
 } from "react-native";
 import React, { useRef, useEffect, useState, useCallback } from "react";
 import { useNavigation } from "@react-navigation/native";
@@ -29,6 +30,26 @@ const height = Dimensions.get("screen").height;
 const COLORS = { primary: "#1E319D", white: "#FFFFFF" };
 
 const LoginScreen = () => {
+  useEffect(() => {
+    const backAction = () => {
+      Alert.alert("", "Apakah Anda yakin ingin keluar dari aplikasi?", [
+        {
+          text: "Batal",
+          onPress: () => null,
+          style: "cancel",
+        },
+        { text: "Keluar", onPress: () => BackHandler.exitApp() },
+      ]);
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+    return () => backHandler.remove();
+  }, []);
+
   const navigation = useNavigation();
   const [username, setUsername] = useState();
   const [password, setPassword] = useState();

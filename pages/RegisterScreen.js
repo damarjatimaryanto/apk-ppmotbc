@@ -12,6 +12,7 @@ import {
   TextInput,
   Button,
   StatusBar,
+  BackHandler,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
@@ -71,6 +72,23 @@ const RegisterScreen = () => {
   useEffect(() => {
     getKategori();
     getFase();
+
+    const backAction = () => {
+      Alert.alert("", "Apakah Anda yakin ingin keluar dari aplikasi?", [
+        {
+          text: "Batal",
+          onPress: () => null,
+          style: "cancel",
+        },
+        { text: "Keluar", onPress: () => BackHandler.exitApp() },
+      ]);
+      return true;
+    };
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+    return () => backHandler.remove();
   }, []);
 
   const getKategori = () => {

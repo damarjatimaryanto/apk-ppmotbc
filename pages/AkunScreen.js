@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   Dimensions,
   TextInput,
+  BackHandler,
 } from "react-native";
 import React, { useRef, useEffect, useState } from "react";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
@@ -18,7 +19,7 @@ import PieChart from "react-native-expo-pie-chart";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFonts } from "expo-font";
 import { StatusBar } from "expo-status-bar";
-
+import { LogBox } from "react-native";
 const width = Dimensions.get("screen").width;
 const height = Dimensions.get("screen").height;
 const COLORS = { primary: "#1E319D", white: "#FFFFFF", abu1: "#F6F6F6" };
@@ -114,21 +115,20 @@ const AkunScreen = () => {
         });
 
         setUserSession(result);
-
-        // console.log(resp);
       })
       .catch((e) => {
-        console.log(e);
+        ToastAndroid.show("Logout berhasil!", ToastAndroid.SHORT);
       });
   };
 
   const onLogout = async () => {
     // await AsyncStorage.removeItem("loggedIn");
+    LogBox.ignoreAllLogs(true);
     setLoadingDua(true);
     setTimeout(async () => {
       navigation.navigate("LoginScreen");
-      await AsyncStorage.clear();
       setLoadingDua(false);
+      AsyncStorage.clear();
     }, 2000);
   };
   const pieData = [
@@ -172,6 +172,9 @@ const AkunScreen = () => {
 
         setPInsentif(pInsentif.toFixed(2));
         setPLanjutan(pLanjutan.toFixed(2));
+      })
+      .catch((e) => {
+        ToastAndroid.show("Logout berhasil!", ToastAndroid.SHORT);
       });
   };
 
@@ -188,9 +191,6 @@ const AkunScreen = () => {
     })
       .then((res) => res.json())
       .then((response) => {
-        // console.log(response[0].lama_pengobatan);
-        // setDataFase(response);
-
         setLInsentif(response[0].lama_pengobatan);
         setLLanjutan(response[1].lama_pengobatan);
         setLExtend(response[2].lama_pengobatan);
@@ -201,7 +201,6 @@ const AkunScreen = () => {
     fetch("https://afanalfiandi.com/ppmo/api/api.php?op=getFaseDetail", {})
       .then((res) => res.json())
       .then((response) => {
-        // console.log(response);
         setExtend(response);
       });
   };
@@ -223,6 +222,24 @@ const AkunScreen = () => {
       setTimeout(() => {
         setLoading(false);
       }, 3000);
+
+      const backAction = () => {
+        Alert.alert("", "Apakah Anda yakin ingin keluar dari aplikasi?", [
+          {
+            text: "Batal",
+            onPress: () => null,
+            style: "cancel",
+          },
+          { text: "Keluar", onPress: () => BackHandler.exitApp() },
+        ]);
+        return true;
+      };
+
+      const backHandler = BackHandler.addEventListener(
+        "hardwareBackPress",
+        backAction
+      );
+      return () => backHandler.remove();
     }, [userSession])
   );
 
@@ -259,7 +276,7 @@ const AkunScreen = () => {
           }}
         >
           <ActivityIndicator size="large" color={COLORS.primary} />
-          <Text style={{ fontFamily: "Poppins-Regular" }}>Loading</Text>
+          <Text style={{ fontFamily: "Poppins-Regular" }}>Loading . . .</Text>
         </View>
       </Modal>
       <Modal animationType="fade" transparent={true} visible={loadingDua}>
@@ -333,7 +350,7 @@ const AkunScreen = () => {
               <View style={styles.box_image}>
                 <Image
                   style={styles.img_style}
-                  source={require("./../assets/icon/at_fill.png")}
+                  source={require("./../assets/icon/fase_pasien.png")}
                 />
               </View>
               <View style={styles.judul_style}>
@@ -432,6 +449,65 @@ const AkunScreen = () => {
               </View>
             </TouchableOpacity>
           </View>
+
+          {/* <View style={styles.box_keluar}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Test")}
+              style={{ flexDirection: "row", width: "100%" }}
+            >
+              <View style={styles.box_image}>
+                <Image
+                  style={styles.img_style_2}
+                  source={require("../assets/icon/logout.png")}
+                />
+              </View>
+              <View style={styles.judul_style}>
+                <Text style={styles.judul_isi}>Test Page</Text>
+              </View>
+              <View style={styles.ket_style}>
+                <Text style={styles.ket_isi}></Text>
+              </View>
+            </TouchableOpacity>
+          </View> */}
+
+          {/* <View style={styles.box_keluar}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("TestScreen")}
+              style={{ flexDirection: "row", width: "100%" }}
+            >
+              <View style={styles.box_image}>
+                <Image
+                  style={styles.img_style_2}
+                  source={require("../assets/icon/logout.png")}
+                />
+              </View>
+              <View style={styles.judul_style}>
+                <Text style={styles.judul_isi}>alarm</Text>
+              </View>
+              <View style={styles.ket_style}>
+                <Text style={styles.ket_isi}></Text>
+              </View>
+            </TouchableOpacity>
+          </View> */}
+          {/* <View style={styles.box_keluar}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("TestScreen_2")}
+              style={{ flexDirection: "row", width: "100%" }}
+            >
+              <View style={styles.box_image}>
+                <Image
+                  style={styles.img_style_2}
+                  source={require("../assets/icon/logout.png")}
+                />
+              </View>
+              <View style={styles.judul_style}>
+                <Text style={styles.judul_isi}>alarm</Text>
+              </View>
+              <View style={styles.ket_style}>
+                <Text style={styles.ket_isi}></Text>
+              </View>
+            </TouchableOpacity>
+          </View> */}
         </View>
       )}
     </View>
@@ -455,16 +531,11 @@ const styles = StyleSheet.create({
     height: 45,
     justifyContent: "center",
     alignItems: "center",
-    shadowColor: "black",
-    // borderRadius: 5,
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 0.4,
-
-    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 10,
   },
 
   box_2: {

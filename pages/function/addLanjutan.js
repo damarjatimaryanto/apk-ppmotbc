@@ -42,11 +42,20 @@ const addLanjutan = async (
       fase: fase,
       start: newDate,
       end: newEndDate,
+      hour: hrs,
+      minute: min,
     }),
   })
     .then((res) => res.json())
-    .then((resp) => {
+    .then(async (resp) => {
       if (resp == "1") {
+        AsyncStorage.setItem("alarmSession", "1");
+        try {
+          await AsyncStorage.removeItem("selisihSession");
+        } catch (error) {
+          console.log(error);
+        }
+
         ToastAndroid.show("Alarm Berhasil Ditambahkan!", ToastAndroid.SHORT);
         hariAlarm.map((d) => {
           pushScheduled(hrs, min, d);

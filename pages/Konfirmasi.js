@@ -14,6 +14,7 @@ import {
   AppRegistry,
   Dimensions,
   SafeAreaView,
+  BackHandler,
 } from "react-native";
 import React, { useRef, useEffect, useState } from "react";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
@@ -164,13 +165,7 @@ const Konfirmasi = () => {
               {
                 text: "OK",
                 onPress: () => {
-                  navigation.reset({
-                    routes: [
-                      {
-                        name: "AlarmScreen",
-                      },
-                    ],
-                  });
+                  navigation.navigate("AlarmScreen");
                 },
               },
             ]);
@@ -193,6 +188,23 @@ const Konfirmasi = () => {
     setTimeout(() => {
       setLoading(false);
     }, 2000);
+
+    const backAction = () => {
+      Alert.alert("", "Apakah Anda yakin ingin keluar dari aplikasi?", [
+        {
+          text: "Batal",
+          onPress: () => null,
+          style: "cancel",
+        },
+        { text: "Keluar", onPress: () => BackHandler.exitApp() },
+      ]);
+      return true;
+    };
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+    return () => backHandler.remove();
   }, [userSession]);
 
   return (
@@ -261,7 +273,7 @@ const Konfirmasi = () => {
           </View>
         </Modal>
       )}
-      <View
+      {/* <View
         style={{
           height: 50,
           width: width,
@@ -299,7 +311,7 @@ const Konfirmasi = () => {
             Konfirmasi
           </Text>
         </View>
-      </View>
+      </View> */}
       <View style={styles.box}>
         <View style={{ flexDirection: "row", width: "100%" }}>
           <View style={styles.judul_style}>
@@ -358,7 +370,7 @@ const Konfirmasi = () => {
           )}
         </View>
       </View>
-      <View style={styles.box}>
+      {/* <View style={styles.box}>
         <View style={{ flexDirection: "row", width: "100%" }}>
           <View style={styles.judul_style}>
             <Text style={styles.judul_isi}>Waktu Minum Obat</Text>
@@ -371,7 +383,7 @@ const Konfirmasi = () => {
             </View>
           )}
         </View>
-      </View>
+      </View> */}
 
       <TouchableOpacity onPress={onSubmit} style={styles.floatingbutton}>
         <Text

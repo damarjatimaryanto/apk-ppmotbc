@@ -9,6 +9,7 @@ import {
   Alert,
   Button,
   TouchableOpacity,
+  Dimensions,
 } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
@@ -29,11 +30,109 @@ import AkunScreen from "./pages/AkunScreen";
 import Konfirmasi from "./pages/Konfirmasi";
 import { AntDesign } from "@expo/vector-icons";
 import TambahAlarm from "./pages/TambahAlarm";
+import Test from "./pages/Test";
+import alarmdesain from "./pages/alarmdesain";
+import TestScreen from "./pages/alarmdesain";
+import TestScreen_2 from "./pages/alarmdesain_2";
+import TestScreen_3 from "./pages/alarmdesain_3";
 
 const COLORS = { primary: "#1E319D", white: "#FFFFFF" };
+
+const width = Dimensions.get("screen").width;
+const height = Dimensions.get("screen").height;
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
+function Header() {
+  const navigation = useNavigation();
 
+  React.useEffect(() => {
+    const backAction = () => {
+      Alert.alert("", "Apakah Anda yakin ingin keluar dari aplikasi?", [
+        {
+          text: "Batal",
+          onPress: () => null,
+          style: "cancel",
+        },
+        { text: "Keluar", onPress: () => BackHandler.exitApp() },
+      ]);
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
+
+  return (
+    <View
+      style={{
+        flex: 1,
+        height: 70,
+        width: width * 0.9,
+        flexDirection: "row",
+        marginBottom: 15,
+        backgroundColor: "grey",
+        alignItems: "center",
+      }}
+    >
+      <TouchableOpacity
+        onPress={() => navigation.navigate("AlarmScreen")}
+        style={{
+          width: "15%",
+          height: "100%",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "blue",
+        }}
+      >
+        <AntDesign name="arrowleft" size={25} color={COLORS.primary} />
+      </TouchableOpacity>
+      <View
+        style={{
+          width: "70%",
+          height: "100%",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Text
+          style={{
+            color: COLORS.primary,
+            fontFamily: "Poppins-Medium",
+            fontSize: 20,
+          }}
+        >
+          Konfirmasi
+        </Text>
+      </View>
+    </View>
+  );
+}
+function Back() {
+  const navigation = useNavigation();
+  return (
+    <TouchableOpacity
+      onPress={() => navigation.navigate("AlarmScreen")}
+      style={{ paddingLeft: 12 }}
+    >
+      <AntDesign name="arrowleft" size={22} color={COLORS.primary} />
+    </TouchableOpacity>
+  );
+}
+function Back_2() {
+  const navigation = useNavigation();
+  return (
+    <TouchableOpacity
+      onPress={() => navigation.navigate("AlarmScreen")}
+      style={{ paddingLeft: 10 }}
+    >
+      <AntDesign name="arrowleft" size={20} color={COLORS.primary} />
+    </TouchableOpacity>
+  );
+}
 const App = () => {
   // const navigation = useNavigation();
   const [fontsLoaded] = useFonts({
@@ -41,11 +140,15 @@ const App = () => {
     "Poppins-Regular": require("./assets/fonts/Poppins-Regular.ttf"),
     "Poppins-SemiBold": require("./assets/fonts/Poppins-SemiBold.ttf"),
     "Poppins-Medium": require("./assets/fonts/Poppins-Medium.ttf"),
+    "Aldrich-Regular": require("./assets/fonts/Aldrich-Regular.ttf"),
+    "OdibeeSans-Regular": require("./assets/fonts/OdibeeSans-Regular.ttf"),
+    "Quantico-Bold": require("./assets/fonts/Quantico-Bold.ttf"),
     "Poppins-LightItalic": require("./assets/fonts/Poppins-LightItalic.ttf"),
   });
   if (!fontsLoaded) {
     return null;
   }
+
   return (
     <NavigationContainer>
       <Tab.Navigator
@@ -103,6 +206,52 @@ const App = () => {
           }}
         />
         <Tab.Screen
+          name="Test"
+          component={Test}
+          options={{
+            headerShown: true,
+            tabBarStyle: { display: "none" },
+            tabBarButton: () => null,
+          }}
+        />
+        <Tab.Screen
+          name="TestScreen"
+          component={TestScreen}
+          options={{
+            headerTitle: "AlarmDesain 1",
+            // headerTransparent: true,
+            headerShown: true,
+            tabBarStyle: { display: "none" },
+            tabBarButton: () => null,
+            headerLeft: () => <Back />,
+          }}
+        />
+        <Tab.Screen
+          name="TestScreen_2"
+          component={TestScreen_2}
+          options={{
+            headerTitle: "Alarm Desain 2",
+            // headerTransparent: true,
+            headerShown: true,
+            tabBarStyle: { display: "none" },
+            tabBarButton: () => null,
+            headerLeft: () => <Back />,
+          }}
+        />
+        <Tab.Screen
+          name="TestScreen_3"
+          component={TestScreen_3}
+          options={{
+            // headerTransparent: true,
+            headerTitle: "Alarm Desain 3",
+            // headerTransparent: true,
+            headerShown: true,
+            tabBarStyle: { display: "none" },
+            tabBarButton: () => null,
+            headerLeft: () => <Back />,
+          }}
+        />
+        <Tab.Screen
           name="RegisterScreen"
           component={RegisterScreen}
           options={{
@@ -115,28 +264,23 @@ const App = () => {
           name="Konfirmasi"
           component={Konfirmasi}
           options={{
-            headerShown: false,
+            headerShown: true,
             tabBarStyle: { display: "none" },
             tabBarButton: () => null,
-            headerLeft: () => (
-              <TouchableOpacity style={{ paddingLeft: 15 }}>
-                <AntDesign name="arrowleft" size={20} color={COLORS.primary} />
-              </TouchableOpacity>
-            ),
+            headerLeft: () => <Back />,
+            // options={{ headerTitle: () => <Header />
           }}
         />
         <Tab.Screen
           name="TambahAlarm"
           component={TambahAlarm}
           options={{
-            headerShown: false,
+            headerTitle: "Tambah Alarm",
+            // headerTransparent: true,
+            headerShown: true,
             tabBarStyle: { display: "none" },
             tabBarButton: () => null,
-            headerLeft: () => (
-              <TouchableOpacity style={{ paddingLeft: 15 }}>
-                <AntDesign name="arrowleft" size={20} color={COLORS.primary} />
-              </TouchableOpacity>
-            ),
+            headerLeft: () => <Back />,
           }}
         />
         <Tab.Screen

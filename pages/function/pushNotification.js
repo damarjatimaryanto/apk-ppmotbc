@@ -1,6 +1,6 @@
 import * as Notifications from "expo-notifications";
 
-const pushNotification = async (fase, hrs, min, day) => {
+const pushNotification = async (hrs, min) => {
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
       shouldShowAlert: true,

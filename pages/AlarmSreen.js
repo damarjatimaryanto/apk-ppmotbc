@@ -14,6 +14,7 @@ import {
   ToastAndroid,
   FlatList,
   ImageBackground,
+  BackHandler,
 } from "react-native";
 import React, { useRef, useCallback, useEffect, useState } from "react";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
@@ -27,6 +28,8 @@ import addInsentif from "./function/addInsentif";
 import addExtend from "./function/addExtend";
 import addLanjutan from "./function/addLanjutan";
 import { SafeAreaView } from "react-native";
+import pushNotification from "./function/pushNotification";
+import pushScheduled from "./function/pushScheduled";
 
 const width = Dimensions.get("screen").width;
 const height = Dimensions.get("screen").height;
@@ -114,7 +117,8 @@ const AlarmScreen = () => {
 
     AsyncStorage.removeItem("alarm");
     setData(null);
-    // console.log(await AsyncStorage.getItem("alarm"));
+
+    setSelisih(false);
   };
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
@@ -130,7 +134,25 @@ const AlarmScreen = () => {
         loadAsync();
         setLoading(false);
       }, 1500);
-      // console.log(loading);
+
+      const backAction = () => {
+        Alert.alert("", "Apakah Anda yakin ingin keluar dari aplikasi?", [
+          {
+            text: "Batal",
+            onPress: () => null,
+            style: "cancel",
+          },
+          { text: "Keluar", onPress: () => BackHandler.exitApp() },
+        ]);
+        return true;
+      };
+
+      const backHandler = BackHandler.addEventListener(
+        "hardwareBackPress",
+        backAction
+      );
+
+      return () => backHandler.remove();
     }, [refresh])
   );
 
@@ -147,22 +169,47 @@ const AlarmScreen = () => {
       }),
     })
       .then((res) => res.json())
-      .then((resp) => {
+      .then(async (resp) => {
+        const selisihSession = await AsyncStorage.getItem("selisihSession");
+
         if (resp != "0") {
-          const startDate = resp.start;
-          const endDate = resp.end;
-          // const dateNow = moment(new Date()).format("2024-01-01");
+          const start = moment(resp.start).format("YYYY-MM-DD");
+          // const end = moment("2023-03-01").format("YYYY-MM-DD");
+          const end = moment(resp.end).format("YYYY-MM-DD");
+
+          const date = moment(new Date()).subtract(1, "days");
+          const newDate = moment(date).format("YYYY-MM-DD");
+
           const dateNow = moment(new Date()).format("YYYY-MM-DD");
-          const selisih = moment(dateNow).isAfter(endDate, "day");
-          if (selisih == true) {
-            setSelisih(true);
+
+          console.log(end);
+          if (newDate == end) {
             setModalMetu(true);
-          } else {
-            setSelisih(false);
+          } else if (dateNow == start) {
+            setModalMetu(false);
           }
+          // if (resp.start) {
+          // }
+          // const startDate = resp.start;
+          // const endDate = resp.end;
+          // const dateNow = moment(new Date()).format("2024-01-01");
+          // // const dateNow = moment(new Date()).format("YYYY-MM-DD");
+          // const selisih = moment(dateNow).isAfter(endDate, "day");
+          // console.warn(selisih);
+          // if (selisihSession == null) {
+          //   if (selisih == true) {
+          //     setSelisih(true);
+          //     setModalMetu(true);
+          //     AsyncStorage.setItem("selisihSession", "1");
+          //   }
+          // } else {
+          //   setSelisih(false);
+          // }
         }
+        // console.log("selisihSession : " + selisihSession);
       });
   };
+
   const getAlarm = async () => {
     const userData = JSON.parse(await AsyncStorage.getItem("userData"));
 
@@ -179,6 +226,8 @@ const AlarmScreen = () => {
       .then((res) => res.json())
       .then((resp) => {
         setTimeout(async () => {
+          const alarmSession = await AsyncStorage.getItem("alarmSession");
+
           if (resp != 0) {
             const startDate = resp.start;
             const endDate = resp.end;
@@ -189,8 +238,11 @@ const AlarmScreen = () => {
             const id_user = resp.id_user;
             const jam = resp.jam;
             const hari = resp.hari;
+            const hrs = resp.hour;
+            const min = resp.minute;
             const result = [];
 
+            // insentif
             if (resp.id_fase == "1") {
               result.push({
                 id_alarm: id_alarm,
@@ -201,6 +253,14 @@ const AlarmScreen = () => {
                 startDate: startDate,
                 endDate: endDate,
               });
+
+              if (alarmSession == null) {
+                pushNotification(hrs, min);
+
+                AsyncStorage.setItem("alarmSession", "1");
+              }
+
+              // lanjutan
             } else if (resp.id_fase == "2") {
               dataHari.map((item, index) => {
                 if (resp.hari_satu == item.key) {
@@ -225,6 +285,26 @@ const AlarmScreen = () => {
                 startDate: startDate,
                 endDate: endDate,
               });
+              if (alarmSession == null) {
+                pushScheduled(
+                  parseFloat(resp.hour),
+                  parseFloat(resp.minute),
+                  parseFloat(resp.hari_satu)
+                );
+                pushScheduled(
+                  parseFloat(resp.hour),
+                  parseFloat(resp.minute),
+                  parseFloat(resp.hari_dua)
+                );
+                pushScheduled(
+                  parseFloat(resp.hour),
+                  parseFloat(resp.minute),
+                  parseFloat(resp.hari_tiga)
+                );
+
+                AsyncStorage.setItem("alarmSession", "1");
+              }
+              // extend
             } else {
               dataHari.map((item, index) => {
                 if (resp.hari_satu == item.key) {
@@ -251,14 +331,35 @@ const AlarmScreen = () => {
                 lama_pengobatan: resp.lama_pengobatan,
                 fase: resp.fase,
               });
+
+              if (alarmSession == null) {
+                pushScheduled(
+                  parseFloat(resp.hour),
+                  parseFloat(resp.minute),
+                  parseFloat(resp.hari_satu)
+                );
+                pushScheduled(
+                  parseFloat(resp.hour),
+                  parseFloat(resp.minute),
+                  parseFloat(resp.hari_dua)
+                );
+                pushScheduled(
+                  parseFloat(resp.hour),
+                  parseFloat(resp.minute),
+                  parseFloat(resp.hari_tiga)
+                );
+
+                AsyncStorage.setItem("alarmSession", "1");
+              }
             }
             setData(result);
-            // AsyncStorage.setItem("alarm", JSON.stringify(result));
           } else {
             setData(null);
-            // AsyncStorage.removeItem("alarm");
           }
         }, 0);
+      })
+      .catch((e) => {
+        ToastAndroid.show("Koneksi bermasalah!", ToastAndroid.SHORT);
       });
   };
 
@@ -330,7 +431,7 @@ const AlarmScreen = () => {
     getFase();
     getToday();
     getAlarm();
-
+    getSelisih();
     setRefreshing(true);
     wait(2000).then(() => setRefreshing(false));
   }, []);
@@ -435,7 +536,7 @@ const AlarmScreen = () => {
       ></StatusBar>
 
       <ImageBackground
-        style={{ flex: 1, height: height }}
+        style={{ flex: 1, height: height, width: width }}
         resizeMode="cover"
         source={require("./../assets/icon/bg4.png")}
       >
@@ -466,7 +567,6 @@ const AlarmScreen = () => {
               </Text>
             </View>
           </View> */}
-
         {/* // !-----------------------------------------------------  Modal Info ------------------------------------------------------------*/}
         <Modal
           isVisible={isModalMetu}
@@ -576,7 +676,6 @@ const AlarmScreen = () => {
             <Text style={{ fontFamily: "Poppins-Regular" }}>Loading . . .</Text>
           </View>
         </Modal>
-
         {/* //! ------------------------------------------jika loading selesai dan tidak ada data alarm -------------------------------------*/}
         {loading != true && data == null && (
           <View
@@ -646,6 +745,53 @@ const AlarmScreen = () => {
                 </Text>
               </View>
             </TouchableOpacity>
+
+            {/* <View
+            style={{
+              flexDirection: "row",
+              marginTop: 70,
+              justifyContent: "space-evenly",
+              width: width - 20,
+            }}
+          >
+            <TouchableOpacity
+              onPress={() => navigation.navigate("TestScreen")}
+              style={{
+                backgroundColor: COLORS.primary,
+                width: "20%",
+                height: 50,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text style={{ color: "white" }}>Desain 1</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("TestScreen_2")}
+              style={{
+                backgroundColor: COLORS.primary,
+                width: "20%",
+                height: 50,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text style={{ color: "white" }}>Desain 2</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("TestScreen_3")}
+              style={{
+                backgroundColor: COLORS.primary,
+                width: "20%",
+                height: 50,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text style={{ color: "white" }}>Desain 3</Text>
+            </TouchableOpacity>
+          </View> */}
+
             {/* <TouchableOpacity
                 style={[styles.floatingbutton, { marginTop: 20 }]}
                 // onPress={toggleModal}
@@ -730,7 +876,8 @@ const AlarmScreen = () => {
                 <Text
                   style={{
                     color: COLORS.primary,
-                    fontFamily: "Poppins-Bold",
+                    fontFamily: "Quantico-Bold",
+
                     fontSize: 70,
 
                     textAlignVertical: "center",

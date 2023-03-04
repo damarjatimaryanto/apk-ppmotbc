@@ -194,7 +194,7 @@ const TrackScreen = () => {
 
       <View
         style={{
-          width: width - 30,
+          width: width - 20,
           // paddingTop: 10,
           shadowColor: "black",
           marginVertical: 15,
@@ -244,12 +244,12 @@ const TrackScreen = () => {
             disabledArrowColor: "#d9e1e8",
             monthTextColor: COLORS.primary,
             indicatorColor: COLORS.primary,
-            textDayFontFamily: "Poppins-Medium",
-            textMonthFontFamily: "Poppins-Medium",
-            textDayHeaderFontFamily: "Poppins-Medium",
-            textDayFontWeight: "300",
-            textMonthFontWeight: "bold",
-            textDayHeaderFontWeight: "300",
+            textDayFontFamily: "Poppins-Regular",
+            textMonthFontFamily: "Poppins-Regular",
+            textDayHeaderFontFamily: "Poppins-Regular",
+            // textDayFontWeight: "300",
+            // textMonthFontWeight: "bold",
+            // textDayHeaderFontWeight: "300",
             textDayFontSize: 16,
             textMonthFontSize: 16,
             textDayHeaderFontSize: 14,

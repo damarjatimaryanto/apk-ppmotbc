@@ -7,6 +7,7 @@ import {
   Animated,
   Alert,
   StatusBar,
+  BackHandler,
 } from "react-native";
 import React, { useRef, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
@@ -20,6 +21,23 @@ const SplashScreen = () => {
   useEffect(() => {
     fadeIn();
     navig();
+
+    const backAction = () => {
+      Alert.alert("", "Apakah Anda yakin ingin keluar dari aplikasi?", [
+        {
+          text: "Batal",
+          onPress: () => null,
+          style: "cancel",
+        },
+        { text: "Keluar", onPress: () => BackHandler.exitApp() },
+      ]);
+      return true;
+    };
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+    return () => backHandler.remove();
   }, []);
 
   const fadeIn = () => {
@@ -56,8 +74,8 @@ const SplashScreen = () => {
     <View style={styles.container}>
       <StatusBar backgroundColor={COLORS.primary}></StatusBar>
       <Image
-        style={{ width: 100, height: 121 }}
-        source={require("../assets/icon/lung_white.png")}
+        style={{ width: 170, height: 158 }}
+        source={require("../assets/icon/sp_logo.png")}
       ></Image>
 
       <View style={styles.kotak}>
