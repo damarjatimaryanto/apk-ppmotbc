@@ -682,7 +682,7 @@ const AlarmScreen = () => {
             style={{
               justifyContent: "center",
               alignItems: "center",
-              paddingTop: "40%",
+              paddingTop: "45%",
               // width: "90%",
               // paddingHorizontal: 10,
             }}
@@ -717,8 +717,7 @@ const AlarmScreen = () => {
                   fontFamily: "Poppins-LightItalic",
                 }}
               >
-                Track record harian anda dalam kepatuhan meminum obat akan
-                muncul disini.
+                Tambah alarm sebagai pengingat waktu anda dalam meminum obat.
               </Text>
             </View>
             <TouchableOpacity

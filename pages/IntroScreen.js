@@ -73,7 +73,7 @@ const IntroScreen = () => {
       <View style={styles.logo_container}>
         <Image
           style={{ width: 150, height: 150 }}
-          source={require("../assets/icon/intro_logo.png")}
+          source={require("../assets/iconapp.png")}
         ></Image>
       </View>
       <View style={{ width: "100%", height: "20%", alignItems: "center" }}>
@@ -103,7 +103,7 @@ const IntroScreen = () => {
             style={{
               fontSize: 20,
               // fontWeight: "bold",
-              color: COLORS.primary,
+              color: COLORS.white,
               fontFamily: "Poppins-SemiBold",
             }}
           >
@@ -181,9 +181,11 @@ const styles = StyleSheet.create({
     width: 200,
     borderColor: COLORS.primary,
     borderWidth: 3,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: COLORS.primary,
     justifyContent: "center",
     alignItems: "center",
     // fontFamily: "Poppins-Regular",
+    borderWidth: 1,
+    borderColor: "white",
   },
 });

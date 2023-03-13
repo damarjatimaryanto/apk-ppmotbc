@@ -35,7 +35,7 @@ const addInsentif = async (hours, minutes, lamaPengobatan, hari, jam, fase) => {
     .then((res) => res.json())
     .then(async (resp) => {
       if (resp == "1") {
-        pushNotification(fase, hrs, min);
+        pushNotification(hrs, min);
         AsyncStorage.setItem("alarmSession", "1");
         try {
           await AsyncStorage.removeItem("selisihSession");

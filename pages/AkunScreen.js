@@ -319,11 +319,11 @@ const AkunScreen = () => {
                   source={require("../assets/icon/person_fill.png")}
                 />
               </View>
-              <View style={styles.judul_style}>
-                <Text style={styles.judul_isi}>Nama</Text>
+              <View style={styles.judul_nama_style}>
+                <Text style={styles.judul_nama_isi}>Nama</Text>
               </View>
-              <View style={styles.ket_style}>
-                <Text style={styles.ket_isi}>{userSession[0].nama}</Text>
+              <View style={styles.ket_nama_style}>
+                <Text style={styles.ket_nama_isi}>{userSession[0].nama}</Text>
               </View>
             </View>
           </View>
@@ -442,7 +442,7 @@ const AkunScreen = () => {
                 />
               </View>
               <View style={styles.judul_style}>
-                <Text style={styles.judul_isi}>Keluar</Text>
+                <Text style={styles.judul_isi}>Logout</Text>
               </View>
               <View style={styles.ket_style}>
                 <Text style={styles.ket_isi}></Text>
@@ -583,7 +583,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  img_style: { height: 16, width: 16, tintColor: COLORS.primary },
+  img_style: { height: 24, width: 24, tintColor: COLORS.primary },
   img_style_2: { height: 20, width: 20 },
   judul_style: {
     // backgroundColor: 'green',
@@ -591,14 +591,34 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingTop: 5,
   },
+  judul_nama_style: {
+    // backgroundColor: "green",
+    width: "20%",
+    justifyContent: "center",
+    paddingTop: 5,
+  },
   judul_isi: {
     fontSize: 14,
-    fontFamily: "Poppins-Regular",
-    color: "grey",
+    fontFamily: "Poppins-SemiBold",
+    color: "#000",
+    paddingLeft: 10,
+  },
+  judul_nama_isi: {
+    fontSize: 14,
+    fontFamily: "Poppins-SemiBold",
+    color: "#000",
+    paddingLeft: 10,
   },
   ket_style: {
-    // backgroundColor: 'blue',
+    // backgroundColor: "blue",
     width: "50%",
+    justifyContent: "center",
+    paddingRight: 5,
+    paddingTop: 5,
+  },
+  ket_nama_style: {
+    // backgroundColor: "blue",
+    width: "70%",
     justifyContent: "center",
     paddingRight: 5,
     paddingTop: 5,
@@ -607,7 +627,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: "Poppins-Regular",
     textAlign: "right",
-    color: COLORS.primary,
+    color: "#9098B1",
+  },
+  ket_nama_isi: {
+    fontSize: 14,
+    fontFamily: "Poppins-Regular",
+    textAlign: "right",
+    color: "#9098B1",
   },
   persen_container: {
     width: "30%",

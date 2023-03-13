@@ -590,16 +590,18 @@ const TambahAlarm = () => {
             >
               <TextInput
                 style={{
-                  width: "80%",
-                  height: "80%",
+                  width: "100%",
+                  height: "100%",
                   // backgroundColor: "yellow",
                   textAlign: "center",
-                  fontSize: 80,
-                  // textAlignVertical: "center",
+                  fontSize: 100,
+                  verticalAlign: "center",
                   fontFamily: "Poppins-Bold",
-                  // paddingTop: 25,
+                  // paddingTop: 20,
                   color: COLORS.primary,
                   borderRadius: 10,
+                  // paddingBottom: 20,
+                  textAlignVertical: "center",
                 }}
                 maxLength={2}
                 placeholderTextColor={COLORS.primary}
@@ -630,16 +632,18 @@ const TambahAlarm = () => {
             >
               <TextInput
                 style={{
-                  width: "80%",
-                  height: "80%",
+                  width: "100%",
+                  height: "100%",
                   // backgroundColor: "yellow",
                   textAlign: "center",
-                  fontSize: 80,
-                  // textAlignVertical: "center",
+                  fontSize: 100,
+                  verticalAlign: "center",
                   fontFamily: "Poppins-Bold",
-                  paddingTop: 25,
+                  // paddingTop: 20,
                   color: COLORS.primary,
                   borderRadius: 10,
+                  // paddingBottom: 20,
+                  textAlignVertical: "center",
                 }}
                 onChangeText={(value) => onChangeMenit(value)}
                 maxLength={2}
@@ -1002,13 +1006,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginHorizontal: 6,
     borderRadius: 50,
-    borderColor: COLORS.primary,
+    borderColor: COLORS.blue_icon,
     borderWidth: 1,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 10,
+    // shadowColor: "#000",
+    // shadowOffset: { width: 0, height: 2 },
+    // shadowOpacity: 0.25,
+    // shadowRadius: 3.84,
+    // elevation: 10,
   },
   submitBtn: {
     backgroundColor: COLORS.primary,

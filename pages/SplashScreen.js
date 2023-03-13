@@ -75,13 +75,12 @@ const SplashScreen = () => {
       <StatusBar backgroundColor={COLORS.primary}></StatusBar>
       <Image
         style={{ width: 170, height: 158 }}
-        source={require("../assets/icon/sp_logo.png")}
+        source={require("../assets/adaptive-icon-ppmo.png")}
       ></Image>
 
-      <View style={styles.kotak}>
-        {/* <Text style={styles.text2}>Design By</Text> */}
+      {/* <View style={styles.kotak}>
         <Text style={styles.text}>PPMO TBC</Text>
-      </View>
+      </View> */}
 
       {/* <Text style={styles.splash_title}>PPMO TBC</Text> */}
     </View>
